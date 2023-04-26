@@ -1,6 +1,6 @@
 --liquibase formatted sql
 --changeset dabrowskiw:1
-CREATE TABLE COMPANY(
+CREATE TABLE company(
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(300) NOT NULL,
     slug VARCHAR(300) NOT NULL,
