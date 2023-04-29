@@ -3,6 +3,8 @@ package pl.thinkdata.b2bbase.company.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 
+import java.util.List;
+
 @Entity
 @Getter
 public class Company {
@@ -28,4 +30,8 @@ public class Company {
     private boolean productFileCooperation;
     private String description;
     private String logo;
+    @OneToMany
+    @JoinColumn(name = "company_id")
+    private List<Branche> branches;
+
 }

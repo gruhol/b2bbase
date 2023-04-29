@@ -8,7 +8,7 @@ CREATE TABLE company(
     legal_form VARCHAR(50) NOT NULL,
     nip VARCHAR(11) NOT NULL,
     regon VARCHAR(14) NOT NULL,
-    krs VARCHAR(10) NOT NULL,
+    krs VARCHAR(10),
     email VARCHAR(256) NOT NULL,
     phone VARCHAR(11) NOT NULL,
     www_site VARCHAR(256) NOT NULL,
