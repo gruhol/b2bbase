@@ -4,9 +4,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import lombok.Getter;
 
 @Entity
+@Getter
 public class Branche {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +24,4 @@ public class Branche {
     private String phone;
     private String latitude;
     private String longitude;
-    @OneToOne
-    private Company company;
 }
