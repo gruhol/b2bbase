@@ -8,7 +8,7 @@ VALUES
 ('ThinkData', 'thinkdata', 'WHOLESALER', 'JDG', '4172962230', '414499476', NULL, 'kontakt@thinkdata.pl', '662078402', 'https://www.thinkdata.pl', 'https://www.thinkdata.pl/store', TRUE, TRUE, TRUE),
 ('Internorm', 'Internorm', 'WHOLESALER', 'JDG', '5696317349', '972142820', NULL, 'kontakt@internorm.pl', '660012858', 'https://www.internorm.pl', 'https://www.internorm.pl/store', FALSE, TRUE, TRUE);
 
-INSERT INTO branche (name, headquarter, slug, post_code, city, street, house_number, office_number, email, phone, company_id)
+INSERT INTO branch (name, headquarter, slug, post_code, city, street, house_number, office_number, email, phone, company_id)
 VALUES
 ('Apple Warszawa', TRUE, 'apple-warszawa', '00-001', 'Warszawa', 'Marszałkowska', '12', '2', 'applewarszawa@apple.pl', '551234567', 1),
 ('Apple Kraków', FALSE, 'apple-krakow', '30-001', 'Kraków', 'Warszawska', '10', '2', 'applekrakow@apple.pl', '551234367', 1),

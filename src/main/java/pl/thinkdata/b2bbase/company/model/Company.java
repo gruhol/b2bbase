@@ -30,8 +30,7 @@ public class Company {
     private boolean productFileCooperation;
     private String description;
     private String logo;
-    @OneToMany
-    @JoinColumn(name = "company_id")
-    private List<Branche> branches;
+    @OneToMany(mappedBy = "company")
+    private List<Branch> branches;
 
 }

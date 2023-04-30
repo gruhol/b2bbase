@@ -1,6 +1,6 @@
 --liquibase formatted sql
 --changeset dabrowskiw:3
-CREATE TABLE branche(
+CREATE TABLE branch(
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(256) NOT NULL,
     headquarter BOOLEAN default false,
@@ -18,4 +18,4 @@ CREATE TABLE branche(
 );
 --liquibase formatted sql
 --changeset dabrowskiw:4
-alter table branche add constraint fk_company_branche_id foreign key (company_id) references company(id);
+alter table branch add constraint fk_company_branch_id foreign key (company_id) references company(id);
