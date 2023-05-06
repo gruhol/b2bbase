@@ -1,8 +1,9 @@
 package pl.thinkdata.b2bbase.company.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
-import org.hibernate.validator.constraints.UniqueElements;
+import org.hibernate.validator.constraints.pl.NIP;
 import pl.thinkdata.b2bbase.company.model.ComapnyType;
 import pl.thinkdata.b2bbase.company.model.LegalForm;
 
@@ -11,15 +12,21 @@ public class CompanyDto {
     @NotBlank
     private String name;
     @NotBlank
-    @UniqueElements
     private String slug;
+    @NotNull
     private ComapnyType type;
-    private LegalForm legal_form;
+    @NotNull
+    private LegalForm legalForm;
+    @NotBlank
+    @NIP
     private String nip;
+    @NotBlank
     private String regon;
     private String krs;
+    @NotBlank
     private String email;
+    @NotBlank
     private String phone;
-    private String www_site;
-    private String www_store;
+    private String wwwSite;
+    private String wwwStore;
 }
