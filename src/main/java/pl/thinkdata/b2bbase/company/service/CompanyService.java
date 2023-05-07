@@ -22,4 +22,8 @@ public class CompanyService {
     public Company addCompany(CompanyDto companyDto) {
         return companyRepository.save(CompanyMapper.mapToCompany(companyDto));
     }
+
+    public boolean nipExist(String nip) {
+        return companyRepository.existsByNip(nip);
+    }
 }

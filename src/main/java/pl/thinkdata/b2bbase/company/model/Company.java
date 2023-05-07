@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 import java.util.List;
 
 @Entity
@@ -19,14 +18,12 @@ public class Company {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @Column(unique=true)
     private String slug;
     @Enumerated(EnumType.STRING)
     private ComapnyType type;
     @Enumerated(EnumType.STRING)
     private LegalForm legalForm;
     private String nip;
-    @Column(unique=true)
     private String regon;
     private String krs;
     private String email;
