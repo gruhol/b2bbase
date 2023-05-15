@@ -5,4 +5,6 @@ import pl.thinkdata.b2bbase.company.model.Company;
 
 public interface CompanyRepository extends JpaRepository<Company, Long> {
     boolean existsByNip(String nip);
+
+    boolean findByNip(String nip);
 }
