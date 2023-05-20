@@ -29,4 +29,8 @@ public class CompanyService {
     public boolean findByNip(String nip) {
         return companyRepository.findByNip(nip).isPresent();
     }
+
+    public boolean findByRegon(String regon) {
+        return companyRepository.findByRegon(regon).isPresent();
+    }
 }
