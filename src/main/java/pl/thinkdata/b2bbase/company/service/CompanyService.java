@@ -6,6 +6,7 @@ import pl.thinkdata.b2bbase.company.dto.CompanyDto;
 import pl.thinkdata.b2bbase.company.mapper.CompanyMapper;
 import pl.thinkdata.b2bbase.company.model.Company;
 import pl.thinkdata.b2bbase.company.repository.CompanyRepository;
+import pl.thinkdata.b2bbase.company.validator.RegistrationValidator;
 
 import java.util.List;
 
@@ -20,10 +21,12 @@ public class CompanyService {
     }
 
     public Company addCompany(CompanyDto companyDto) {
+        RegistrationValidator registrationValidator = new RegistrationValidator(companyDto, this);
+        registrationValidator.valid();
         return companyRepository.save(CompanyMapper.mapToCompany(companyDto));
     }
 
-    public boolean nipExist(String nip) {
-        return companyRepository.existsByNip(nip);
+    public boolean findByNip(String nip) {
+        return companyRepository.findByNip(nip).isPresent();
     }
 }

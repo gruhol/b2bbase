@@ -1,20 +1,20 @@
 package pl.thinkdata.b2bbase.company.validator.predicate;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import pl.thinkdata.b2bbase.company.dto.CompanyDto;
-import pl.thinkdata.b2bbase.company.repository.CompanyRepository;
+import pl.thinkdata.b2bbase.company.service.CompanyService;
 
 import java.util.function.Predicate;
 
 @Component
+@RequiredArgsConstructor
 public class NipNumberIsTakenPredicate<T extends CompanyDto> implements Predicate<CompanyDto> {
 
-    @Autowired
-    private CompanyRepository companyRepository;
+    private final CompanyService companyService;
 
     @Override
     public boolean test(CompanyDto companyDto) {
-        return companyRepository.findByNip(companyDto.getNip());
+        return companyService.findByNip(companyDto.getNip());
     }
 }
