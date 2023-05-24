@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.validator.constraints.URL;
 import org.hibernate.validator.constraints.pl.NIP;
 import pl.thinkdata.b2bbase.company.model.ComapnyType;
 import pl.thinkdata.b2bbase.company.model.LegalForm;
@@ -29,6 +30,8 @@ public class CompanyDto {
     private String email;
     @NotBlank
     private String phone;
+    @URL
     private String wwwSite;
+    @URL
     private String wwwStore;
 }

@@ -8,6 +8,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import pl.thinkdata.b2bbase.company.dto.CompanyDto;
 import pl.thinkdata.b2bbase.company.service.CompanyService;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
