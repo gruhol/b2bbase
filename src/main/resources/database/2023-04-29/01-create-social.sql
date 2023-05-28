@@ -1,5 +1,5 @@
 --liquibase formatted sql
---changeset dabrowskiw:6
+--changeset dabrowskiw:10
 CREATE TABLE social (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     type VARCHAR(64) NOT NULL,

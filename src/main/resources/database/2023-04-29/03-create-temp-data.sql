@@ -1,5 +1,5 @@
 --liquibase formatted sql
---changeset dabrowskiw:8
+--changeset dabrowskiw:12
 INSERT INTO company (name, slug, type, legal_form, nip, regon, krs, email, phone, www_site, www_store, edi_cooperation, api_cooperation, product_file_cooperation)
 VALUES
 ('Apple', 'apple', 'WHOLESALER', 'JDG', '1135518002', '175396539', NULL, 'kontakt@apple.pl', '660012896', 'https://www.apple.pl', 'https://www.apple.pl/store', TRUE, TRUE, TRUE),
