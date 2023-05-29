@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,6 +15,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import pl.thinkdata.b2bbase.common.error.ValidationException;
+import pl.thinkdata.b2bbase.common.tool.CompanyDictionary;
+import pl.thinkdata.b2bbase.common.tool.LoginDictionary;
 import pl.thinkdata.b2bbase.security.model.PrivateUserDetails;
 import pl.thinkdata.b2bbase.security.model.User;
 import pl.thinkdata.b2bbase.security.model.UserRole;
@@ -21,7 +25,9 @@ import pl.thinkdata.b2bbase.security.repository.UserRepository;
 import pl.thinkdata.b2bbase.user.validator.PhoneValidation;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -31,6 +37,8 @@ public class LoginController {
     private final UserRepository userRepository;
     private long expirationTime;
     private String secret;
+
+    public static final String error_message = "Validation error. The following fields contain a validation error.";
 
     public LoginController(AuthenticationManager authenticationManager,
                            UserRepository userRepository,
@@ -49,11 +57,15 @@ public class LoginController {
 
     @PostMapping("/register")
     public Token register(@RequestBody @Valid RegisterCredentials registerCredentials) {
+        Map<String, String> fields = new HashMap<>();
         if(!registerCredentials.getPassword().equals(registerCredentials.getRepeatPassword())) {
-            throw new IllegalArgumentException("Hasła nie się identyczne");
+            fields.put(LoginDictionary.PASSWORD, LoginDictionary.PASSWORD_AND_REPEAT_PASSWORD_MUST_BE_THE_SAME);
+            fields.put(LoginDictionary.REPEAT_PASSWORD, LoginDictionary.PASSWORD_AND_REPEAT_PASSWORD_MUST_BE_THE_SAME);
+            throw new ValidationException(error_message, fields);
         }
         if (userRepository.existsByUsername(registerCredentials.getUsername())) {
-            throw new IllegalArgumentException("Taki użytkownik istnieje w bazie danych");
+            fields.put(LoginDictionary.USERNAME, LoginDictionary.USERNAME_ALREADY_EXIST);
+            throw new ValidationException(error_message, fields);
         };
         userRepository.save(User.builder()
                 .username(registerCredentials.getUsername())
