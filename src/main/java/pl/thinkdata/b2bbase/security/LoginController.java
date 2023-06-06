@@ -105,6 +105,11 @@ public class LoginController {
 
     @Getter
     private static class  RegisterCredentials {
+        @NotBlank
+        private String firstName;
+        @NotBlank
+        private String lastName;
+        @NotBlank
         @Email
         private String username;
         @NotBlank

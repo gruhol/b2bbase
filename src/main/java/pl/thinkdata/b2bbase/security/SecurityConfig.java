@@ -24,7 +24,7 @@ public class SecurityConfig {
                                            AuthenticationManager authenticationManager,
                                            UserDetailsService userDetailsService) throws Exception {
         http.authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/company/**").authenticated()
+                //.requestMatchers("/company/**").authenticated()
                 .anyRequest().permitAll()
         );
         http.csrf().disable();
