@@ -68,6 +68,8 @@ public class LoginController {
             throw new ValidationException(error_message, fields);
         };
         userRepository.save(User.builder()
+                .firstname(registerCredentials.firstName)
+                .lastname(registerCredentials.getLastName())
                 .username(registerCredentials.getUsername())
                 .phone(registerCredentials.getPhone())
                 .password("{bcrypt}" + new BCryptPasswordEncoder().encode(registerCredentials.getPassword()))
