@@ -6,7 +6,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
-import lombok.extern.java.Log;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import pl.thinkdata.b2bbase.common.error.ValidationException;
-import pl.thinkdata.b2bbase.common.tool.CompanyDictionary;
 import pl.thinkdata.b2bbase.common.tool.LoginDictionary;
 import pl.thinkdata.b2bbase.security.model.PrivateUserDetails;
 import pl.thinkdata.b2bbase.security.model.User;
@@ -131,6 +130,5 @@ public class LoginController {
             this.token = token;
             this.role = role;
         }
-
     }
 }
