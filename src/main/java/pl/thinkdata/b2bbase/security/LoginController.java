@@ -6,15 +6,14 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.thinkdata.b2bbase.common.error.ValidationException;
 import pl.thinkdata.b2bbase.common.tool.LoginDictionary;
 import pl.thinkdata.b2bbase.security.model.PrivateUserDetails;
@@ -23,17 +22,17 @@ import pl.thinkdata.b2bbase.security.model.UserRole;
 import pl.thinkdata.b2bbase.security.repository.UserRepository;
 import pl.thinkdata.b2bbase.user.validator.PhoneValidation;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
 public class LoginController {
 
+    private static final String TOKEN_PREFIX = "Bearer ";
+
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
+    private final UserDetailsService userDetailsService;
     private long expirationTime;
     private String secret;
 
@@ -41,17 +40,38 @@ public class LoginController {
 
     public LoginController(AuthenticationManager authenticationManager,
                            UserRepository userRepository,
-                           @Value("${jwt.expirationTime}") long expirationTime,
+                           UserDetailsService userDetailsService, @Value("${jwt.expirationTime}") long expirationTime,
                            @Value("${jwt.secret}") String secret) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.expirationTime = expirationTime;
         this.secret = secret;
+        this.userDetailsService = userDetailsService;
     }
 
     @PostMapping("/login")
     public Token login(@RequestBody LoginCredentials loginCredentials) {
         return authenticate(loginCredentials.username, loginCredentials.password);
+    }
+
+    @PostMapping("/getRole")
+    public List<String> getRole(@RequestBody String token) {
+        if (token == null) return Collections.emptyList();
+        try {
+            String userName = JWT.require(Algorithm.HMAC256(secret))
+                    .build()
+                    .verify(token.replace(TOKEN_PREFIX, ""))
+                    .getSubject();
+
+            if (userName == null) return Collections.emptyList();
+
+            UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
+            return userDetails.getAuthorities().stream()
+                    .map(grantedAuthority -> grantedAuthority.getAuthority())
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            return Collections.emptyList();
+        }
     }
 
     @PostMapping("/register")
