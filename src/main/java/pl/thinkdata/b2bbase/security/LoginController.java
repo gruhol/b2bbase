@@ -54,8 +54,8 @@ public class LoginController {
         return authenticate(loginCredentials.username, loginCredentials.password);
     }
 
-    @PostMapping("/getRole")
-    public List<String> getRole(@RequestBody String token) {
+    @GetMapping("/getRole/{token}")
+    public List<String> getRole(@PathVariable("token") String token) {
         if (token == null) return Collections.emptyList();
         try {
             String userName = JWT.require(Algorithm.HMAC256(secret))
