@@ -14,7 +14,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -30,7 +34,13 @@ import pl.thinkdata.b2bbase.security.repository.UserRepository;
 import pl.thinkdata.b2bbase.security.repository.VerificationLinkRepository;
 import pl.thinkdata.b2bbase.user.validator.PhoneValidation;
 
-import java.util.*;
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -109,7 +119,7 @@ public class LoginController {
             fields.put(LoginDictionary.USERNAME, LoginDictionary.USERNAME_ALREADY_EXIST);
             throw new ValidationException(error_message, fields);
         };
-        userRepository.save(User.builder()
+        User user = userRepository.save(User.builder()
                 .firstname(registerCredentials.firstName)
                 .lastname(registerCredentials.getLastName())
                 .username(registerCredentials.getUsername())
@@ -118,6 +128,8 @@ public class LoginController {
                 .enabled(false)
                 .authorities(List.of(UserRole.ROLE_USER))
                 .build());
+
+        createVerificationLinkAndSendEmail(user);
 
         return authenticate(registerCredentials.getUsername(), registerCredentials.getPassword());
     }
@@ -154,6 +166,26 @@ public class LoginController {
         context.setVariable(BASEURL, baseUrl);
         String body = templateEngine.process("email-templates/registration-confirmation", context);
         myEmailService.sendEmail(user.getUsername(), messageGenerator.getMessage(CONFIRM_YOUR_REGISTRATION), body);
+    }
+
+    @GetMapping("/verify/{token}")
+    public boolean verifyEmail(@PathVariable(value = "token", required = false) String token) {
+        Optional<VerificationLink> verificationTokens = verificationLinkRepository.findByToken(token);
+        if (!verificationTokens.isPresent()) {
+            return false;
+        }
+
+        VerificationLink verificationToken = verificationTokens.get();
+        if (verificationToken.getExpiredDateTime().isBefore(LocalDateTime.now()) || verificationToken.getIsConsumed()) {
+            return false;
+        }
+
+        verificationToken.setConfirmedDateTime(LocalDateTime.now());
+        verificationToken.setIsConsumed(Boolean.TRUE);
+        verificationToken.getUser().setEnabled(true);
+        verificationLinkRepository.save(verificationToken);
+
+        return true;
     }
 
     @Getter

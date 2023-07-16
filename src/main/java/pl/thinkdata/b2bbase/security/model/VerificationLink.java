@@ -19,7 +19,7 @@ import java.util.UUID;
 public class VerificationLink {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_token")
+    @Column(name = "id")
     private Long id;
     private String token;
     @Column(name = "is_consumed")
