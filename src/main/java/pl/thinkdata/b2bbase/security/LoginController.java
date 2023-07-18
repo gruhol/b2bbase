@@ -23,7 +23,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import pl.thinkdata.b2bbase.common.error.ValidationException;
-import pl.thinkdata.b2bbase.common.service.MyEmailService;
+import pl.thinkdata.b2bbase.common.service.emailservice.MyEmailService;
 import pl.thinkdata.b2bbase.common.tool.LoginDictionary;
 import pl.thinkdata.b2bbase.common.util.MessageGenerator;
 import pl.thinkdata.b2bbase.security.model.PrivateUserDetails;
@@ -69,7 +69,9 @@ public class LoginController {
                            UserRepository userRepository,
                            UserDetailsService userDetailsService, @Value("${jwt.expirationTime}") long expirationTime,
                            @Value("${jwt.secret}") String secret,
-                           VerificationLinkRepository verificationLinkRepository, HttpServletRequest request, TemplateEngine templateEngine, MyEmailService myEmailService, MessageGenerator messageGenerator) {
+                           VerificationLinkRepository verificationLinkRepository,
+                           HttpServletRequest request, TemplateEngine templateEngine,
+                           MyEmailService myEmailService, MessageGenerator messageGenerator) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.expirationTime = expirationTime;
@@ -165,7 +167,7 @@ public class LoginController {
         context.setVariable(URL, url);
         context.setVariable(BASEURL, baseUrl);
         String body = templateEngine.process("email-templates/registration-confirmation", context);
-        myEmailService.sendEmail(user.getUsername(), messageGenerator.getMessage(CONFIRM_YOUR_REGISTRATION), body);
+        myEmailService.sendEmail(user.getUsername(), messageGenerator.getMessage(CONFIRM_YOUR_REGISTRATION), body, url);
     }
 
     @GetMapping("/verify/{token}")
