@@ -172,22 +172,20 @@ public class LoginController {
 
     @GetMapping("/verify/{token}")
     public boolean verifyEmail(@PathVariable(value = "token", required = false) String token) {
-        Optional<VerificationLink> verificationTokens = verificationLinkRepository.findByToken(token);
-        if (!verificationTokens.isPresent()) {
-            return false;
-        }
 
-        VerificationLink verificationToken = verificationTokens.get();
-        if (verificationToken.getExpiredDateTime().isBefore(LocalDateTime.now()) || verificationToken.getIsConsumed()) {
-            return false;
-        }
+        return verificationLinkRepository.findByToken(token)
+                .filter(verificationLink -> !verificationLink.getIsConsumed())
+                .filter(verificationLink -> verificationLink.getExpiredDateTime().isAfter(LocalDateTime.now()))
+                .map(filteredObiekt -> updateLink(filteredObiekt))
+                .orElse(false);
+    }
 
-        verificationToken.setConfirmedDateTime(LocalDateTime.now());
-        verificationToken.setIsConsumed(Boolean.TRUE);
-        verificationToken.getUser().setEnabled(true);
-        verificationLinkRepository.save(verificationToken);
-
-        return true;
+    private Boolean updateLink(VerificationLink verificationLink) {
+        verificationLink.setConfirmedDateTime(LocalDateTime.now());
+        verificationLink.setIsConsumed(Boolean.TRUE);
+        verificationLink.getUser().setEnabled(true);
+        VerificationLink response = verificationLinkRepository.save(verificationLink);
+        return response instanceof VerificationLink ? true : false;
     }
 
     @Getter
