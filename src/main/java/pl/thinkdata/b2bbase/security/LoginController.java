@@ -148,10 +148,7 @@ public class LoginController {
                 .withSubject(String.valueOf(principal.getId()))
                 .withExpiresAt(new Date(System.currentTimeMillis() + expirationTime))
                 .sign(Algorithm.HMAC256(secret));
-        List<String> roles = principal.getAuthorities().stream()
-                .map(grantedAuthority -> grantedAuthority.getAuthority())
-                .collect(Collectors.toList());
-        return new Token(token, roles);
+        return new Token(token);
     }
 
     private void createVerificationLinkAndSendEmail(User user) {
@@ -214,11 +211,9 @@ public class LoginController {
     @Getter
     private static class Token {
         private String token;
-        private List<String> role;
 
-        public Token(String token, List<String> role) {
+        public Token(String token) {
             this.token = token;
-            this.role = role;
         }
     }
 }
