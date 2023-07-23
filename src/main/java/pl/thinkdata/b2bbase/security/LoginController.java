@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -36,6 +37,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.AUTHORIZATION_FAILED;
+import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.USER_IS_NOT_ACTIVATED;
 
 @RestController
 public class LoginController {
@@ -104,7 +106,7 @@ public class LoginController {
     }
 
     @PostMapping("/register")
-    public Token register(@RequestBody @Valid RegisterCredentials registerCredentials) {
+    public Boolean register(@RequestBody @Valid RegisterCredentials registerCredentials) {
         Map<String, String> fields = new HashMap<>();
         if(!registerCredentials.getPassword().equals(registerCredentials.getRepeatPassword())) {
             fields.put(LoginDictionary.PASSWORD, LoginDictionary.PASSWORD_AND_REPEAT_PASSWORD_MUST_BE_THE_SAME);
@@ -126,18 +128,23 @@ public class LoginController {
                 .build());
 
         createVerificationLinkAndSendEmail(user);
-
-        return authenticate(registerCredentials.getUsername(), registerCredentials.getPassword());
+        return true;
     }
 
     private Token authenticate(String username, String password) {
+        PrivateUserDetails principal = null;
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new AuthorizationException(AUTHORIZATION_FAILED));
-        Authentication authenticate = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(user.getId(), password)
-        );
-
-        PrivateUserDetails principal = (PrivateUserDetails) authenticate.getPrincipal();
+                .orElseThrow(() -> new AuthorizationException(messageGenerator.get(AUTHORIZATION_FAILED)));
+        try {
+            Authentication authenticate = authenticationManager
+                    .authenticate(new UsernamePasswordAuthenticationToken(user.getId(), password));
+            principal = (PrivateUserDetails) authenticate.getPrincipal();
+        } catch (Exception exception) {
+            if (exception instanceof AuthenticationException) {
+                throw new AuthorizationException(messageGenerator.get(AUTHORIZATION_FAILED));
+            }
+        }
+        if (!user.isEnabled()) throw new AuthorizationException(messageGenerator.get(USER_IS_NOT_ACTIVATED));
 
         String token =  JWT.create()
                 .withSubject(String.valueOf(principal.getId()))
@@ -159,7 +166,7 @@ public class LoginController {
         context.setVariable(URL, url);
         context.setVariable(BASEURL, baseUrl);
         String body = templateEngine.process("email-templates/registration-confirmation", context);
-        myEmailService.sendEmail(user.getUsername(), messageGenerator.getMessage(CONFIRM_YOUR_REGISTRATION), body, url);
+        myEmailService.sendEmail(user.getUsername(), messageGenerator.get(CONFIRM_YOUR_REGISTRATION), body, url);
     }
 
     @GetMapping("/verify/{token}")

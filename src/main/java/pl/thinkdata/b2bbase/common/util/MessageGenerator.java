@@ -11,7 +11,7 @@ public class MessageGenerator {
 
     private final MessageSource messageSource;
 
-    public String getMessage(String code) {
+    public String get(String code) {
         return messageSource.getMessage(code, null, LocaleContextHolder.getLocale());
     }
 }
