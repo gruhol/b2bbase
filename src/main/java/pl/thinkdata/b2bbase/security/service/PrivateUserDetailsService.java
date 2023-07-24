@@ -1,4 +1,4 @@
-package pl.thinkdata.b2bbase.security;
+package pl.thinkdata.b2bbase.security.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;

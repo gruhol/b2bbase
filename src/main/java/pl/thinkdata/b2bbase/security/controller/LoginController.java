@@ -1,8 +1,7 @@
-package pl.thinkdata.b2bbase.security;
+package pl.thinkdata.b2bbase.security.controller;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -15,25 +14,27 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.Context;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import pl.thinkdata.b2bbase.common.error.AuthorizationException;
 import pl.thinkdata.b2bbase.common.error.ValidationException;
-import pl.thinkdata.b2bbase.common.service.emailservice.MyEmailService;
 import pl.thinkdata.b2bbase.common.tool.LoginDictionary;
 import pl.thinkdata.b2bbase.common.util.MessageGenerator;
 import pl.thinkdata.b2bbase.security.model.PrivateUserDetails;
 import pl.thinkdata.b2bbase.security.model.User;
 import pl.thinkdata.b2bbase.security.model.UserRole;
-import pl.thinkdata.b2bbase.security.model.VerificationLink;
 import pl.thinkdata.b2bbase.security.repository.UserRepository;
-import pl.thinkdata.b2bbase.security.repository.VerificationLinkRepository;
+import pl.thinkdata.b2bbase.security.service.VerificationLinkService;
 import pl.thinkdata.b2bbase.user.validator.PhoneValidation;
 
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.AUTHORIZATION_FAILED;
@@ -43,19 +44,12 @@ import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.USER_IS_NOT_ACTIV
 public class LoginController {
 
     private static final String TOKEN_PREFIX = "Bearer ";
-    private static final String URL = "url";
-    private static final String VERIFY = "/verify/";
-    private static final String BASEURL = "baseurl";
-    private static final String CONFIRM_YOUR_REGISTRATION = "confirm.your.registration";
 
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
     private final UserDetailsService userDetailsService;
-    private final VerificationLinkRepository verificationLinkRepository;
-    private final HttpServletRequest request;
-    private final TemplateEngine templateEngine;
-    private final MyEmailService myEmailService;
     private final MessageGenerator messageGenerator;
+    private final VerificationLinkService verificationLinkService;
 
     private long expirationTime;
     private String secret;
@@ -65,19 +59,15 @@ public class LoginController {
                            UserRepository userRepository,
                            UserDetailsService userDetailsService, @Value("${jwt.expirationTime}") long expirationTime,
                            @Value("${jwt.secret}") String secret,
-                           VerificationLinkRepository verificationLinkRepository,
-                           HttpServletRequest request, TemplateEngine templateEngine,
-                           MyEmailService myEmailService, MessageGenerator messageGenerator) {
+                           MessageGenerator messageGenerator,
+                           VerificationLinkService verificationLinkService) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.expirationTime = expirationTime;
         this.secret = secret;
         this.userDetailsService = userDetailsService;
-        this.verificationLinkRepository = verificationLinkRepository;
-        this.request = request;
-        this.templateEngine = templateEngine;
-        this.myEmailService = myEmailService;
         this.messageGenerator = messageGenerator;
+        this.verificationLinkService = verificationLinkService;
     }
 
     @PostMapping("/login")
@@ -127,7 +117,7 @@ public class LoginController {
                 .authorities(List.of(UserRole.ROLE_USER))
                 .build());
 
-        createVerificationLinkAndSendEmail(user);
+        verificationLinkService.createVerificationLinkAndSendEmail(user);
         return true;
     }
 
@@ -153,39 +143,6 @@ public class LoginController {
         return new Token(token);
     }
 
-    private void createVerificationLinkAndSendEmail(User user) {
-        VerificationLink link = new VerificationLink();
-        link.setUser(user);
-        verificationLinkRepository.save(link);
-        Context context = new Context();
-        String baseUrl = ServletUriComponentsBuilder.fromRequestUri(request)
-                .replacePath(null)
-                .build()
-                .toUriString();
-        String url = baseUrl + VERIFY + link.getToken();
-        context.setVariable(URL, url);
-        context.setVariable(BASEURL, baseUrl);
-        String body = templateEngine.process("email-templates/registration-confirmation", context);
-        myEmailService.sendEmail(user.getUsername(), messageGenerator.get(CONFIRM_YOUR_REGISTRATION), body, url);
-    }
-
-    @GetMapping("/verify/{token}")
-    public boolean verifyEmail(@PathVariable(value = "token", required = false) String token) {
-
-        return verificationLinkRepository.findByToken(token)
-                .filter(verificationLink -> !verificationLink.getIsConsumed())
-                .filter(verificationLink -> verificationLink.getExpiredDateTime().isAfter(LocalDateTime.now()))
-                .map(filteredObiekt -> updateLink(filteredObiekt))
-                .orElse(false);
-    }
-
-    private Boolean updateLink(VerificationLink verificationLink) {
-        verificationLink.setConfirmedDateTime(LocalDateTime.now());
-        verificationLink.setIsConsumed(Boolean.TRUE);
-        verificationLink.getUser().setEnabled(true);
-        VerificationLink response = verificationLinkRepository.save(verificationLink);
-        return response instanceof VerificationLink ? true : false;
-    }
 
     @Getter
     private static class  LoginCredentials {
