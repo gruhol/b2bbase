@@ -26,6 +26,7 @@ import pl.thinkdata.b2bbase.common.util.MessageGenerator;
 import pl.thinkdata.b2bbase.security.model.PrivateUserDetails;
 import pl.thinkdata.b2bbase.security.model.User;
 import pl.thinkdata.b2bbase.security.model.UserRole;
+import pl.thinkdata.b2bbase.security.model.VerificationLinkRequest;
 import pl.thinkdata.b2bbase.security.repository.UserRepository;
 import pl.thinkdata.b2bbase.security.service.VerificationLinkService;
 import pl.thinkdata.b2bbase.user.validator.PhoneValidation;
@@ -54,6 +55,8 @@ public class LoginController {
     private long expirationTime;
     private String secret;
     public static final String error_message = "Validation error. The following fields contain a validation error.";
+    private static final String CONFIRM_YOUR_REGISTRATION = "confirm.your.registration";
+    private static final String VERIFY = "/verify/";
 
     public LoginController(AuthenticationManager authenticationManager,
                            UserRepository userRepository,
@@ -117,7 +120,13 @@ public class LoginController {
                 .authorities(List.of(UserRole.ROLE_USER))
                 .build());
 
-        verificationLinkService.createVerificationLinkAndSendEmail(user);
+        verificationLinkService.createVerificationLinkAndSendEmail(VerificationLinkRequest
+                .builder()
+                        .user(user)
+                        .emailSubject(messageGenerator.get(CONFIRM_YOUR_REGISTRATION))
+                        .emailTemplate("email-templates/registration-confirmation")
+                        .targetUrl(VERIFY)
+                .build());
         return true;
     }
 
