@@ -1,12 +1,18 @@
 package pl.thinkdata.b2bbase.security.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import pl.thinkdata.b2bbase.common.util.MessageGenerator;
+import pl.thinkdata.b2bbase.security.component.PasswordGenerator;
+import pl.thinkdata.b2bbase.security.model.PasswordToSendRequest;
 import pl.thinkdata.b2bbase.security.model.User;
 import pl.thinkdata.b2bbase.security.model.VerificationLinkRequest;
 import pl.thinkdata.b2bbase.security.repository.UserRepository;
+import pl.thinkdata.b2bbase.security.repository.VerificationLinkRepository;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -15,9 +21,17 @@ public class RememberPasswordService {
 
     public static final String CONFIRM_THE_PASSWORD_RESET_REQUEST = "confirm.the.password.reset";
     public static final String SEND_PASSWORD = "/send-password/";
+    private static final String NEW_PASSWORD = "newPassword";
+    public static final String YOUR_NEW_PASSWORD = "your.new.password";
+
     private final UserRepository userRepository;
     private final VerificationLinkService verificationLinkService;
     private final MessageGenerator messageGenerator;
+    private final PasswordGenerator passwordGenerator;
+    private final VerificationLinkRepository verificationLinkRepository;
+
+    @Value("${lengthRandomPassword}")
+    private final Integer lengthRandomPassword;
 
     public boolean checkUserNameAndSendLinkWithTokenToRememberPassword(String username) {
         Optional<User> user = userRepository.findByUsername(username);
@@ -34,5 +48,22 @@ public class RememberPasswordService {
                 .emailTemplate("email-templates/confirm_password_reset")
                 .targetUrl(SEND_PASSWORD)
                 .build();
+    }
+
+    public boolean checkTokenAndSendNewPassword(String token) {
+        boolean tokenVerified = verificationLinkService.checkVerificationLink(token);
+        if (!tokenVerified) return false;
+
+        User user = verificationLinkRepository.findByToken(token).map(link -> link.getUser()).orElseThrow();
+        String newPassword = passwordGenerator.getRandomPassword(lengthRandomPassword);
+        Map<String, String> listVariable = new HashMap();
+        listVariable.put(NEW_PASSWORD, newPassword);
+        PasswordToSendRequest request = PasswordToSendRequest.builder()
+                .user(user)
+                .emailSubject(messageGenerator.get(YOUR_NEW_PASSWORD))
+                .emailTemplate("email-templates/send-new-password")
+                .listVariable(listVariable)
+                .build();
+        return verificationLinkService.createEmailWithDataAndSendEmail(request);
     }
 }

@@ -8,7 +8,8 @@ import org.springframework.stereotype.Service;
 public class MyEmailServiceMock implements MyEmailService {
 
     @Override
-    public void sendEmail(String to, String title, String content, String url) {
+    public boolean sendEmail(String to, String title, String content, String url) {
         System.out.println("Url link verification: " + url);
+        return true;
     }
 }

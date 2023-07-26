@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import pl.thinkdata.b2bbase.common.util.MessageGenerator;
 
 
 @Profile("prod")
@@ -17,12 +16,11 @@ import pl.thinkdata.b2bbase.common.util.MessageGenerator;
 public class MyEmailServiceImpl implements MyEmailService {
 
     private final JavaMailSender javaMailSender;
-    private final MessageGenerator messageGenerator;
 
     @Value("${mainEmailPage}")
     private String mailEmailPage;
 
-    public void sendEmail(String to, String title, String content, String url) {
+    public boolean sendEmail(String to, String title, String content, String url) {
         MimeMessage mail = javaMailSender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(mail, true);
@@ -33,7 +31,9 @@ public class MyEmailServiceImpl implements MyEmailService {
             helper.setText(content, true);
         } catch (MessagingException e) {
             e.printStackTrace();
+            return false;
         }
         javaMailSender.send(mail);
+        return true;
     }
 }
