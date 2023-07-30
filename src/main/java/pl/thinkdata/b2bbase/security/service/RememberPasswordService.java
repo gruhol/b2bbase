@@ -1,7 +1,7 @@
 package pl.thinkdata.b2bbase.security.service;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.thinkdata.b2bbase.common.util.MessageGenerator;
 import pl.thinkdata.b2bbase.security.component.PasswordGenerator;
@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class RememberPasswordService {
 
     public static final String CONFIRM_THE_PASSWORD_RESET_REQUEST = "confirm.the.password.reset";
@@ -30,8 +29,22 @@ public class RememberPasswordService {
     private final PasswordGenerator passwordGenerator;
     private final VerificationLinkRepository verificationLinkRepository;
 
-    @Value("${lengthRandomPassword}")
+
     private final Integer lengthRandomPassword;
+
+    public RememberPasswordService(UserRepository userRepository,
+                                   VerificationLinkService verificationLinkService,
+                                   MessageGenerator messageGenerator,
+                                   PasswordGenerator passwordGenerator,
+                                   VerificationLinkRepository verificationLinkRepository,
+                                   @Value("${lengthRandomPassword}") Integer lengthRandomPassword) {
+        this.userRepository = userRepository;
+        this.verificationLinkService = verificationLinkService;
+        this.messageGenerator = messageGenerator;
+        this.passwordGenerator = passwordGenerator;
+        this.verificationLinkRepository = verificationLinkRepository;
+        this.lengthRandomPassword = lengthRandomPassword;
+    }
 
     public boolean checkUserNameAndSendLinkWithTokenToRememberPassword(String username) {
         Optional<User> user = userRepository.findByUsername(username);
@@ -58,6 +71,10 @@ public class RememberPasswordService {
         String newPassword = passwordGenerator.getRandomPassword(lengthRandomPassword);
         Map<String, String> listVariable = new HashMap();
         listVariable.put(NEW_PASSWORD, newPassword);
+
+        user.setPassword("{bcrypt}" + new BCryptPasswordEncoder().encode(newPassword));
+        userRepository.save(user);
+
         PasswordToSendRequest request = PasswordToSendRequest.builder()
                 .user(user)
                 .emailSubject(messageGenerator.get(YOUR_NEW_PASSWORD))

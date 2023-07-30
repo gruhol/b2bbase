@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class VerificationLinkService {
 
     private final VerificationLinkRepository verificationLinkRepository;
-    private final MyEmailService myEmailService;
+    private MyEmailService myEmailService;
     private final TemplateEngine templateEngine;
     private final HttpServletRequest request;
 
@@ -48,7 +48,7 @@ public class VerificationLinkService {
     }
 
     private void findActiveTokenAndDelete(User user) {
-        List<Long> verificationLinkIdsList = verificationLinkRepository.findByIdUser(user.getId()).stream()
+        List<Long> verificationLinkIdsList = verificationLinkRepository.findByUser(user.getId()).stream()
                 .filter(link -> link.getIsConsumed() == false)
                 .filter(link -> link.getExpiredDateTime().isAfter(LocalDateTime.now()))
                 .map(link -> link.getId())

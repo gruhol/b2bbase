@@ -20,6 +20,7 @@ public class MyEmailServiceImpl implements MyEmailService {
     @Value("${mainEmailPage}")
     private String mailEmailPage;
 
+    @Override
     public boolean sendEmail(String to, String title, String content, String url) {
         MimeMessage mail = javaMailSender.createMimeMessage();
         try {
