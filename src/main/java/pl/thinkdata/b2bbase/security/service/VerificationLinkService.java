@@ -2,6 +2,7 @@ package pl.thinkdata.b2bbase.security.service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.thymeleaf.TemplateEngine;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 public class VerificationLinkService {
 
     private final VerificationLinkRepository verificationLinkRepository;
+    @Autowired
     private MyEmailService myEmailService;
     private final TemplateEngine templateEngine;
     private final HttpServletRequest request;
@@ -32,7 +34,7 @@ public class VerificationLinkService {
 
 
     public void createVerificationLinkAndSendEmail(VerificationLinkRequest request) {
-        findActiveTokenAndDelete(request.getUser());
+        findActiveTokenAndDeleteThem(request.getUser());
 
         VerificationLink link = new VerificationLink();
         link.setUser(request.getUser());
@@ -47,30 +49,12 @@ public class VerificationLinkService {
         myEmailService.sendEmail(request.getUser().getUsername(), request.getEmailSubject(), body, url);
     }
 
-    private void findActiveTokenAndDelete(User user) {
-        List<Long> verificationLinkIdsList = verificationLinkRepository.findByUser(user.getId()).stream()
-                .filter(link -> link.getIsConsumed() == false)
-                .filter(link -> link.getExpiredDateTime().isAfter(LocalDateTime.now()))
-                .map(link -> link.getId())
-                .collect(Collectors.toList());
-
-        verificationLinkRepository.deleteAllById(verificationLinkIdsList);
-    }
-
     public boolean checkVerificationLink(String token) {
         return verificationLinkRepository.findByToken(token)
                 .filter(verificationLink -> !verificationLink.getIsConsumed())
                 .filter(verificationLink -> verificationLink.getExpiredDateTime().isAfter(LocalDateTime.now()))
                 .map(filteredObiekt -> updateLink(filteredObiekt))
                 .orElse(false);
-    }
-
-    private Boolean updateLink(VerificationLink verificationLink) {
-        verificationLink.setConfirmedDateTime(LocalDateTime.now());
-        verificationLink.setIsConsumed(Boolean.TRUE);
-        verificationLink.getUser().setEnabled(true);
-        VerificationLink response = verificationLinkRepository.save(verificationLink);
-        return response instanceof VerificationLink ? true : false;
     }
 
     public boolean createEmailWithDataAndSendEmail(PasswordToSendRequest request) {
@@ -82,7 +66,18 @@ public class VerificationLinkService {
             context.setVariable(variable.getKey().toString(), variable.getValue());
         }
         String body = templateEngine.process(request.getEmailTemplate(), context);
-        return myEmailService.sendEmail(request.getUser().getUsername(), request.getEmailSubject(), body, null);
+        String newPassword = request.getListVariable().containsKey("newPassword") ? request.getListVariable().get("newPassword") : null;
+        return myEmailService.sendEmail(request.getUser().getUsername(), request.getEmailSubject(), body, newPassword);
+    }
+
+    private void findActiveTokenAndDeleteThem(User user) {
+        List<Long> verificationLinkIdsList = verificationLinkRepository.findByUser(user).stream()
+                .filter(link -> link.getIsConsumed() == false)
+                .filter(link -> link.getExpiredDateTime().isAfter(LocalDateTime.now()))
+                .map(link -> link.getId())
+                .collect(Collectors.toList());
+
+        verificationLinkRepository.deleteAllById(verificationLinkIdsList);
     }
 
     private String createBaseUrl() {
@@ -90,5 +85,13 @@ public class VerificationLinkService {
                 .replacePath(null)
                 .build()
                 .toUriString();
+    }
+
+    private Boolean updateLink(VerificationLink verificationLink) {
+        verificationLink.setConfirmedDateTime(LocalDateTime.now());
+        verificationLink.setIsConsumed(Boolean.TRUE);
+        verificationLink.getUser().setEnabled(true);
+        VerificationLink response = verificationLinkRepository.save(verificationLink);
+        return response instanceof VerificationLink ? true : false;
     }
 }

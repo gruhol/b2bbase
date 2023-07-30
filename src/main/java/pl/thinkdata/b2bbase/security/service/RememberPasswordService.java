@@ -64,10 +64,10 @@ public class RememberPasswordService {
     }
 
     public boolean checkTokenAndSendNewPassword(String token) {
-        boolean tokenVerified = verificationLinkService.checkVerificationLink(token);
-        if (!tokenVerified) return false;
+        if (!verificationLinkService.checkVerificationLink(token)) return false;
 
         User user = verificationLinkRepository.findByToken(token).map(link -> link.getUser()).orElseThrow();
+        //todo should throw if verification token is expired or taken.
         String newPassword = passwordGenerator.getRandomPassword(lengthRandomPassword);
         Map<String, String> listVariable = new HashMap();
         listVariable.put(NEW_PASSWORD, newPassword);
