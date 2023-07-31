@@ -36,6 +36,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.AUTHORIZATION_FAILED;
@@ -96,6 +97,22 @@ public class LoginController {
         } catch (Exception e) {
             return Collections.emptyList();
         }
+    }
+
+    @PostMapping("/getUserData")
+    public User getUserData(@RequestBody String token) {
+        if (token != null && token.startsWith(TOKEN_PREFIX)) {
+            String userName = JWT.require(Algorithm.HMAC256(secret))
+                    .build()
+                    .verify(token.replace(TOKEN_PREFIX, ""))
+                    .getSubject();
+            if (userName != null) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
+                return Optional.ofNullable(userRepository.findByUsername(userDetails.getUsername()))
+                        .get().orElse(null);
+            }
+        }
+        return null;
     }
 
     @PostMapping("/register")
