@@ -23,6 +23,7 @@ import pl.thinkdata.b2bbase.common.error.AuthorizationException;
 import pl.thinkdata.b2bbase.common.error.ValidationException;
 import pl.thinkdata.b2bbase.common.tool.LoginDictionary;
 import pl.thinkdata.b2bbase.common.util.MessageGenerator;
+import pl.thinkdata.b2bbase.security.dto.UserEditData;
 import pl.thinkdata.b2bbase.security.model.PrivateUserDetails;
 import pl.thinkdata.b2bbase.security.model.User;
 import pl.thinkdata.b2bbase.security.model.UserRole;
@@ -100,16 +101,22 @@ public class LoginController {
     }
 
     @PostMapping("/getUserData")
-    public User getUserData(@RequestBody String token) {
-        if (token != null && token.startsWith(TOKEN_PREFIX)) {
+    public UserEditData getUserData(@RequestBody String token) {
+        if (token != null) {
             String userName = JWT.require(Algorithm.HMAC256(secret))
                     .build()
                     .verify(token.replace(TOKEN_PREFIX, ""))
                     .getSubject();
             if (userName != null) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
-                return Optional.ofNullable(userRepository.findByUsername(userDetails.getUsername()))
-                        .get().orElse(null);
+                User user = Optional.ofNullable(userRepository.findByUsername(userDetails.getUsername()))
+                        .get().orElseThrow(() -> new AuthorizationException("ddsf"));
+                return new UserEditData().builder()
+                        .firstName(user.getFirstname())
+                        .lastName(user.getLastname())
+                        .username(user.getUsername())
+                        .phone(user.getPhone())
+                        .build();
             }
         }
         return null;
