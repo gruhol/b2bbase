@@ -9,7 +9,7 @@ import java.time.ZonedDateTime;
 @Getter
 @Setter
 @Builder
-public class AuthorizationExceptionResponse {
+public class MyExceptionResponse {
     private ZonedDateTime timestamp;
     private int status;
     private String message;

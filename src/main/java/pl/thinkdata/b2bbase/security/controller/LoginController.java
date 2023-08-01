@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import pl.thinkdata.b2bbase.common.error.AuthorizationException;
+import pl.thinkdata.b2bbase.common.error.InvalidRequestDataException;
 import pl.thinkdata.b2bbase.common.error.ValidationException;
 import pl.thinkdata.b2bbase.common.tool.LoginDictionary;
 import pl.thinkdata.b2bbase.common.util.MessageGenerator;
@@ -41,7 +42,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.AUTHORIZATION_FAILED;
+import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.TOKEN_CAN_NOT_BY_NULL;
+import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.TOKEN_HAVE_TO_CONTAINS_USERNAME;
+import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.USER_FROM_GIVEN_TOKEN_NOT_FOUND;
 import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.USER_IS_NOT_ACTIVATED;
+import static pl.thinkdata.b2bbase.security.mapper.UserMapper.mapToUserEditData;
 
 @RestController
 public class LoginController {
@@ -102,24 +107,21 @@ public class LoginController {
 
     @PostMapping("/getUserData")
     public UserEditData getUserData(@RequestBody String token) {
-        if (token != null) {
-            String userName = JWT.require(Algorithm.HMAC256(secret))
-                    .build()
-                    .verify(token.replace(TOKEN_PREFIX, ""))
-                    .getSubject();
-            if (userName != null) {
-                UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
-                User user = Optional.ofNullable(userRepository.findByUsername(userDetails.getUsername()))
-                        .get().orElseThrow(() -> new AuthorizationException("ddsf"));
-                return new UserEditData().builder()
-                        .firstName(user.getFirstname())
-                        .lastName(user.getLastname())
-                        .username(user.getUsername())
-                        .phone(user.getPhone())
-                        .build();
-            }
-        }
-        return null;
+        String userName;
+        if (token == null) throw new InvalidRequestDataException(messageGenerator.get(TOKEN_CAN_NOT_BY_NULL));
+
+        userName = JWT.require(Algorithm.HMAC256(secret))
+                .build()
+                .verify(token.replace(TOKEN_PREFIX, ""))
+                .getSubject();
+
+        if (userName == null) throw new InvalidRequestDataException(messageGenerator.get(TOKEN_HAVE_TO_CONTAINS_USERNAME));
+
+        UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
+        User user = Optional.ofNullable(userRepository.findByUsername(userDetails.getUsername()))
+                .get()
+                .orElseThrow(() -> new InvalidRequestDataException(messageGenerator.get(USER_FROM_GIVEN_TOKEN_NOT_FOUND)));
+        return mapToUserEditData(user);
     }
 
     @PostMapping("/register")
