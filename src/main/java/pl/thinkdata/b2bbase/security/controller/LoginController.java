@@ -2,6 +2,7 @@ package pl.thinkdata.b2bbase.security.controller;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -46,12 +47,14 @@ import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.TOKEN_CAN_NOT_BY_
 import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.TOKEN_HAVE_TO_CONTAINS_USERNAME;
 import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.USER_FROM_GIVEN_TOKEN_NOT_FOUND;
 import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.USER_IS_NOT_ACTIVATED;
+import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.WRONG_TOKEN_PREFIX;
 import static pl.thinkdata.b2bbase.security.mapper.UserMapper.mapToUserEditData;
 
 @RestController
 public class LoginController {
-
+    private static final String TOKEN_HEADER = "Authorization";
     private static final String TOKEN_PREFIX = "Bearer ";
+
 
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
@@ -105,11 +108,12 @@ public class LoginController {
         }
     }
 
-    @PostMapping("/getUserData")
-    public UserEditData getUserData(@RequestBody String token) {
+    @GetMapping("/getUserData")
+    public UserEditData getUserData(HttpServletRequest request) {
+        String token = request.getHeader(TOKEN_HEADER);
         String userName;
         if (token == null) throw new InvalidRequestDataException(messageGenerator.get(TOKEN_CAN_NOT_BY_NULL));
-
+        if (!token.startsWith(TOKEN_PREFIX)) throw new InvalidRequestDataException(messageGenerator.get(WRONG_TOKEN_PREFIX));
         userName = JWT.require(Algorithm.HMAC256(secret))
                 .build()
                 .verify(token.replace(TOKEN_PREFIX, ""))

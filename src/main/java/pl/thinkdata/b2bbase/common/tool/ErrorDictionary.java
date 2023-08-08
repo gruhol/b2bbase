@@ -7,4 +7,5 @@ public class ErrorDictionary {
     public static final String TOKEN_HAVE_TO_CONTAINS_USERNAME = "token.have.to.contains.username";
     public static final String USER_FROM_GIVEN_TOKEN_NOT_FOUND = "user.from.given.token.not.found";
     public static final String TOKEN_IS_NOT_VALID = "token.is.not.valid";
+    public static final String WRONG_TOKEN_PREFIX = "wrong.token.prefix";
 }
