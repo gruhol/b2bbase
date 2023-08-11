@@ -12,16 +12,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import pl.thinkdata.b2bbase.common.error.AuthorizationException;
-import pl.thinkdata.b2bbase.common.error.InvalidRequestDataException;
 import pl.thinkdata.b2bbase.common.error.ValidationException;
 import pl.thinkdata.b2bbase.common.tool.LoginDictionary;
 import pl.thinkdata.b2bbase.common.util.MessageGenerator;
@@ -31,36 +28,28 @@ import pl.thinkdata.b2bbase.security.model.User;
 import pl.thinkdata.b2bbase.security.model.UserRole;
 import pl.thinkdata.b2bbase.security.model.VerificationLinkRequest;
 import pl.thinkdata.b2bbase.security.repository.UserRepository;
+import pl.thinkdata.b2bbase.security.service.UserService;
 import pl.thinkdata.b2bbase.security.service.VerificationLinkService;
-import pl.thinkdata.b2bbase.user.validator.PhoneValidation;
+import pl.thinkdata.b2bbase.security.validator.PhoneValidation;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.AUTHORIZATION_FAILED;
-import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.TOKEN_CAN_NOT_BY_NULL;
-import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.TOKEN_HAVE_TO_CONTAINS_USERNAME;
-import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.USER_FROM_GIVEN_TOKEN_NOT_FOUND;
 import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.USER_IS_NOT_ACTIVATED;
-import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.WRONG_TOKEN_PREFIX;
-import static pl.thinkdata.b2bbase.security.mapper.UserMapper.mapToUserEditData;
 
 @RestController
-public class LoginController {
+public class UserController {
     private static final String TOKEN_HEADER = "Authorization";
-    private static final String TOKEN_PREFIX = "Bearer ";
-
 
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
     private final UserDetailsService userDetailsService;
     private final MessageGenerator messageGenerator;
     private final VerificationLinkService verificationLinkService;
+    private final UserService userService;
 
     private long expirationTime;
     private String secret;
@@ -68,12 +57,12 @@ public class LoginController {
     private static final String CONFIRM_YOUR_REGISTRATION = "confirm.your.registration";
     private static final String VERIFY = "/verify/";
 
-    public LoginController(AuthenticationManager authenticationManager,
-                           UserRepository userRepository,
-                           UserDetailsService userDetailsService, @Value("${jwt.expirationTime}") long expirationTime,
-                           @Value("${jwt.secret}") String secret,
-                           MessageGenerator messageGenerator,
-                           VerificationLinkService verificationLinkService) {
+    public UserController(AuthenticationManager authenticationManager,
+                          UserRepository userRepository,
+                          UserDetailsService userDetailsService, @Value("${jwt.expirationTime}") long expirationTime,
+                          @Value("${jwt.secret}") String secret,
+                          MessageGenerator messageGenerator,
+                          VerificationLinkService verificationLinkService, UserService userService) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.expirationTime = expirationTime;
@@ -81,6 +70,7 @@ public class LoginController {
         this.userDetailsService = userDetailsService;
         this.messageGenerator = messageGenerator;
         this.verificationLinkService = verificationLinkService;
+        this.userService = userService;
     }
 
     @PostMapping("/login")
@@ -88,44 +78,16 @@ public class LoginController {
         return authenticate(loginCredentials.username, loginCredentials.password);
     }
 
-    @GetMapping("/getRole/{token}")
-    public List<String> getRole(@PathVariable("token") String token) {
-        if (token == null) return Collections.emptyList();
-        try {
-            String userName = JWT.require(Algorithm.HMAC256(secret))
-                    .build()
-                    .verify(token.replace(TOKEN_PREFIX, ""))
-                    .getSubject();
-
-            if (userName == null) return Collections.emptyList();
-
-            UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
-            return userDetails.getAuthorities().stream()
-                    .map(grantedAuthority -> grantedAuthority.getAuthority())
-                    .collect(Collectors.toList());
-        } catch (Exception e) {
-            return Collections.emptyList();
-        }
+    @GetMapping("/user/role")
+    public List<String> getRole(HttpServletRequest request) {
+        String token = request.getHeader(TOKEN_HEADER);
+        return userService.getRole(token);
     }
 
-    @GetMapping("/getUserData")
+    @GetMapping("/user/get")
     public UserEditData getUserData(HttpServletRequest request) {
         String token = request.getHeader(TOKEN_HEADER);
-        String userName;
-        if (token == null) throw new InvalidRequestDataException(messageGenerator.get(TOKEN_CAN_NOT_BY_NULL));
-        if (!token.startsWith(TOKEN_PREFIX)) throw new InvalidRequestDataException(messageGenerator.get(WRONG_TOKEN_PREFIX));
-        userName = JWT.require(Algorithm.HMAC256(secret))
-                .build()
-                .verify(token.replace(TOKEN_PREFIX, ""))
-                .getSubject();
-
-        if (userName == null) throw new InvalidRequestDataException(messageGenerator.get(TOKEN_HAVE_TO_CONTAINS_USERNAME));
-
-        UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
-        User user = Optional.ofNullable(userRepository.findByUsername(userDetails.getUsername()))
-                .get()
-                .orElseThrow(() -> new InvalidRequestDataException(messageGenerator.get(USER_FROM_GIVEN_TOKEN_NOT_FOUND)));
-        return mapToUserEditData(user);
+        return userService.getUserData(token);
     }
 
     @PostMapping("/register")
@@ -150,12 +112,11 @@ public class LoginController {
                 .authorities(List.of(UserRole.ROLE_USER))
                 .build());
 
-        verificationLinkService.createVerificationLinkAndSendEmail(VerificationLinkRequest
-                .builder()
-                        .user(user)
-                        .emailSubject(messageGenerator.get(CONFIRM_YOUR_REGISTRATION))
-                        .emailTemplate("email-templates/registration-confirmation")
-                        .targetUrl(VERIFY)
+        verificationLinkService.createVerificationLinkAndSendEmail(VerificationLinkRequest.builder()
+                .user(user)
+                .emailSubject(messageGenerator.get(CONFIRM_YOUR_REGISTRATION))
+                .emailTemplate("email-templates/registration-confirmation")
+                .targetUrl(VERIFY)
                 .build());
         return true;
     }
