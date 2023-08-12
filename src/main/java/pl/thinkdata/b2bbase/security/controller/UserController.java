@@ -7,8 +7,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import pl.thinkdata.b2bbase.security.dto.UserDto;
 import pl.thinkdata.b2bbase.security.dto.UserEditData;
-import pl.thinkdata.b2bbase.security.model.RegisterCredentials;
+import pl.thinkdata.b2bbase.security.dto.RegisterCredentials;
 import pl.thinkdata.b2bbase.security.model.Token;
 import pl.thinkdata.b2bbase.security.service.UserService;
 
@@ -44,6 +45,12 @@ public class UserController {
     @PostMapping("/register")
     public Boolean register(@RequestBody @Valid RegisterCredentials registerCredentials) {
         return userService.register(registerCredentials);
+    }
+
+    @PostMapping("/user/edit")
+    public UserEditData editUserData(@RequestBody @Valid UserDto userDto) {
+
+        return null;
     }
 
     @Getter

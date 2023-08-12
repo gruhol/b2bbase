@@ -1,12 +1,10 @@
-package pl.thinkdata.b2bbase.security.model;
+package pl.thinkdata.b2bbase.security.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Getter;
 import pl.thinkdata.b2bbase.security.validator.PhoneValidation;
 
-@Getter
-public class RegisterCredentials {
+public class UserDto {
     @NotBlank
     private String firstName;
     @NotBlank
@@ -14,10 +12,9 @@ public class RegisterCredentials {
     @NotBlank
     @Email
     private String username;
-    @NotBlank
     private String password;
-    @NotBlank
-    private String repeatPassword;
+    private String newPassword;
+    private String repeatNewPassword;
     @PhoneValidation
     private String phone;
 }

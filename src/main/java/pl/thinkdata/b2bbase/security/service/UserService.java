@@ -18,7 +18,7 @@ import pl.thinkdata.b2bbase.common.tool.LoginDictionary;
 import pl.thinkdata.b2bbase.common.util.MessageGenerator;
 import pl.thinkdata.b2bbase.security.dto.UserEditData;
 import pl.thinkdata.b2bbase.security.model.PrivateUserDetails;
-import pl.thinkdata.b2bbase.security.model.RegisterCredentials;
+import pl.thinkdata.b2bbase.security.dto.RegisterCredentials;
 import pl.thinkdata.b2bbase.security.model.Token;
 import pl.thinkdata.b2bbase.security.model.User;
 import pl.thinkdata.b2bbase.security.model.UserRole;
