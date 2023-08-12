@@ -24,12 +24,11 @@ public class HandleValidationExceptions {
             MethodArgumentNotValidException ex,
             HttpServletRequest request)
     {
-        ValidationExceptionResponse body = ValidationExceptionResponse.builder()
-                .timestamp(ZonedDateTime.now())
-                .status(HttpStatus.BAD_REQUEST.value())
-                .message(error_message)
-                .url(request.getRequestURI())
-                .build();
+        ValidationExceptionResponse body = new ValidationExceptionResponse();
+        body.setTimestamp(ZonedDateTime.now());
+        body.setStatus(HttpStatus.BAD_REQUEST.value());
+        body.setMessage(error_message);
+        body.setUrl(request.getRequestURI());
 
         ex.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError) error).getField();
@@ -45,13 +44,12 @@ public class HandleValidationExceptions {
             ValidationException ex,
             HttpServletRequest request)
     {
-        ValidationExceptionResponse body = ValidationExceptionResponse.builder()
-                .timestamp(ZonedDateTime.now())
-                .status(HttpStatus.BAD_REQUEST.value())
-                .message(ex.getMessage())
-                .fields(ex.getFileds())
-                .url(request.getRequestURI())
-                .build();
+        ValidationExceptionResponse body = new ValidationExceptionResponse();
+        body.setTimestamp(ZonedDateTime.now());
+        body.setStatus(HttpStatus.BAD_REQUEST.value());
+        body.setMessage(ex.getMessage());
+        body.setFields(ex.getFileds());
+        body.setUrl(request.getRequestURI());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
