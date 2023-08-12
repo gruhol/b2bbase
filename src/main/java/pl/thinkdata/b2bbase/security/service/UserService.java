@@ -16,6 +16,7 @@ import pl.thinkdata.b2bbase.common.error.InvalidRequestDataException;
 import pl.thinkdata.b2bbase.common.error.ValidationException;
 import pl.thinkdata.b2bbase.common.tool.LoginDictionary;
 import pl.thinkdata.b2bbase.common.util.MessageGenerator;
+import pl.thinkdata.b2bbase.security.dto.UserDto;
 import pl.thinkdata.b2bbase.security.dto.UserEditData;
 import pl.thinkdata.b2bbase.security.model.PrivateUserDetails;
 import pl.thinkdata.b2bbase.security.dto.RegisterCredentials;
@@ -151,6 +152,15 @@ public class UserService {
                 .withExpiresAt(new Date(System.currentTimeMillis() + expirationTime))
                 .sign(Algorithm.HMAC256(secret));
         return new Token(token);
+    }
+
+    public UserEditData editUserData(UserDto userDto) {
+        return UserEditData.builder()
+                .username(userDto.getUsername())
+                .firstName(userDto.getFirstName())
+                .lastName(userDto.getLastName())
+                .phone(userDto.getPhone())
+                .build();
     }
 
     private String getUsernameFromToken(String token) {

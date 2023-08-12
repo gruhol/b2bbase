@@ -49,12 +49,7 @@ public class UserController {
 
     @PostMapping("/user/edit")
     public UserEditData editUserData(@RequestBody @Valid UserDto userDto) {
-        return UserEditData.builder()
-                .username(userDto.getUsername())
-                .firstName(userDto.getFirstName())
-                .lastName(userDto.getLastName())
-                .phone(userDto.getPhone())
-                .build();
+        return userService.editUserData(userDto);
     }
 
     @Getter
