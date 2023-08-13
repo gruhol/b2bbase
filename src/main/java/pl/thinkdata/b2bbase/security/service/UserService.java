@@ -16,10 +16,10 @@ import pl.thinkdata.b2bbase.common.error.InvalidRequestDataException;
 import pl.thinkdata.b2bbase.common.error.ValidationException;
 import pl.thinkdata.b2bbase.common.tool.LoginDictionary;
 import pl.thinkdata.b2bbase.common.util.MessageGenerator;
+import pl.thinkdata.b2bbase.security.dto.RegisterCredentials;
 import pl.thinkdata.b2bbase.security.dto.UserDto;
 import pl.thinkdata.b2bbase.security.dto.UserEditData;
 import pl.thinkdata.b2bbase.security.model.PrivateUserDetails;
-import pl.thinkdata.b2bbase.security.dto.RegisterCredentials;
 import pl.thinkdata.b2bbase.security.model.Token;
 import pl.thinkdata.b2bbase.security.model.User;
 import pl.thinkdata.b2bbase.security.model.UserRole;
@@ -36,6 +36,9 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.AUTHORIZATION_FAILED;
+import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.ONE_PASSWORD_FIELD_HAS_NOT_BEEN_COMPLETED;
+import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.THE_CURRENT_PASSWORD_ENTERED_IS_INCORRECT;
+import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.THE_NEW_PASSWORDS_ARE_NOT_IDENTICAL;
 import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.TOKEN_CAN_NOT_BY_NULL;
 import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.TOKEN_HAVE_TO_CONTAINS_USERNAME;
 import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.USER_FROM_GIVEN_TOKEN_NOT_FOUND;
@@ -89,11 +92,7 @@ public class UserService {
     }
 
     public UserEditData getUserData(String token) {
-        if (isNull(token)) throw new InvalidRequestDataException(messageGenerator.get(TOKEN_CAN_NOT_BY_NULL));
-        if (!token.startsWith(TOKEN_PREFIX)) throw new InvalidRequestDataException(messageGenerator.get(WRONG_TOKEN_PREFIX));
-
-        String userName = getUsernameFromToken(token);
-        if (isNull(userName)) throw new InvalidRequestDataException(messageGenerator.get(TOKEN_HAVE_TO_CONTAINS_USERNAME));
+        String userName = validTokenAndGetUsername(token);
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
         User user = Optional.ofNullable(userRepository.findByUsername(userDetails.getUsername()))
@@ -154,17 +153,55 @@ public class UserService {
         return new Token(token);
     }
 
-    public UserEditData editUserData(UserDto userDto) {
-        return UserEditData.builder()
-                .username(userDto.getUsername())
-                .firstName(userDto.getFirstName())
-                .lastName(userDto.getLastName())
-                .phone(userDto.getPhone())
-                .build();
+    public UserEditData editUserData(UserDto userDto, String token) {
+        String username = validTokenAndGetUsername(token);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        User userBackend = Optional.ofNullable(userRepository.findByUsername(userDetails.getUsername())).get()
+                .orElseThrow(() -> new InvalidRequestDataException(messageGenerator.get(USER_FROM_GIVEN_TOKEN_NOT_FOUND)));
+
+        if (!userBackend.getUsername().equals(userDetails.getUsername())) throw new AuthorizationException(messageGenerator.get(AUTHORIZATION_FAILED));
+
+        userBackend.setFirstname(userDto.getFirstName());
+        userBackend.setLastname(userDto.getLastName());
+        userBackend.setPhone(userDto.getPhone());
+
+        if (passwordsIsNotEmpty(userDto)) {
+            String sendPassword = "{bcrypt}" + new BCryptPasswordEncoder().encode(userDto.getPassword());
+            if (!sendPassword.equals(userBackend.getPassword())) throw new AuthorizationException(THE_CURRENT_PASSWORD_ENTERED_IS_INCORRECT);
+            if (!userDto.getNewPassword().equals(userDto.getRepeatNewPassword())) throw new AuthorizationException(THE_NEW_PASSWORDS_ARE_NOT_IDENTICAL);
+
+            userBackend.setPassword(sendPassword);
+        } else if(onePasswordIsNotEmpty(userDto)) {
+            throw new AuthorizationException(messageGenerator.get(ONE_PASSWORD_FIELD_HAS_NOT_BEEN_COMPLETED));
+        }
+        return mapToUserEditData(userRepository.save(userBackend));
+    }
+
+    private boolean passwordsIsNotEmpty(UserDto userDto) {
+        return !userDto.getPassword().isBlank()
+               && !userDto.getNewPassword().isBlank()
+               && !userDto.getRepeatNewPassword().isBlank();
+    }
+
+    private boolean onePasswordIsNotEmpty(UserDto userDto) {
+        return !userDto.getPassword().isBlank()
+               || !userDto.getNewPassword().isBlank()
+               || !userDto.getRepeatNewPassword().isBlank();
+    }
+
+    private String validTokenAndGetUsername(String token) {
+        if (isNull(token)) throw new InvalidRequestDataException(messageGenerator.get(TOKEN_CAN_NOT_BY_NULL));
+        if (!token.startsWith(TOKEN_PREFIX)) throw new InvalidRequestDataException(messageGenerator.get(WRONG_TOKEN_PREFIX));
+        String userName =  JWT.require(Algorithm.HMAC256(secret))
+                .build()
+                .verify(token.replace(TOKEN_PREFIX, ""))
+                .getSubject();
+        if (isNull(userName)) throw new InvalidRequestDataException(messageGenerator.get(TOKEN_HAVE_TO_CONTAINS_USERNAME));
+        return userName;
     }
 
     private String getUsernameFromToken(String token) {
-        return JWT.require(Algorithm.HMAC256(secret))
+        return  JWT.require(Algorithm.HMAC256(secret))
                 .build()
                 .verify(token.replace(TOKEN_PREFIX, ""))
                 .getSubject();

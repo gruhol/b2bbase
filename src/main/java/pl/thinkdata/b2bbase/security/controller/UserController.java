@@ -48,8 +48,9 @@ public class UserController {
     }
 
     @PostMapping("/user/edit")
-    public UserEditData editUserData(@RequestBody @Valid UserDto userDto) {
-        return userService.editUserData(userDto);
+    public UserEditData editUserData(@RequestBody @Valid UserDto userDto, HttpServletRequest request) {
+        String token = request.getHeader(TOKEN_HEADER);
+        return userService.editUserData(userDto,token);
     }
 
     @Getter
