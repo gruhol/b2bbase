@@ -159,18 +159,20 @@ public class UserService {
         User userBackend = Optional.ofNullable(userRepository.findByUsername(userDetails.getUsername())).get()
                 .orElseThrow(() -> new InvalidRequestDataException(messageGenerator.get(USER_FROM_GIVEN_TOKEN_NOT_FOUND)));
 
-        if (!userBackend.getUsername().equals(userDetails.getUsername())) throw new AuthorizationException(messageGenerator.get(AUTHORIZATION_FAILED));
+        if (!userBackend.getUsername().equals(userDetails.getUsername()))
+            throw new AuthorizationException(messageGenerator.get(AUTHORIZATION_FAILED));
 
         userBackend.setFirstname(userDto.getFirstName());
         userBackend.setLastname(userDto.getLastName());
         userBackend.setPhone(userDto.getPhone());
 
         if (passwordsIsNotEmpty(userDto)) {
-            String sendPassword = "{bcrypt}" + new BCryptPasswordEncoder().encode(userDto.getPassword());
-            if (!sendPassword.equals(userBackend.getPassword())) throw new AuthorizationException(THE_CURRENT_PASSWORD_ENTERED_IS_INCORRECT);
-            if (!userDto.getNewPassword().equals(userDto.getRepeatNewPassword())) throw new AuthorizationException(THE_NEW_PASSWORDS_ARE_NOT_IDENTICAL);
+            if (!passwordMatch(userBackend.getId(), userDto.getPassword()))
+                throw new AuthorizationException(messageGenerator.get(THE_CURRENT_PASSWORD_ENTERED_IS_INCORRECT));
+            if (!userDto.getNewPassword().equals(userDto.getRepeatNewPassword()))
+                throw new AuthorizationException(messageGenerator.get(THE_NEW_PASSWORDS_ARE_NOT_IDENTICAL));
 
-            userBackend.setPassword(sendPassword);
+            userBackend.setPassword("{bcrypt}" + new BCryptPasswordEncoder().encode(userDto.getNewPassword()));
         } else if(onePasswordIsNotEmpty(userDto)) {
             throw new AuthorizationException(messageGenerator.get(ONE_PASSWORD_FIELD_HAS_NOT_BEEN_COMPLETED));
         }
@@ -205,5 +207,17 @@ public class UserService {
                 .build()
                 .verify(token.replace(TOKEN_PREFIX, ""))
                 .getSubject();
+    }
+
+    private boolean passwordMatch(Long id, String password) {
+        PrivateUserDetails principal = null;
+        try {
+            Authentication authenticate = authenticationManager
+                    .authenticate(new UsernamePasswordAuthenticationToken(id, password));
+            principal = (PrivateUserDetails) authenticate.getPrincipal();
+            return true;
+        } catch (Exception exception) {
+            return false;
+        }
     }
 }
