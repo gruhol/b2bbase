@@ -2,14 +2,12 @@ package pl.thinkdata.b2bbase.security.service;
 
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import pl.thinkdata.b2bbase.common.error.InvalidRequestDataException;
@@ -20,24 +18,29 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
+@ImportAutoConfiguration(ReloadableResourceBundleMessageSource.class)
 class UserServiceTest {
 
+    @Inject
     private UserService userService;
 
     @BeforeEach
     void init(@Mock UserDetailsService userDetailsService,
               @Mock UserRepository userRepository,
-              @Mock MessageGenerator messageGenerator,
               @Mock VerificationLinkService verificationLinkService,
               @Mock AuthenticationManager authenticationManager) {
 
+        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+        messageSource.setDefaultEncoding("UTF-8");
+        messageSource.setCacheSeconds(-1);
+        messageSource.setBasenames("classpath:i18n/messages");
 
         this.userService = new UserService(
                 "secret",
                 2592000000L,
                 userDetailsService,
                 userRepository,
-                messageGenerator,
+                new MessageGenerator(messageSource),
                 verificationLinkService,
                 authenticationManager);
     }
@@ -48,7 +51,6 @@ class UserServiceTest {
     }
 
     @Test
-    @Disabled
     void shouldThrowInvalidRequestDataException2() {
         Exception exception = assertThrows(InvalidRequestDataException.class, () -> userService.getUserData(null));
         assertEquals("Token musi zawierać wartość", exception.getMessage());
