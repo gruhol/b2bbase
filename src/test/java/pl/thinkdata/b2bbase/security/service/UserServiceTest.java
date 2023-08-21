@@ -8,14 +8,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import pl.thinkdata.b2bbase.common.error.InvalidRequestDataException;
+import pl.thinkdata.b2bbase.common.error.ValidationException;
 import pl.thinkdata.b2bbase.common.util.MessageGenerator;
+import pl.thinkdata.b2bbase.security.dto.RegisterCredentials;
 import pl.thinkdata.b2bbase.security.dto.UserEditData;
 import pl.thinkdata.b2bbase.security.model.PrivateUserDetails;
 import pl.thinkdata.b2bbase.security.model.User;
@@ -29,16 +31,17 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@ImportAutoConfiguration(ReloadableResourceBundleMessageSource.class)
 class UserServiceTest {
 
     @Inject
     private UserService userService;
     @Mock
     private UserDetailsService userDetailsService;
+    @Mock
+    private VerificationLinkService verificationLinkService;
     @Mock
     private UserRepository userRepository;
     private static final long expirationTime = 2592000000L;
@@ -55,8 +58,7 @@ class UserServiceTest {
             .sign(Algorithm.HMAC256(SECRET));
 
     @BeforeEach
-    void init(@Mock VerificationLinkService verificationLinkService,
-              @Mock AuthenticationManager authenticationManager) {
+    void init(@Mock AuthenticationManager authenticationManager) {
 
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setDefaultEncoding("UTF-8");
@@ -69,7 +71,7 @@ class UserServiceTest {
                 this.userDetailsService,
                 this.userRepository,
                 new MessageGenerator(messageSource),
-                verificationLinkService,
+                this.verificationLinkService,
                 authenticationManager);
     }
 
@@ -115,6 +117,94 @@ class UserServiceTest {
         assertEquals("jan.kowalski@test.com", response.getUsername());
     }
 
+    @Test
+    void shouldReturnEmptyList() {
+        //when
+        List<String> resultList = userService.getRole(tempTokenWithoutUsername);
+        List<String> resultListFormNullToken = userService.getRole(null);
+        //then
+        assertEquals(0, resultList.size());
+        assertEquals(0, resultListFormNullToken.size());
+    }
+
+    @Test
+    void shouldReturnUserRole() {
+        //when
+        when(userDetailsService.loadUserByUsername(any())).thenReturn(createTempUserDetails());
+        List<String> resultList = userService.getRole(tempTokenWithUsername);
+        //then
+        assertEquals(1, resultList.size());
+        assertEquals("TEST_ROLE", resultList.get(0));
+    }
+
+    @Test
+    void shouldReturnEmptyListWhenThrowUsernameNotFoundException() {
+        //when
+        when(userDetailsService.loadUserByUsername(any())).thenThrow(new UsernameNotFoundException("Test"));
+        List<String> resultList = userService.getRole(tempTokenWithUsername);
+        assertEquals(0, resultList.size());
+    }
+
+    @Test
+    void shouldThrowValidationExceptionThenPasswordsIsNotTheSame() {
+        //given
+        RegisterCredentials registerCredentials = createTempRegisterCredentialsWithWrongPassword();
+        //when
+        ValidationException exception = assertThrows(ValidationException.class, () -> userService.register(registerCredentials));
+        //then
+        assertEquals(2, exception.getFileds().size());
+        assertEquals("Hasła muszą być identyczne", exception.getFileds().get("password"));
+        assertEquals("Hasła muszą być identyczne", exception.getFileds().get("repeatPassword"));
+    }
+
+    @Test
+    void shouldThrowValidationExceptionThenUserIsInDataBase() {
+        //given
+        RegisterCredentials registerCredentials = createTempRegisterCredentials();
+        //when
+        when(userRepository.existsByUsername(any())).thenReturn(true);
+        ValidationException exception = assertThrows(ValidationException.class, () -> userService.register(registerCredentials));
+        assertEquals(1, exception.getFileds().size());
+        assertEquals("Użytkownik o takim email już istnieje w bazie", exception.getFileds().get("username"));
+    }
+
+    @Test
+    void shouldReturnTrueWhenRegisterUser() {
+        //given
+        RegisterCredentials registerCredentials = createTempRegisterCredentials();
+        //when
+        boolean result = userService.register(registerCredentials);
+        //then
+        verify(userRepository, times(1)).save(any());
+        verify(userRepository, times(1)).existsByUsername(any());
+        verify(verificationLinkService, times(1)).createVerificationLinkAndSendEmail(any());
+        verify(verificationLinkService, times(1)).createVerificationLinkAndSendEmail(any());
+        assertEquals(true, result);
+    }
+
+    private static RegisterCredentials createTempRegisterCredentialsWithWrongPassword() {
+        return RegisterCredentials.builder()
+                .firstName("Jan")
+                .lastName("Kowalski")
+                .username("kowalski@test.pl")
+                .password("password")
+                .repeatPassword("password1")
+                .phone("123456789")
+                .build();
+    }
+
+    private static RegisterCredentials createTempRegisterCredentials() {
+        return RegisterCredentials.builder()
+                .firstName("Jan")
+                .lastName("Kowalski")
+                .username("kowalski@test.pl")
+                .password("password")
+                .repeatPassword("password")
+                .phone("123456789")
+                .build();
+    }
+
+
     private User createTempUser() {
         return User.builder()
                 .firstname("Jan")
@@ -127,6 +217,8 @@ class UserServiceTest {
 
     private PrivateUserDetails createTempUserDetails() {
         List<GrantedAuthority> authorityList = new ArrayList<>();
+        GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("TEST_ROLE");
+        authorityList.add(grantedAuthority);
         PrivateUserDetails privateUserDetails = new PrivateUserDetails("Jon", "Doe", authorityList);
         privateUserDetails.setId(2L);
         return privateUserDetails;
