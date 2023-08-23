@@ -27,6 +27,13 @@ public class CompanyController {
 
     @PostMapping
     public Company addCompany(@RequestBody @Valid CompanyDto companyDto) {
+        //validate companyDto
+        //check is company exist by nip
+        //add company to database
+        //add user to company like admin
+        //if successful redirect to edit company
         return companyService.addCompany(companyDto);
     }
+
+
 }
