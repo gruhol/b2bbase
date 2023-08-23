@@ -10,14 +10,17 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import pl.thinkdata.b2bbase.common.error.AuthorizationException;
 import pl.thinkdata.b2bbase.common.error.InvalidRequestDataException;
 import pl.thinkdata.b2bbase.common.error.ValidationException;
 import pl.thinkdata.b2bbase.common.util.MessageGenerator;
 import pl.thinkdata.b2bbase.security.dto.RegisterCredentials;
+import pl.thinkdata.b2bbase.security.dto.UserDto;
 import pl.thinkdata.b2bbase.security.dto.UserEditData;
 import pl.thinkdata.b2bbase.security.model.PrivateUserDetails;
 import pl.thinkdata.b2bbase.security.model.User;
@@ -31,7 +34,9 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -44,6 +49,9 @@ class UserServiceTest {
     private VerificationLinkService verificationLinkService;
     @Mock
     private UserRepository userRepository;
+    @Mock
+    AuthenticationManager authenticationManager;
+
     private static final long expirationTime = 2592000000L;
     private static final String SECRET = "secret";
     private static final String TOKEN_PREFIX = "Bearer ";
@@ -58,7 +66,7 @@ class UserServiceTest {
             .sign(Algorithm.HMAC256(SECRET));
 
     @BeforeEach
-    void init(@Mock AuthenticationManager authenticationManager) {
+    void init() {
 
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setDefaultEncoding("UTF-8");
@@ -72,7 +80,7 @@ class UserServiceTest {
                 this.userRepository,
                 new MessageGenerator(messageSource),
                 this.verificationLinkService,
-                authenticationManager);
+                this.authenticationManager);
     }
 
     @Test
@@ -182,6 +190,89 @@ class UserServiceTest {
         assertEquals(true, result);
     }
 
+    @Test
+    void shouldThrowInvalidRequestDataExceptionWhenTokenNotHaveUsername() {
+        PrivateUserDetails tempUserDetails = createTempUserDetails();
+        when(userRepository.findByUsername(any())).thenReturn(Optional.empty());
+        when(userDetailsService.loadUserByUsername(any())).thenReturn(tempUserDetails);
+        InvalidRequestDataException exception = assertThrows(InvalidRequestDataException.class, () -> userService.editUserData(new UserDto(), tempTokenWithUsername));
+        assertEquals("Nie znaleziono użytkownika z podanego tokena.", exception.getMessage());
+    }
+
+    @Test
+    void shouldThrowAuthorizationExceptionWhenTokenFormTokenIsNotTheSameLikeInDatabase() {
+        PrivateUserDetails tempUserDetails = createTempUserDetails();
+        when(userDetailsService.loadUserByUsername(any())).thenReturn(tempUserDetails);
+        when(userRepository.findByUsername(any())).thenReturn(Optional.of(createTempUser()));
+
+        AuthorizationException exception = assertThrows(AuthorizationException.class, () -> userService.editUserData(new UserDto(), tempTokenWithUsername));
+        assertEquals("Nieudane logowanie. Błędny login lub hasło.", exception.getMessage());
+    }
+
+    @Test
+    void shouldThrowAuthorizationExceptionWhenOnePasswordsIsEmpty() {
+        UserDto userDto = new UserDto();
+        userDto.setPassword("123456");
+        userDto.setNewPassword("");
+        userDto.setRepeatNewPassword("123456");
+
+        PrivateUserDetails tempUserDetails = createTempUserDetailsWithTheSameUsername();
+        when(userDetailsService.loadUserByUsername(any())).thenReturn(tempUserDetails);
+        when(userRepository.findByUsername(any())).thenReturn(Optional.of(createTempUser()));
+
+        AuthorizationException exception = assertThrows(AuthorizationException.class, () -> userService.editUserData(userDto, tempTokenWithUsername));
+        assertEquals("Jedno pole hasła nie zostało uzupełnione.", exception.getMessage());
+    }
+
+    @Test
+    void shouldThrowAuthorizationExceptionWhenNewPasswordsAndRepeatNewPasswordIsNotTheSame() {
+        UserDto userDto = new UserDto();
+        userDto.setPassword("123456");
+        userDto.setNewPassword("1234562");
+        userDto.setRepeatNewPassword("1234563");
+
+        PrivateUserDetails tempUserDetails = createTempUserDetailsWithTheSameUsername();
+        when(userDetailsService.loadUserByUsername(any())).thenReturn(tempUserDetails);
+        when(userRepository.findByUsername(any())).thenReturn(Optional.of(createTempUser()));
+        when(authenticationManager.authenticate(any())).thenReturn(new UsernamePasswordAuthenticationToken(createTempUserDetails(), new Object()));
+        AuthorizationException exception = assertThrows(AuthorizationException.class, () -> userService.editUserData(userDto, tempTokenWithUsername));
+        assertEquals("Nowe hasła nie są identyczne.", exception.getMessage());
+    }
+
+    @Test
+    void shouldThrowAuthorizationExceptionWhenPasswordsIsNotCorrect() {
+        UserDto userDto = new UserDto();
+        userDto.setPassword("123456");
+        userDto.setNewPassword("1234563");
+        userDto.setRepeatNewPassword("1234563");
+
+        PrivateUserDetails tempUserDetails = createTempUserDetailsWithTheSameUsername();
+        when(userDetailsService.loadUserByUsername(any())).thenReturn(tempUserDetails);
+        when(userRepository.findByUsername(any())).thenReturn(Optional.of(createTempUser()));
+        when(authenticationManager.authenticate(any())).thenReturn(null);
+        AuthorizationException exception = assertThrows(AuthorizationException.class, () -> userService.editUserData(userDto, tempTokenWithUsername));
+        assertEquals("Wprowadzone obecne hasło jest nieprawidłowe.", exception.getMessage());
+    }
+
+    @Test
+    void shouldReturnUserEditData() {
+        UserDto userDto = new UserDto();
+        userDto.setPassword("123456");
+        userDto.setNewPassword("1234563");
+        userDto.setRepeatNewPassword("1234563");
+
+        PrivateUserDetails tempUserDetails = createTempUserDetailsWithTheSameUsername();
+        when(userDetailsService.loadUserByUsername(any())).thenReturn(tempUserDetails);
+        when(userRepository.findByUsername(any())).thenReturn(Optional.of(createTempUser()));
+        when(authenticationManager.authenticate(any())).thenReturn(new UsernamePasswordAuthenticationToken(createTempUserDetails(), new Object()));
+        when(userRepository.save(any())).thenReturn(createTempUser());
+        UserEditData response = userService.editUserData(userDto, tempTokenWithUsername);
+        assertEquals("Jan", response.getFirstName());
+        assertEquals("Kowalski", response.getLastName());
+        assertEquals("666777888", response.getPhone());
+        assertEquals("jan.kowalski@test.com", response.getUsername());
+    }
+
     private static RegisterCredentials createTempRegisterCredentialsWithWrongPassword() {
         return RegisterCredentials.builder()
                 .firstName("Jan")
@@ -220,6 +311,15 @@ class UserServiceTest {
         GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("TEST_ROLE");
         authorityList.add(grantedAuthority);
         PrivateUserDetails privateUserDetails = new PrivateUserDetails("Jon", "Doe", authorityList);
+        privateUserDetails.setId(2L);
+        return privateUserDetails;
+    }
+
+    private PrivateUserDetails createTempUserDetailsWithTheSameUsername() {
+        List<GrantedAuthority> authorityList = new ArrayList<>();
+        GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("TEST_ROLE");
+        authorityList.add(grantedAuthority);
+        PrivateUserDetails privateUserDetails = new PrivateUserDetails("jan.kowalski@test.com", "Doe", authorityList);
         privateUserDetails.setId(2L);
         return privateUserDetails;
     }
