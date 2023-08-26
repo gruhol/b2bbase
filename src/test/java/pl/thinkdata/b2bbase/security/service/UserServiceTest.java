@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import pl.thinkdata.b2bbase.common.error.AuthorizationException;
 import pl.thinkdata.b2bbase.common.error.InvalidRequestDataException;
 import pl.thinkdata.b2bbase.common.error.ValidationException;
+import pl.thinkdata.b2bbase.common.util.TokenUtil;
 import pl.thinkdata.b2bbase.common.util.MessageGenerator;
 import pl.thinkdata.b2bbase.security.dto.RegisterCredentials;
 import pl.thinkdata.b2bbase.security.dto.UserDto;
@@ -34,9 +35,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -73,6 +72,8 @@ class UserServiceTest {
         messageSource.setCacheSeconds(-1);
         messageSource.setBasenames("classpath:i18n/messages");
 
+        TokenUtil tokenUtil1 = new TokenUtil(SECRET, new MessageGenerator(messageSource));
+
         this.userService = new UserService(
                 SECRET,
                 expirationTime,
@@ -80,7 +81,8 @@ class UserServiceTest {
                 this.userRepository,
                 new MessageGenerator(messageSource),
                 this.verificationLinkService,
-                this.authenticationManager);
+                this.authenticationManager,
+                tokenUtil1);
     }
 
     @Test

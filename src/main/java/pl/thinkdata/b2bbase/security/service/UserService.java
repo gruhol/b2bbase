@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import pl.thinkdata.b2bbase.common.error.AuthorizationException;
 import pl.thinkdata.b2bbase.common.error.InvalidRequestDataException;
 import pl.thinkdata.b2bbase.common.error.ValidationException;
+import pl.thinkdata.b2bbase.common.util.TokenUtil;
 import pl.thinkdata.b2bbase.common.tool.LoginDictionary;
 import pl.thinkdata.b2bbase.common.util.MessageGenerator;
 import pl.thinkdata.b2bbase.security.dto.RegisterCredentials;
@@ -39,11 +40,8 @@ import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.AUTHORIZATION_FAI
 import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.ONE_PASSWORD_FIELD_HAS_NOT_BEEN_COMPLETED;
 import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.THE_CURRENT_PASSWORD_ENTERED_IS_INCORRECT;
 import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.THE_NEW_PASSWORDS_ARE_NOT_IDENTICAL;
-import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.TOKEN_CAN_NOT_BY_NULL;
-import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.TOKEN_HAVE_TO_CONTAINS_USERNAME;
 import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.USER_FROM_GIVEN_TOKEN_NOT_FOUND;
 import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.USER_IS_NOT_ACTIVATED;
-import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.WRONG_TOKEN_PREFIX;
 import static pl.thinkdata.b2bbase.security.mapper.UserMapper.mapToUserEditData;
 
 @Service
@@ -60,6 +58,7 @@ public class UserService {
     private final MessageGenerator messageGenerator;
     private final VerificationLinkService verificationLinkService;
     private final AuthenticationManager authenticationManager;
+    private final TokenUtil tokenUtil;
 
     public UserService(@Value("${jwt.secret}") String secret,
                        @Value("${jwt.expirationTime}") long expirationTime,
@@ -67,7 +66,7 @@ public class UserService {
                        UserRepository userRepository,
                        MessageGenerator messageGenerator,
                        VerificationLinkService verificationLinkService,
-                       AuthenticationManager authenticationManager) {
+                       AuthenticationManager authenticationManager, TokenUtil tokenUtil) {
         this.secret = secret;
         this.expirationTime = expirationTime;
         this.userDetailsService = userDetailsService;
@@ -75,6 +74,7 @@ public class UserService {
         this.messageGenerator = messageGenerator;
         this.verificationLinkService = verificationLinkService;
         this.authenticationManager = authenticationManager;
+        this.tokenUtil = tokenUtil;
     }
 
     public List<String> getRole(String token) {
@@ -92,7 +92,7 @@ public class UserService {
     }
 
     public UserEditData getUserData(String token) {
-        String userName = validTokenAndGetUsername(token);
+        String userName = tokenUtil.validTokenAndGetUsername(token);
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
         User user = Optional.ofNullable(userRepository.findByUsername(userDetails.getUsername()))
@@ -154,7 +154,7 @@ public class UserService {
     }
 
     public UserEditData editUserData(UserDto userDto, String token) {
-        String username = validTokenAndGetUsername(token);
+        String username = tokenUtil.validTokenAndGetUsername(token);
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         User userBackend = Optional.ofNullable(userRepository.findByUsername(userDetails.getUsername())).get()
                 .orElseThrow(() -> new InvalidRequestDataException(messageGenerator.get(USER_FROM_GIVEN_TOKEN_NOT_FOUND)));
@@ -189,17 +189,6 @@ public class UserService {
         return !userDto.getPassword().isBlank()
                || !userDto.getNewPassword().isBlank()
                || !userDto.getRepeatNewPassword().isBlank();
-    }
-
-    private String validTokenAndGetUsername(String token) {
-        if (isNull(token)) throw new InvalidRequestDataException(messageGenerator.get(TOKEN_CAN_NOT_BY_NULL));
-        if (!token.startsWith(TOKEN_PREFIX)) throw new InvalidRequestDataException(messageGenerator.get(WRONG_TOKEN_PREFIX));
-        String userName =  JWT.require(Algorithm.HMAC256(secret))
-                .build()
-                .verify(token.replace(TOKEN_PREFIX, ""))
-                .getSubject();
-        if (isNull(userName)) throw new InvalidRequestDataException(messageGenerator.get(TOKEN_HAVE_TO_CONTAINS_USERNAME));
-        return userName;
     }
 
     private String getUsernameFromToken(String token) {

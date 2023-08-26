@@ -1,13 +1,11 @@
 package pl.thinkdata.b2bbase.company.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.thinkdata.b2bbase.company.dto.CompanyDto;
+import pl.thinkdata.b2bbase.company.dto.CompanyResponse;
 import pl.thinkdata.b2bbase.company.model.Company;
 import pl.thinkdata.b2bbase.company.service.CompanyService;
 
@@ -20,19 +18,15 @@ public class CompanyController {
 
     private final CompanyService companyService;
 
+
     @GetMapping
     public List<Company> getCompanies() {
         return companyService.getCompanies();
     }
 
-    @PostMapping
-    public Company addCompany(@RequestBody @Valid CompanyDto companyDto) {
-        //validate companyDto
-        //check is company exist by nip
-        //add company to database
-        //add user to company like admin
-        //if successful redirect to edit company
-        return companyService.addCompany(companyDto);
+    @PostMapping("/add")
+    public CompanyResponse addCompany(@RequestBody @Valid CompanyDto companyDto, HttpServletRequest request) {
+        return companyService.addCompany(companyDto, request);
     }
 
 
