@@ -20,7 +20,7 @@ public class Company {
     private String name;
     private String slug;
     @Enumerated(EnumType.STRING)
-    private ComapnyType type;
+    private CompanyType type;
     @Enumerated(EnumType.STRING)
     private LegalForm legalForm;
     private String nip;

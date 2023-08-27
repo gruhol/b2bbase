@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import pl.thinkdata.b2bbase.company.model.Branch;
-import pl.thinkdata.b2bbase.company.model.ComapnyType;
+import pl.thinkdata.b2bbase.company.model.CompanyType;
 import pl.thinkdata.b2bbase.company.model.LegalForm;
 
 import java.util.List;
@@ -17,7 +17,7 @@ public class CompanyResponse {
 
     private String name;
     private String slug;
-    private ComapnyType type;
+    private CompanyType type;
     private LegalForm legalForm;
     private String nip;
     private String regon;

@@ -1,12 +1,16 @@
 package pl.thinkdata.b2bbase.company.model;
 
-public enum ComapnyType {
+public enum CompanyType {
     CUSTOMER("Customer"),
     WHOLESALER("WholeSaler");
 
     private String value;
 
-    ComapnyType(String value) {
+    CompanyType(String value) {
         this.value = value;
+    }
+
+    public static CompanyType[] getCompanyTypes() {
+        return CompanyType.values();
     }
 }

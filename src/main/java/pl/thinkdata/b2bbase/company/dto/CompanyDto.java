@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.URL;
 import org.hibernate.validator.constraints.pl.NIP;
-import pl.thinkdata.b2bbase.company.model.ComapnyType;
+import pl.thinkdata.b2bbase.company.model.CompanyType;
 import pl.thinkdata.b2bbase.company.model.LegalForm;
 
 @Getter
@@ -17,7 +17,7 @@ public class CompanyDto {
     @NotBlank
     private String slug;
     @NotNull
-    private ComapnyType type;
+    private CompanyType type;
     @NotNull
     private LegalForm legalForm;
     @NotBlank
