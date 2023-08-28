@@ -24,8 +24,7 @@ import java.util.stream.Collectors;
 public class VerificationLinkService {
 
     private final VerificationLinkRepository verificationLinkRepository;
-    @Autowired
-    private MyEmailService myEmailService;
+    private final MyEmailService myEmailService;
     private final TemplateEngine templateEngine;
     private final HttpServletRequest request;
 
