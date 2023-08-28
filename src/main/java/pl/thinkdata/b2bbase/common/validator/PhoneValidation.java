@@ -1,4 +1,4 @@
-package pl.thinkdata.b2bbase.security.validator;
+package pl.thinkdata.b2bbase.common.validator;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;

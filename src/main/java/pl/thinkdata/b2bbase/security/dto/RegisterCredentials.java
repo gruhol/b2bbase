@@ -3,7 +3,7 @@ package pl.thinkdata.b2bbase.security.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-import pl.thinkdata.b2bbase.security.validator.PhoneValidation;
+import pl.thinkdata.b2bbase.common.validator.PhoneValidation;
 
 @Getter
 @Builder

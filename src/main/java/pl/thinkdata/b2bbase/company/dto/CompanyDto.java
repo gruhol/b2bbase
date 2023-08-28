@@ -1,5 +1,6 @@
 package pl.thinkdata.b2bbase.company.dto;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -8,6 +9,7 @@ import org.hibernate.validator.constraints.URL;
 import org.hibernate.validator.constraints.pl.NIP;
 import pl.thinkdata.b2bbase.company.model.CompanyType;
 import pl.thinkdata.b2bbase.company.model.LegalForm;
+import pl.thinkdata.b2bbase.common.validator.PhoneValidation;
 
 @Getter
 @Setter
@@ -27,8 +29,10 @@ public class CompanyDto {
     private String regon;
     private String krs;
     @NotBlank
+    @Email
     private String email;
     @NotBlank
+    @PhoneValidation
     private String phone;
     @URL
     private String wwwSite;

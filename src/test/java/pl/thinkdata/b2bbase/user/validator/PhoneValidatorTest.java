@@ -4,7 +4,7 @@ import jakarta.validation.ConstraintValidatorContext;
 import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import pl.thinkdata.b2bbase.security.validator.PhoneValidator;
+import pl.thinkdata.b2bbase.common.validator.PhoneValidator;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
