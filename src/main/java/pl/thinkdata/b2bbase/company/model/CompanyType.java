@@ -2,7 +2,8 @@ package pl.thinkdata.b2bbase.company.model;
 
 public enum CompanyType {
     CUSTOMER("Customer"),
-    WHOLESALER("WholeSaler");
+    WHOLESALER("WholeSaler"),
+    BOTH("Both");
 
     private String value;
 

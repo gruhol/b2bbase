@@ -9,7 +9,6 @@ public class CompanyMapper {
     public static Company mapToCompany(CompanyDto companyDto) {
         return Company.builder()
                 .name(companyDto.getName())
-                .slug(companyDto.getSlug())
                 .type(companyDto.getType())
                 .legalForm(companyDto.getLegalForm())
                 .nip(companyDto.getNip())

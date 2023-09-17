@@ -16,8 +16,6 @@ import pl.thinkdata.b2bbase.common.validator.PhoneValidation;
 public class CompanyDto {
     @NotBlank
     private String name;
-    @NotBlank
-    private String slug;
     @NotNull
     private CompanyType type;
     @NotNull
