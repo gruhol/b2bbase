@@ -10,6 +10,7 @@ import pl.thinkdata.b2bbase.common.util.MessageGenerator;
 import pl.thinkdata.b2bbase.common.util.TokenUtil;
 import pl.thinkdata.b2bbase.company.dto.CompanyDto;
 import pl.thinkdata.b2bbase.company.dto.CompanyResponse;
+import pl.thinkdata.b2bbase.company.dto.CompanyToEdit;
 import pl.thinkdata.b2bbase.company.mapper.CompanyMapper;
 import pl.thinkdata.b2bbase.company.model.Company;
 import pl.thinkdata.b2bbase.company.model.CompanyRole;
@@ -24,7 +25,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.USER_FROM_GIVEN_TOKEN_NOT_FOUND;
+import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.YOU_DONT_OWN_ANY_COMPANIES;
 import static pl.thinkdata.b2bbase.company.mapper.CompanyMapper.mapToCompanyResponse;
+import static pl.thinkdata.b2bbase.company.mapper.CompanyMapper.mapToCompanyToEdit;
 
 @Service
 @RequiredArgsConstructor
@@ -55,9 +58,9 @@ public class CompanyService {
 
         Company newCompany = companyRepository.save(CompanyMapper.mapToCompany(companyDto));
         UserRole2Company userRole2Company = UserRole2Company.builder()
-                .company_id(newCompany.getId())
+                .company(newCompany)
                 .role(CompanyRole.ADMIN)
-                .user_id(user.getId())
+                .user(user)
                 .build();
         userRole2CompanyRepository.save(userRole2Company);
         return mapToCompanyResponse(newCompany);
@@ -70,4 +73,20 @@ public class CompanyService {
     public boolean findByRegon(String regon) {
         return companyRepository.findByRegon(regon).isPresent();
     }
+
+    public CompanyToEdit getCompany(HttpServletRequest request) {
+        String token = request.getHeader(TOKEN_HEADER);
+        String username = tokenUtil.validTokenAndGetUsername(token);
+
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        User user = Optional.ofNullable(userRepository.findByUsername(userDetails.getUsername())).get()
+                .orElseThrow(() -> new InvalidRequestDataException(messageGenerator.get(USER_FROM_GIVEN_TOKEN_NOT_FOUND)));
+
+        Company company = Optional.ofNullable(userRole2CompanyRepository.findByUser(user))
+                .get()
+                .orElseThrow(() -> new InvalidRequestDataException(messageGenerator.get(YOU_DONT_OWN_ANY_COMPANIES)))
+                .getCompany();
+        return mapToCompanyToEdit(company);
+    }
+
 }

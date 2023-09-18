@@ -12,4 +12,5 @@ public class ErrorDictionary {
     public static final String THE_CURRENT_PASSWORD_ENTERED_IS_INCORRECT = "the.current.password.entered.is.incorrect";
     public static final String THE_NEW_PASSWORDS_ARE_NOT_IDENTICAL = "the.new.passwords.are.not.identical";
     public static final String THE_COMPANY_WITH_THE_GIVEN_NIP_NUMBER_IS_ALREADY_IN_THE_DATABASE = "the.company.with.the.given.nip.number.is.already.in.the.database";
+    public static final String YOU_DONT_OWN_ANY_COMPANIES = "you.dont.own.any.companies";
 }

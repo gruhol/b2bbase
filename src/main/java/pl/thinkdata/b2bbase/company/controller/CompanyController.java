@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import pl.thinkdata.b2bbase.company.dto.CompanyDto;
 import pl.thinkdata.b2bbase.company.dto.CompanyResponse;
+import pl.thinkdata.b2bbase.company.dto.CompanyToEdit;
 import pl.thinkdata.b2bbase.company.model.Company;
 import pl.thinkdata.b2bbase.company.service.CompanyService;
 
@@ -27,6 +28,11 @@ public class CompanyController {
     @PostMapping("/add")
     public CompanyResponse addCompany(@RequestBody @Valid CompanyDto companyDto, HttpServletRequest request) {
         return companyService.addCompany(companyDto, request);
+    }
+
+    @GetMapping("/user")
+    public CompanyToEdit getCompanyByUser(HttpServletRequest request) {
+        return companyService.getCompany(request);
     }
 
 

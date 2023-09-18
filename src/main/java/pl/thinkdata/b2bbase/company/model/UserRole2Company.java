@@ -2,6 +2,7 @@ package pl.thinkdata.b2bbase.company.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import pl.thinkdata.b2bbase.security.model.User;
 
 @Entity
 @Table(name = "user_role_2_company")
@@ -14,8 +15,12 @@ public class UserRole2Company {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private long user_id;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
     @Enumerated(EnumType.STRING)
     private CompanyRole role;
-    private long company_id;
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    private Company company;
 }

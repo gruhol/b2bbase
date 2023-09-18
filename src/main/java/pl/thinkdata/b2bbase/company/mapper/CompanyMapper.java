@@ -2,6 +2,7 @@ package pl.thinkdata.b2bbase.company.mapper;
 
 import pl.thinkdata.b2bbase.company.dto.CompanyDto;
 import pl.thinkdata.b2bbase.company.dto.CompanyResponse;
+import pl.thinkdata.b2bbase.company.dto.CompanyToEdit;
 import pl.thinkdata.b2bbase.company.model.Company;
 
 import static pl.thinkdata.b2bbase.company.comonent.SlugGenerator.toSlug;
@@ -38,6 +39,25 @@ public class CompanyMapper {
                 .phone(company.getPhone())
                 .wwwSite(company.getWwwSite())
                 .wwwStore(company.getWwwStore())
+                .build();
+    }
+
+    public static CompanyToEdit mapToCompanyToEdit(Company company) {
+        return CompanyToEdit.builder()
+                .name(company.getName())
+                .slug(company.getSlug())
+                .type(company.getType())
+                .legalForm(company.getLegalForm())
+                .nip(company.getNip())
+                .regon(company.getRegon())
+                .krs(company.getKrs())
+                .email(company.getEmail())
+                .phone(company.getPhone())
+                .wwwSite(company.getWwwSite())
+                .wwwStore(company.getWwwStore())
+                .ediCooperation(company.isEdiCooperation())
+                .apiCooperation(company.isApiCooperation())
+                .productFileCooperation(company.isProductFileCooperation())
                 .build();
     }
 }
