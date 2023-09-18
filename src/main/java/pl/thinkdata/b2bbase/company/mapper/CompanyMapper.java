@@ -4,11 +4,15 @@ import pl.thinkdata.b2bbase.company.dto.CompanyDto;
 import pl.thinkdata.b2bbase.company.dto.CompanyResponse;
 import pl.thinkdata.b2bbase.company.model.Company;
 
+import static pl.thinkdata.b2bbase.company.comonent.SlugGenerator.toSlug;
+
 public class CompanyMapper {
+
 
     public static Company mapToCompany(CompanyDto companyDto) {
         return Company.builder()
                 .name(companyDto.getName())
+                .slug(toSlug(companyDto.getName()))
                 .type(companyDto.getType())
                 .legalForm(companyDto.getLegalForm())
                 .nip(companyDto.getNip())
