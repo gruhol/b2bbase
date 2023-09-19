@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.thinkdata.b2bbase.company.dto.CompanyDto;
 import pl.thinkdata.b2bbase.company.dto.CompanyResponse;
 import pl.thinkdata.b2bbase.company.dto.CompanyToEdit;
+import pl.thinkdata.b2bbase.company.dto.CompanyToEditDto;
 import pl.thinkdata.b2bbase.company.model.Company;
 import pl.thinkdata.b2bbase.company.service.CompanyService;
 
@@ -33,6 +34,11 @@ public class CompanyController {
     @GetMapping("/user")
     public CompanyToEdit getCompanyByUser(HttpServletRequest request) {
         return companyService.getCompany(request);
+    }
+
+    @PostMapping("/user")
+    public CompanyToEdit editCompanyByUser(@RequestBody @Valid CompanyToEditDto companyToEdit, HttpServletRequest request) {
+        return companyService.editCompany(companyToEdit, request);
     }
 
 

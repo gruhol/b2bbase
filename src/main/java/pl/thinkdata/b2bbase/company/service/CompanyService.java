@@ -11,6 +11,7 @@ import pl.thinkdata.b2bbase.common.util.TokenUtil;
 import pl.thinkdata.b2bbase.company.dto.CompanyDto;
 import pl.thinkdata.b2bbase.company.dto.CompanyResponse;
 import pl.thinkdata.b2bbase.company.dto.CompanyToEdit;
+import pl.thinkdata.b2bbase.company.dto.CompanyToEditDto;
 import pl.thinkdata.b2bbase.company.mapper.CompanyMapper;
 import pl.thinkdata.b2bbase.company.model.Company;
 import pl.thinkdata.b2bbase.company.model.CompanyRole;
@@ -89,4 +90,7 @@ public class CompanyService {
         return mapToCompanyToEdit(company);
     }
 
+    public CompanyToEdit editCompany(CompanyToEditDto companyToEdit, HttpServletRequest request) {
+        return null;
+    }
 }
