@@ -10,4 +10,6 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
     Optional<Company> findByNip(String nip);
 
     Optional<Company> findByRegon(String regon);
+
+    Optional<Company> findBySlug(String toSlug);
 }

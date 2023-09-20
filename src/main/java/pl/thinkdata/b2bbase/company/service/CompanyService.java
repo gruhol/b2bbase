@@ -27,6 +27,7 @@ import java.util.Optional;
 
 import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.USER_FROM_GIVEN_TOKEN_NOT_FOUND;
 import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.YOU_DONT_OWN_ANY_COMPANIES;
+import static pl.thinkdata.b2bbase.company.comonent.SlugGenerator.toSlug;
 import static pl.thinkdata.b2bbase.company.mapper.CompanyMapper.mapToCompanyResponse;
 import static pl.thinkdata.b2bbase.company.mapper.CompanyMapper.mapToCompanyToEdit;
 
@@ -57,7 +58,9 @@ public class CompanyService {
         User user = Optional.ofNullable(userRepository.findByUsername(userDetails.getUsername())).get()
                 .orElseThrow(() -> new InvalidRequestDataException(messageGenerator.get(USER_FROM_GIVEN_TOKEN_NOT_FOUND)));
 
-        Company newCompany = companyRepository.save(CompanyMapper.mapToCompany(companyDto));
+        String slug = checkIfSlugExistAndAddNumberToName(companyDto.getName());
+
+        Company newCompany = companyRepository.save(CompanyMapper.mapToCompany(companyDto, slug));
         UserRole2Company userRole2Company = UserRole2Company.builder()
                 .company(newCompany)
                 .role(CompanyRole.ADMIN)
@@ -91,6 +94,22 @@ public class CompanyService {
     }
 
     public CompanyToEdit editCompany(CompanyToEditDto companyToEdit, HttpServletRequest request) {
+        System.out.println(companyToEdit);
         return null;
+    }
+
+    private String checkIfSlugExistAndAddNumberToName(String name) {
+        if (companyRepository.findBySlug(toSlug(name)).isPresent()) {
+            char lastChar = name.charAt(name.length() - 1);
+            return Character.isDigit(lastChar) ? toSlug(increaseBy1(name)) : toSlug(name + 1);
+        }
+        return toSlug(name);
+    }
+
+    private String increaseBy1(String name) {
+        String lastChar = name.substring(name.length() - 1);
+        int number = Integer.parseInt(lastChar) + 1;
+        String slugWithoutNumber = name.substring(0, name.length() - 2);
+        return slugWithoutNumber + number;
     }
 }
