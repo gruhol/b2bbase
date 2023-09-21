@@ -94,8 +94,23 @@ public class CompanyService {
     }
 
     public CompanyToEdit editCompany(CompanyToEditDto companyToEdit, HttpServletRequest request) {
-        System.out.println(companyToEdit);
-        return null;
+        //TODO Add validation data
+        Company company = companyRepository.findByNip(companyToEdit.getNip()).get();
+        company.setName(companyToEdit.getName());
+        company.setType(companyToEdit.getType());
+        company.setLegalForm(companyToEdit.getLegalForm());
+        company.setNip(companyToEdit.getNip());
+        company.setRegon(companyToEdit.getRegon());
+        company.setKrs(companyToEdit.getKrs());
+        company.setEmail(companyToEdit.getEmail());
+        company.setPhone(companyToEdit.getPhone());
+        company.setWwwSite(companyToEdit.getWwwSite());
+        company.setWwwStore(companyToEdit.getWwwStore());
+        company.setEdiCooperation(companyToEdit.isEdiCooperation());
+        company.setApiCooperation(companyToEdit.isApiCooperation());
+        company.setProductFileCooperation(companyToEdit.isProductFileCooperation());
+
+        return mapToCompanyToEdit(companyRepository.save(company));
     }
 
     private String checkIfSlugExistAndAddNumberToName(String name) {
