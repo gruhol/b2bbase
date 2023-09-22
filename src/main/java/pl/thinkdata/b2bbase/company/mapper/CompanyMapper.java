@@ -3,6 +3,7 @@ package pl.thinkdata.b2bbase.company.mapper;
 import pl.thinkdata.b2bbase.company.dto.CompanyDto;
 import pl.thinkdata.b2bbase.company.dto.CompanyResponse;
 import pl.thinkdata.b2bbase.company.dto.CompanyToEdit;
+import pl.thinkdata.b2bbase.company.dto.CompanyToEditDto;
 import pl.thinkdata.b2bbase.company.model.Company;
 
 public class CompanyMapper {

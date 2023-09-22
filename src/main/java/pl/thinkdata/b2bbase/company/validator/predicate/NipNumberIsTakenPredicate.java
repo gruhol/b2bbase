@@ -2,19 +2,19 @@ package pl.thinkdata.b2bbase.company.validator.predicate;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import pl.thinkdata.b2bbase.company.dto.CompanyDto;
+import pl.thinkdata.b2bbase.company.dto.AbstractCompany;
 import pl.thinkdata.b2bbase.company.service.CompanyService;
 
 import java.util.function.Predicate;
 
 @Component
 @RequiredArgsConstructor
-public class NipNumberIsTakenPredicate<T extends CompanyDto> implements Predicate<CompanyDto> {
+public class NipNumberIsTakenPredicate<T extends AbstractCompany> implements Predicate<AbstractCompany> {
 
     private final CompanyService companyService;
 
     @Override
-    public boolean test(CompanyDto companyDto) {
+    public boolean test(AbstractCompany companyDto) {
         return companyService.findByNip(companyDto.getNip());
     }
 }

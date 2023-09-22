@@ -13,7 +13,7 @@ import pl.thinkdata.b2bbase.company.model.LegalForm;
 
 @Getter
 @Setter
-public class CompanyToEditDto {
+public class CompanyToEditDto extends AbstractCompany {
     @NotBlank
     private String name;
     @NotNull

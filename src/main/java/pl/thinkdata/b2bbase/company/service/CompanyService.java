@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import pl.thinkdata.b2bbase.common.error.InvalidRequestDataException;
+import pl.thinkdata.b2bbase.common.handler.HandleInvalidRequestDataException;
 import pl.thinkdata.b2bbase.common.util.MessageGenerator;
 import pl.thinkdata.b2bbase.common.util.TokenUtil;
 import pl.thinkdata.b2bbase.company.dto.CompanyDto;
@@ -18,6 +19,7 @@ import pl.thinkdata.b2bbase.company.model.CompanyRole;
 import pl.thinkdata.b2bbase.company.model.UserRole2Company;
 import pl.thinkdata.b2bbase.company.repository.CompanyRepository;
 import pl.thinkdata.b2bbase.company.repository.UserRole2CompanyRepository;
+import pl.thinkdata.b2bbase.company.validator.EditCompanyValidator;
 import pl.thinkdata.b2bbase.company.validator.RegistrationValidator;
 import pl.thinkdata.b2bbase.security.model.User;
 import pl.thinkdata.b2bbase.security.repository.UserRepository;
@@ -25,17 +27,16 @@ import pl.thinkdata.b2bbase.security.repository.UserRepository;
 import java.util.List;
 import java.util.Optional;
 
-import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.USER_FROM_GIVEN_TOKEN_NOT_FOUND;
-import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.YOU_DONT_OWN_ANY_COMPANIES;
+import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.*;
 import static pl.thinkdata.b2bbase.company.comonent.SlugGenerator.toSlug;
-import static pl.thinkdata.b2bbase.company.mapper.CompanyMapper.mapToCompanyResponse;
-import static pl.thinkdata.b2bbase.company.mapper.CompanyMapper.mapToCompanyToEdit;
+import static pl.thinkdata.b2bbase.company.mapper.CompanyMapper.*;
 
 @Service
 @RequiredArgsConstructor
 public class CompanyService {
 
     private static final String TOKEN_HEADER = "Authorization";
+
 
     private final CompanyRepository companyRepository;
     private final TokenUtil tokenUtil;
@@ -57,6 +58,10 @@ public class CompanyService {
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         User user = Optional.ofNullable(userRepository.findByUsername(userDetails.getUsername())).get()
                 .orElseThrow(() -> new InvalidRequestDataException(messageGenerator.get(USER_FROM_GIVEN_TOKEN_NOT_FOUND)));
+
+        if(userRole2CompanyRepository.findByUser(user).isPresent()) {
+            throw new InvalidRequestDataException(messageGenerator.get(YOU_CAN_ADD_ONLY_ONE_COMPANY));
+        }
 
         String slug = checkIfSlugExistAndAddNumberToName(companyDto.getName());
 
@@ -81,21 +86,19 @@ public class CompanyService {
     public CompanyToEdit getCompany(HttpServletRequest request) {
         String token = request.getHeader(TOKEN_HEADER);
         String username = tokenUtil.validTokenAndGetUsername(token);
+        Company company = getCompanyByUsernameFormDataBase(username);
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        User user = Optional.ofNullable(userRepository.findByUsername(userDetails.getUsername())).get()
-                .orElseThrow(() -> new InvalidRequestDataException(messageGenerator.get(USER_FROM_GIVEN_TOKEN_NOT_FOUND)));
-
-        Company company = Optional.ofNullable(userRole2CompanyRepository.findByUser(user))
-                .get()
-                .orElseThrow(() -> new InvalidRequestDataException(messageGenerator.get(YOU_DONT_OWN_ANY_COMPANIES)))
-                .getCompany();
         return mapToCompanyToEdit(company);
     }
 
     public CompanyToEdit editCompany(CompanyToEditDto companyToEdit, HttpServletRequest request) {
-        //TODO Add validation data
-        Company company = companyRepository.findByNip(companyToEdit.getNip()).get();
+        String token = request.getHeader(TOKEN_HEADER);
+        String username = tokenUtil.validTokenAndGetUsername(token);
+        Company companyInBase = getCompanyByUsernameFormDataBase(username);
+        EditCompanyValidator editCompanyValidator= new EditCompanyValidator(companyToEdit, companyInBase, this);
+        editCompanyValidator.valid();
+
+        Company company = companyRepository.findByNip(companyInBase.getNip()).get();
         company.setName(companyToEdit.getName());
         company.setType(companyToEdit.getType());
         company.setLegalForm(companyToEdit.getLegalForm());
@@ -111,6 +114,17 @@ public class CompanyService {
         company.setProductFileCooperation(companyToEdit.isProductFileCooperation());
 
         return mapToCompanyToEdit(companyRepository.save(company));
+    }
+
+    private Company getCompanyByUsernameFormDataBase(String username) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        User user = Optional.ofNullable(userRepository.findByUsername(userDetails.getUsername())).get()
+                .orElseThrow(() -> new InvalidRequestDataException(messageGenerator.get(USER_FROM_GIVEN_TOKEN_NOT_FOUND)));
+
+        return Optional.ofNullable(userRole2CompanyRepository.findByUser(user))
+                .get()
+                .orElseThrow(() -> new InvalidRequestDataException(messageGenerator.get(YOU_DONT_OWN_ANY_COMPANIES)))
+                .getCompany();
     }
 
     private String checkIfSlugExistAndAddNumberToName(String name) {

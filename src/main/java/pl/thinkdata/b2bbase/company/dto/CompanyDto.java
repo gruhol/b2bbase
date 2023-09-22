@@ -3,6 +3,7 @@ package pl.thinkdata.b2bbase.company.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.URL;
@@ -13,7 +14,8 @@ import pl.thinkdata.b2bbase.common.validator.PhoneValidation;
 
 @Getter
 @Setter
-public class CompanyDto {
+@Builder
+public class CompanyDto extends AbstractCompany {
     @NotBlank
     private String name;
     @NotNull
