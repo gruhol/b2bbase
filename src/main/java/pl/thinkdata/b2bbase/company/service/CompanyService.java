@@ -98,22 +98,21 @@ public class CompanyService {
         EditCompanyValidator editCompanyValidator= new EditCompanyValidator(companyToEdit, companyInBase, this);
         editCompanyValidator.valid();
 
-        Company company = companyRepository.findByNip(companyInBase.getNip()).get();
-        company.setName(companyToEdit.getName());
-        company.setType(companyToEdit.getType());
-        company.setLegalForm(companyToEdit.getLegalForm());
-        company.setNip(companyToEdit.getNip());
-        company.setRegon(companyToEdit.getRegon());
-        company.setKrs(companyToEdit.getKrs());
-        company.setEmail(companyToEdit.getEmail());
-        company.setPhone(companyToEdit.getPhone());
-        company.setWwwSite(companyToEdit.getWwwSite());
-        company.setWwwStore(companyToEdit.getWwwStore());
-        company.setEdiCooperation(companyToEdit.isEdiCooperation());
-        company.setApiCooperation(companyToEdit.isApiCooperation());
-        company.setProductFileCooperation(companyToEdit.isProductFileCooperation());
+        companyInBase.setName(companyToEdit.getName());
+        companyInBase.setType(companyToEdit.getType());
+        companyInBase.setLegalForm(companyToEdit.getLegalForm());
+        companyInBase.setNip(companyToEdit.getNip());
+        companyInBase.setRegon(companyToEdit.getRegon());
+        companyInBase.setKrs(companyToEdit.getKrs());
+        companyInBase.setEmail(companyToEdit.getEmail());
+        companyInBase.setPhone(companyToEdit.getPhone());
+        companyInBase.setWwwSite(companyToEdit.getWwwSite());
+        companyInBase.setWwwStore(companyToEdit.getWwwStore());
+        companyInBase.setEdiCooperation(companyToEdit.isEdiCooperation());
+        companyInBase.setApiCooperation(companyToEdit.isApiCooperation());
+        companyInBase.setProductFileCooperation(companyToEdit.isProductFileCooperation());
 
-        return mapToCompanyToEdit(companyRepository.save(company));
+        return mapToCompanyToEdit(companyRepository.save(companyInBase));
     }
 
     private Company getCompanyByUsernameFormDataBase(String username) {
