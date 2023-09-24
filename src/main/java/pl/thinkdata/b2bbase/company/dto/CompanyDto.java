@@ -3,6 +3,7 @@ package pl.thinkdata.b2bbase.company.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,6 +18,7 @@ import pl.thinkdata.b2bbase.common.validator.PhoneValidation;
 @Builder
 public class CompanyDto extends AbstractCompany {
     @NotBlank
+    @Size(min = 2, max = 300)
     private String name;
     @NotNull
     private CompanyTypeEnum type;

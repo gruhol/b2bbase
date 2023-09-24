@@ -145,4 +145,8 @@ public class CompanyService {
         String slugWithoutNumber = name.substring(0, name.length() - 2);
         return slugWithoutNumber + number;
     }
+
+    public Optional<Company> getCompanyById(Long companyId) {
+        return companyRepository.findById(companyId);
+    }
 }

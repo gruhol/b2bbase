@@ -2,10 +2,16 @@ package pl.thinkdata.b2bbase.company.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Entity
 @Getter
+@Builder
+@RequiredArgsConstructor
+@AllArgsConstructor
 public class Branch {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -36,5 +36,4 @@ public class Company {
     private String logo;
     @OneToMany(mappedBy = "company")
     private List<Branch> branches;
-
 }
