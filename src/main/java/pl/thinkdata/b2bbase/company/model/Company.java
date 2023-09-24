@@ -21,7 +21,7 @@ public class Company {
     @Enumerated(EnumType.STRING)
     private CompanyTypeEnum type;
     @Enumerated(EnumType.STRING)
-    private LegalFormEnum legalFormEnum;
+    private LegalFormEnum legalForm;
     private String nip;
     private String regon;
     private String krs;

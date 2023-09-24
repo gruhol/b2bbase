@@ -14,7 +14,7 @@ public class Branch {
     private boolean headquarter;
     private String slug;
     @Enumerated(EnumType.STRING)
-    private VoivodeshipEnum voivodeshipEnum;
+    private VoivodeshipEnum voivodeship;
     private String post_code;
     private String city;
     private String street;

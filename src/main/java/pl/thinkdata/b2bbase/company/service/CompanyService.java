@@ -29,13 +29,11 @@ import java.util.Optional;
 import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.*;
 import static pl.thinkdata.b2bbase.company.comonent.SlugGenerator.toSlug;
 import static pl.thinkdata.b2bbase.company.mapper.CompanyMapper.*;
+import static pl.thinkdata.b2bbase.common.tool.LoginDictionary.TOKEN_HEADER;
 
 @Service
 @RequiredArgsConstructor
 public class CompanyService {
-
-    private static final String TOKEN_HEADER = "Authorization";
-
 
     private final CompanyRepository companyRepository;
     private final TokenUtil tokenUtil;
@@ -82,12 +80,20 @@ public class CompanyService {
         return companyRepository.findByRegon(regon).isPresent();
     }
 
-    public CompanyToEdit getCompany(HttpServletRequest request) {
+    public CompanyToEdit getCompanyToEdit(HttpServletRequest request) {
         String token = request.getHeader(TOKEN_HEADER);
         String username = tokenUtil.validTokenAndGetUsername(token);
         Company company = getCompanyByUsernameFormDataBase(username);
 
         return mapToCompanyToEdit(company);
+    }
+
+    public Company getCompany(HttpServletRequest request) {
+        String token = request.getHeader(TOKEN_HEADER);
+        String username = tokenUtil.validTokenAndGetUsername(token);
+        Company company = getCompanyByUsernameFormDataBase(username);
+
+        return company;
     }
 
     public CompanyToEdit editCompany(CompanyToEditDto companyToEdit, HttpServletRequest request) {
@@ -99,7 +105,7 @@ public class CompanyService {
 
         companyInBase.setName(companyToEdit.getName());
         companyInBase.setType(companyToEdit.getType());
-        companyInBase.setLegalFormEnum(companyToEdit.getLegalFormEnum());
+        companyInBase.setLegalForm(companyToEdit.getLegalFormEnum());
         companyInBase.setNip(companyToEdit.getNip());
         companyInBase.setRegon(companyToEdit.getRegon());
         companyInBase.setKrs(companyToEdit.getKrs());

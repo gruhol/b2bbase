@@ -33,7 +33,7 @@ public class CompanyController {
 
     @GetMapping("/user")
     public CompanyToEdit getCompanyByUser(HttpServletRequest request) {
-        return companyService.getCompany(request);
+        return companyService.getCompanyToEdit(request);
     }
 
     @PostMapping("/user")
