@@ -19,7 +19,7 @@ public class UserRole2Company {
     @JoinColumn(name = "user_id")
     private User user;
     @Enumerated(EnumType.STRING)
-    private CompanyRole role;
+    private CompanyRoleEnum role;
     @ManyToOne
     @JoinColumn(name = "company_id")
     private Company company;

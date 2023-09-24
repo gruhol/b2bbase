@@ -6,7 +6,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import pl.thinkdata.b2bbase.common.error.InvalidRequestDataException;
-import pl.thinkdata.b2bbase.common.handler.HandleInvalidRequestDataException;
 import pl.thinkdata.b2bbase.common.util.MessageGenerator;
 import pl.thinkdata.b2bbase.common.util.TokenUtil;
 import pl.thinkdata.b2bbase.company.dto.CompanyDto;
@@ -15,7 +14,7 @@ import pl.thinkdata.b2bbase.company.dto.CompanyToEdit;
 import pl.thinkdata.b2bbase.company.dto.CompanyToEditDto;
 import pl.thinkdata.b2bbase.company.mapper.CompanyMapper;
 import pl.thinkdata.b2bbase.company.model.Company;
-import pl.thinkdata.b2bbase.company.model.CompanyRole;
+import pl.thinkdata.b2bbase.company.model.CompanyRoleEnum;
 import pl.thinkdata.b2bbase.company.model.UserRole2Company;
 import pl.thinkdata.b2bbase.company.repository.CompanyRepository;
 import pl.thinkdata.b2bbase.company.repository.UserRole2CompanyRepository;
@@ -68,7 +67,7 @@ public class CompanyService {
         Company newCompany = companyRepository.save(CompanyMapper.mapToCompany(companyDto, slug));
         UserRole2Company userRole2Company = UserRole2Company.builder()
                 .company(newCompany)
-                .role(CompanyRole.ADMIN)
+                .role(CompanyRoleEnum.ADMIN)
                 .user(user)
                 .build();
         userRole2CompanyRepository.save(userRole2Company);
@@ -100,7 +99,7 @@ public class CompanyService {
 
         companyInBase.setName(companyToEdit.getName());
         companyInBase.setType(companyToEdit.getType());
-        companyInBase.setLegalForm(companyToEdit.getLegalForm());
+        companyInBase.setLegalFormEnum(companyToEdit.getLegalFormEnum());
         companyInBase.setNip(companyToEdit.getNip());
         companyInBase.setRegon(companyToEdit.getRegon());
         companyInBase.setKrs(companyToEdit.getKrs());

@@ -1,6 +1,6 @@
 package pl.thinkdata.b2bbase.company.model;
 
-public enum LegalForm {
+public enum LegalFormEnum {
     JDG("Jednoosobowa działalność gospodarcza"),
     SC("Spółka cywilna"),
     SJ("Spółka jawna"),
@@ -13,7 +13,7 @@ public enum LegalForm {
 
     private String value;
 
-    LegalForm(String value) {
+    LegalFormEnum(String value) {
         this.value = value;
     }
 

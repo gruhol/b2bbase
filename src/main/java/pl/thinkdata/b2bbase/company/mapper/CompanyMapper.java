@@ -3,7 +3,6 @@ package pl.thinkdata.b2bbase.company.mapper;
 import pl.thinkdata.b2bbase.company.dto.CompanyDto;
 import pl.thinkdata.b2bbase.company.dto.CompanyResponse;
 import pl.thinkdata.b2bbase.company.dto.CompanyToEdit;
-import pl.thinkdata.b2bbase.company.dto.CompanyToEditDto;
 import pl.thinkdata.b2bbase.company.model.Company;
 
 public class CompanyMapper {
@@ -14,7 +13,7 @@ public class CompanyMapper {
                 .name(companyDto.getName())
                 .slug(slug)
                 .type(companyDto.getType())
-                .legalForm(companyDto.getLegalForm())
+                .legalFormEnum(companyDto.getLegalFormEnum())
                 .nip(companyDto.getNip())
                 .regon(companyDto.getRegon())
                 .krs(companyDto.getKrs())
@@ -30,7 +29,7 @@ public class CompanyMapper {
                 .name(company.getName())
                 .slug(company.getSlug())
                 .type(company.getType())
-                .legalForm(company.getLegalForm())
+                .legalFormEnum(company.getLegalFormEnum())
                 .nip(company.getNip())
                 .regon(company.getRegon())
                 .krs(company.getKrs())
@@ -46,7 +45,7 @@ public class CompanyMapper {
                 .name(company.getName())
                 .slug(company.getSlug())
                 .type(company.getType())
-                .legalForm(company.getLegalForm())
+                .legalFormEnum(company.getLegalFormEnum())
                 .nip(company.getNip())
                 .regon(company.getRegon())
                 .krs(company.getKrs())

@@ -8,8 +8,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.URL;
 import org.hibernate.validator.constraints.pl.NIP;
-import pl.thinkdata.b2bbase.company.model.CompanyType;
-import pl.thinkdata.b2bbase.company.model.LegalForm;
+import pl.thinkdata.b2bbase.company.model.CompanyTypeEnum;
+import pl.thinkdata.b2bbase.company.model.LegalFormEnum;
 import pl.thinkdata.b2bbase.common.validator.PhoneValidation;
 
 @Getter
@@ -19,9 +19,9 @@ public class CompanyDto extends AbstractCompany {
     @NotBlank
     private String name;
     @NotNull
-    private CompanyType type;
+    private CompanyTypeEnum type;
     @NotNull
-    private LegalForm legalForm;
+    private LegalFormEnum legalFormEnum;
     @NotBlank
     @NIP
     private String nip;

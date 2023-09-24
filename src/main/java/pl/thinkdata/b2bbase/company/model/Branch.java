@@ -1,12 +1,7 @@
 package pl.thinkdata.b2bbase.company.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 
 @Entity
@@ -18,6 +13,8 @@ public class Branch {
     private String name;
     private boolean headquarter;
     private String slug;
+    @Enumerated(EnumType.STRING)
+    private VoivodeshipEnum voivodeshipEnum;
     private String post_code;
     private String city;
     private String street;
