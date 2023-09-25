@@ -105,7 +105,7 @@ public class CompanyService {
 
         companyInBase.setName(companyToEdit.getName());
         companyInBase.setType(companyToEdit.getType());
-        companyInBase.setLegalForm(companyToEdit.getLegalFormEnum());
+        companyInBase.setLegalForm(companyToEdit.getLegalForm());
         companyInBase.setNip(companyToEdit.getNip());
         companyInBase.setRegon(companyToEdit.getRegon());
         companyInBase.setKrs(companyToEdit.getKrs());

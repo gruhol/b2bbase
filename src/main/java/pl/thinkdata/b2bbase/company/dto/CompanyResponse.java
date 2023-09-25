@@ -18,7 +18,7 @@ public class CompanyResponse {
     private String name;
     private String slug;
     private CompanyTypeEnum type;
-    private LegalFormEnum legalFormEnum;
+    private LegalFormEnum legalForm;
     private String nip;
     private String regon;
     private String krs;

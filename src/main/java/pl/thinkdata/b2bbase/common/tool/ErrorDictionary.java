@@ -14,4 +14,6 @@ public class ErrorDictionary {
     public static final String THE_COMPANY_WITH_THE_GIVEN_NIP_NUMBER_IS_ALREADY_IN_THE_DATABASE = "the.company.with.the.given.nip.number.is.already.in.the.database";
     public static final String YOU_DONT_OWN_ANY_COMPANIES = "you.dont.own.any.companies";
     public static final String YOU_CAN_ADD_ONLY_ONE_COMPANY = "you.can.add.only.one.company";
+    public static final String YOU_CAN_ADD_ONLY_ONE_HEADQUATER = "you.can.add.only.one.headquater";
+    public static final String WRONG_BRANCH_DATA = "wrong.branch.data";
 }

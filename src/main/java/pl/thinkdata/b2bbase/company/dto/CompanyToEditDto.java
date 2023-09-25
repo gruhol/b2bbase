@@ -19,7 +19,7 @@ public class CompanyToEditDto extends AbstractCompany {
     @NotNull
     private CompanyTypeEnum type;
     @NotNull
-    private LegalFormEnum legalFormEnum;
+    private LegalFormEnum legalForm;
     @NotBlank
     @NIP
     private String nip;

@@ -4,8 +4,10 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.URL;
 import org.hibernate.validator.constraints.pl.NIP;
@@ -16,6 +18,8 @@ import pl.thinkdata.b2bbase.common.validator.PhoneValidation;
 @Getter
 @Setter
 @Builder
+@RequiredArgsConstructor
+@AllArgsConstructor
 public class CompanyDto extends AbstractCompany {
     @NotBlank
     @Size(min = 2, max = 300)
@@ -23,7 +27,7 @@ public class CompanyDto extends AbstractCompany {
     @NotNull
     private CompanyTypeEnum type;
     @NotNull
-    private LegalFormEnum legalFormEnum;
+    private LegalFormEnum legalForm;
     @NotBlank
     @NIP
     private String nip;

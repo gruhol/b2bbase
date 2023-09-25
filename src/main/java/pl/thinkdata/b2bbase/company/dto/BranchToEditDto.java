@@ -11,7 +11,9 @@ import pl.thinkdata.b2bbase.company.model.VoivodeshipEnum;
 
 @Getter
 @Setter
-public class BranchDto {
+public class BranchToEditDto {
+    @NotNull
+    private long id;
     @NotBlank
     @Size(min = 2, max = 256)
     private String name;
@@ -31,7 +33,7 @@ public class BranchDto {
     @NotBlank
     @Size(min = 1, max = 16)
     private String house_number;
-    @Size(max = 16)
+    @Size(min = 1, max = 16)
     private String office_number;
     @Email
     @Size(max = 256)
