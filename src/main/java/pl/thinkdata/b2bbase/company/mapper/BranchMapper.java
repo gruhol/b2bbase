@@ -30,6 +30,7 @@ public class BranchMapper {
     public static BranchResponse mapToBranchResponse(Branch branch) {
         return BranchResponse.builder()
                 .id(branch.getId())
+                .name(branch.getName())
                 .headquarter(branch.isHeadquarter())
                 .slug(branch.getSlug())
                 .voivodeship(branch.getVoivodeship())
