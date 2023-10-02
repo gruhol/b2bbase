@@ -45,4 +45,9 @@ public class BranchController {
     public void deleteBranch(@PathVariable(value = "id", required = false) Long id, HttpServletRequest request) {
         branchService.deleteBranch(id, request);
     }
+
+    @GetMapping("/{id}")
+    public BranchResponse getBranch(@PathVariable(value = "id", required = false) Long id, HttpServletRequest request) {
+        return branchService.getBranch(id, request);
+    }
 }

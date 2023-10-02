@@ -97,4 +97,13 @@ public class BranchService {
         String slugWithoutNumber = name.substring(0, name.length() - 2);
         return slugWithoutNumber + number;
     }
+
+    public BranchResponse getBranch(Long id, HttpServletRequest request) {
+        Company company = companyService.getCompany(request);
+        Branch branchToEdit = Optional.ofNullable(branchRepository.findAllByCompany(company).stream()
+                .filter(branch -> branch.getId() == id)
+                .findAny().get())
+                .orElseThrow(() -> new RuntimeException());
+        return mapToBranchResponse(branchToEdit);
+    }
 }
