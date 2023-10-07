@@ -55,10 +55,7 @@ public class BranchService {
         Company company = companyService.getCompany(request);
 
         boolean isBranchCompany = branchRepository.findAllByCompany(company).stream()
-                .map(idBranch -> idBranch.getId())
-                .collect(Collectors.toList())
-                .stream()
-                .filter(d -> d == branchToEditDto.getId())
+                .filter(d -> d.getId() == branchToEditDto.getId())
                 .findAny().isPresent();
 
         if (!isBranchCompany) {
@@ -71,10 +68,7 @@ public class BranchService {
     public void deleteBranch(Long id, HttpServletRequest request) {
         Company company = companyService.getCompany(request);
         boolean isBranchCompany = branchRepository.findAllByCompany(company).stream()
-                .map(idBranch -> idBranch.getId())
-                .collect(Collectors.toList())
-                .stream()
-                .filter(d -> d == id)
+                .filter(d -> d.getId() == id)
                 .findAny().isPresent();
 
         if (!isBranchCompany) {
