@@ -16,4 +16,5 @@ public class ErrorDictionary {
     public static final String YOU_CAN_ADD_ONLY_ONE_COMPANY = "you.can.add.only.one.company";
     public static final String YOU_CAN_ADD_ONLY_ONE_HEADQUATER = "you.can.add.only.one.headquater";
     public static final String WRONG_BRANCH_DATA = "wrong.branch.data";
+    public static final String BRANCH_NOT_FOUND = "branch.not.found";
 }

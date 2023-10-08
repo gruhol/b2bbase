@@ -8,6 +8,7 @@ import pl.thinkdata.b2bbase.common.util.MessageGenerator;
 import pl.thinkdata.b2bbase.company.dto.BranchDto;
 import pl.thinkdata.b2bbase.company.dto.BranchResponse;
 import pl.thinkdata.b2bbase.company.dto.BranchToEditDto;
+import pl.thinkdata.b2bbase.company.mapper.BranchMapper;
 import pl.thinkdata.b2bbase.company.model.Branch;
 import pl.thinkdata.b2bbase.company.model.Company;
 import pl.thinkdata.b2bbase.company.repository.BranchRepository;
@@ -16,8 +17,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.WRONG_BRANCH_DATA;
-import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.YOU_CAN_ADD_ONLY_ONE_HEADQUATER;
+import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.*;
 import static pl.thinkdata.b2bbase.company.comonent.SlugGenerator.toSlug;
 import static pl.thinkdata.b2bbase.company.mapper.BranchMapper.mapToBranchFromBranchDto;
 import static pl.thinkdata.b2bbase.company.mapper.BranchMapper.mapToBranchFromBranchToEditDto;
@@ -34,7 +34,7 @@ public class BranchService {
     public List<BranchResponse> getBranchByCompany(HttpServletRequest request) {
         Company company = companyService.getCompany(request);
         return branchRepository.findAllByCompany(company).stream()
-                .map(branch -> mapToBranchResponse(branch))
+                .map(BranchMapper::mapToBranchResponse)
                 .collect(Collectors.toList());
     }
 
@@ -42,7 +42,7 @@ public class BranchService {
         Company company = companyService.getCompany(request);
         if (branchDto.isHeadquarter()) {
             boolean isHeadquarter = !branchRepository.findAllByCompany(company).stream()
-                    .filter(branch -> branch.isHeadquarter() == true)
+                    .filter(branch -> branch.isHeadquarter())
                     .collect(Collectors.toList())
                     .isEmpty();
             if (isHeadquarter) throw new InvalidRequestDataException(messageGenerator.get(YOU_CAN_ADD_ONLY_ONE_HEADQUATER));
@@ -55,8 +55,7 @@ public class BranchService {
         Company company = companyService.getCompany(request);
 
         boolean isBranchCompany = branchRepository.findAllByCompany(company).stream()
-                .filter(d -> d.getId() == branchToEditDto.getId())
-                .findAny().isPresent();
+                .anyMatch(d -> d.getId() == branchToEditDto.getId());
 
         if (!isBranchCompany) {
             throw new InvalidRequestDataException(messageGenerator.get(WRONG_BRANCH_DATA));
@@ -68,8 +67,7 @@ public class BranchService {
     public void deleteBranch(Long id, HttpServletRequest request) {
         Company company = companyService.getCompany(request);
         boolean isBranchCompany = branchRepository.findAllByCompany(company).stream()
-                .filter(d -> d.getId() == id)
-                .findAny().isPresent();
+                .anyMatch(d -> d.getId() == id);
 
         if (!isBranchCompany) {
             throw new InvalidRequestDataException(messageGenerator.get(WRONG_BRANCH_DATA));
@@ -94,10 +92,10 @@ public class BranchService {
 
     public BranchResponse getBranch(Long id, HttpServletRequest request) {
         Company company = companyService.getCompany(request);
-        Branch branchToEdit = Optional.ofNullable(branchRepository.findAllByCompany(company).stream()
+        Branch branchToEdit = branchRepository.findAllByCompany(company).stream()
                 .filter(branch -> branch.getId() == id)
-                .findAny().get())
-                .orElseThrow(() -> new RuntimeException());
+                .findAny()
+                .orElseThrow(() -> new InvalidRequestDataException(messageGenerator.get(BRANCH_NOT_FOUND)));
         return mapToBranchResponse(branchToEdit);
     }
 }
