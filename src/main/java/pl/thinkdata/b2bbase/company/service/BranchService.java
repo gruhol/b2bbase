@@ -14,14 +14,11 @@ import pl.thinkdata.b2bbase.company.model.Company;
 import pl.thinkdata.b2bbase.company.repository.BranchRepository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.*;
 import static pl.thinkdata.b2bbase.company.comonent.SlugGenerator.toSlug;
-import static pl.thinkdata.b2bbase.company.mapper.BranchMapper.mapToBranchFromBranchDto;
-import static pl.thinkdata.b2bbase.company.mapper.BranchMapper.mapToBranchFromBranchToEditDto;
-import static pl.thinkdata.b2bbase.company.mapper.BranchMapper.mapToBranchResponse;
+import static pl.thinkdata.b2bbase.company.mapper.BranchMapper.*;
 
 @Service
 @RequiredArgsConstructor
