@@ -41,10 +41,7 @@ public class BranchService {
     public Branch addBranch(BranchDto branchDto, HttpServletRequest request) {
         Company company = companyService.getCompany(request);
         if (branchDto.isHeadquarter()) {
-            boolean isHeadquarter = !branchRepository.findAllByCompany(company).stream()
-                    .filter(branch -> branch.isHeadquarter())
-                    .collect(Collectors.toList())
-                    .isEmpty();
+            boolean isHeadquarter = isHeadquarter(company);
             if (isHeadquarter) throw new InvalidRequestDataException(messageGenerator.get(YOU_CAN_ADD_ONLY_ONE_HEADQUATER));
         }
         Branch branch = mapToBranchFromBranchDto(branchDto, company);
@@ -60,6 +57,12 @@ public class BranchService {
         if (!isBranchCompany) {
             throw new InvalidRequestDataException(messageGenerator.get(WRONG_BRANCH_DATA));
         }
+
+        if (branchToEditDto.isHeadquarter()) {
+            boolean isHeadquarter = isHeadquarter(company);
+            if (isHeadquarter) throw new InvalidRequestDataException(messageGenerator.get(YOU_CAN_ADD_ONLY_ONE_HEADQUATER));
+        }
+
         branchToEditDto.setSlug(checkIfSlugExistAndAddNumberToName(branchToEditDto.getName()));
         return branchRepository.save(mapToBranchFromBranchToEditDto(branchToEditDto, company));
     }
@@ -73,6 +76,13 @@ public class BranchService {
             throw new InvalidRequestDataException(messageGenerator.get(WRONG_BRANCH_DATA));
         }
         branchRepository.deleteById(id);
+    }
+
+    private boolean isHeadquarter(Company company) {
+        return !branchRepository.findAllByCompany(company).stream()
+                .filter(branch -> branch.isHeadquarter())
+                .collect(Collectors.toList())
+                .isEmpty();
     }
 
     private String checkIfSlugExistAndAddNumberToName(String name) {
