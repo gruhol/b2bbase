@@ -26,4 +26,5 @@ public class CompanyToEdit {
     private boolean ediCooperation;
     private boolean apiCooperation;
     private boolean productFileCooperation;
+    private String description;
 }

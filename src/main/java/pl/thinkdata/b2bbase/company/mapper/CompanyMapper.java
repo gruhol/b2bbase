@@ -56,6 +56,7 @@ public class CompanyMapper {
                 .ediCooperation(company.isEdiCooperation())
                 .apiCooperation(company.isApiCooperation())
                 .productFileCooperation(company.isProductFileCooperation())
+                .description(company.getDescription())
                 .build();
     }
 }
