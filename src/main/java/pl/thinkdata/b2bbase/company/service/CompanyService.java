@@ -8,10 +8,7 @@ import org.springframework.stereotype.Service;
 import pl.thinkdata.b2bbase.common.error.InvalidRequestDataException;
 import pl.thinkdata.b2bbase.common.util.MessageGenerator;
 import pl.thinkdata.b2bbase.common.util.TokenUtil;
-import pl.thinkdata.b2bbase.company.dto.CompanyDto;
-import pl.thinkdata.b2bbase.company.dto.CompanyResponse;
-import pl.thinkdata.b2bbase.company.dto.CompanyToEdit;
-import pl.thinkdata.b2bbase.company.dto.CompanyToEditDto;
+import pl.thinkdata.b2bbase.company.dto.*;
 import pl.thinkdata.b2bbase.company.mapper.CompanyMapper;
 import pl.thinkdata.b2bbase.company.model.Company;
 import pl.thinkdata.b2bbase.company.model.CompanyRoleEnum;
@@ -116,6 +113,16 @@ public class CompanyService {
         companyInBase.setEdiCooperation(companyToEdit.isEdiCooperation());
         companyInBase.setApiCooperation(companyToEdit.isApiCooperation());
         companyInBase.setProductFileCooperation(companyToEdit.isProductFileCooperation());
+
+        return mapToCompanyToEdit(companyRepository.save(companyInBase));
+    }
+
+    public CompanyToEdit editAdditionalDataCompany(AdditionalDataToEdit additionalDataToEdit, HttpServletRequest request) {
+        String token = request.getHeader(TOKEN_HEADER);
+        String username = tokenUtil.validTokenAndGetUsername(token);
+        Company companyInBase = getCompanyByUsernameFormDataBase(username);
+
+        companyInBase.setDescription(additionalDataToEdit.getDescription());
 
         return mapToCompanyToEdit(companyRepository.save(companyInBase));
     }

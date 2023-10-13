@@ -4,10 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import pl.thinkdata.b2bbase.company.dto.CompanyDto;
-import pl.thinkdata.b2bbase.company.dto.CompanyResponse;
-import pl.thinkdata.b2bbase.company.dto.CompanyToEdit;
-import pl.thinkdata.b2bbase.company.dto.CompanyToEditDto;
+import pl.thinkdata.b2bbase.company.dto.*;
 import pl.thinkdata.b2bbase.company.model.Company;
 import pl.thinkdata.b2bbase.company.service.CompanyService;
 
@@ -39,6 +36,11 @@ public class CompanyController {
     @PostMapping("/user")
     public CompanyToEdit editCompanyByUser(@RequestBody @Valid CompanyToEditDto companyToEdit, HttpServletRequest request) {
         return companyService.editCompany(companyToEdit, request);
+    }
+
+    @PostMapping("/edit-additional-data")
+    public CompanyToEdit editAdditionalDataCompany(@RequestBody @Valid AdditionalDataToEdit additionalDataToEdit, HttpServletRequest request ) {
+        return companyService.editAdditionalDataCompany(additionalDataToEdit, request);
     }
 
 
