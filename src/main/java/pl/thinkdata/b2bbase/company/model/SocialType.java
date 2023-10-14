@@ -4,7 +4,9 @@ public enum SocialType {
     FACEBOOK("Facebook"),
     LINKEDIN("LinkedIn"),
     TWITTER("Twitter"),
-    YOUTUBE("YouTube");
+    YOUTUBE("YouTube"),
+    INSTAGRAM("Instagram"),
+    TIKTOK("TikTok");
 
     private String value;
 

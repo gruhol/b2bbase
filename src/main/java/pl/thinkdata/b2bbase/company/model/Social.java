@@ -1,13 +1,11 @@
 package pl.thinkdata.b2bbase.company.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @RequiredArgsConstructor
 @AllArgsConstructor
@@ -18,5 +16,5 @@ public class Social {
     @Enumerated(EnumType.STRING)
     private SocialType type;
     private String url;
-    private Long company_id;
+    private Long companyId;
 }

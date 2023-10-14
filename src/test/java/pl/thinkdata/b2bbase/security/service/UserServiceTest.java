@@ -20,6 +20,7 @@ import pl.thinkdata.b2bbase.common.error.InvalidRequestDataException;
 import pl.thinkdata.b2bbase.common.error.ValidationException;
 import pl.thinkdata.b2bbase.common.util.TokenUtil;
 import pl.thinkdata.b2bbase.common.util.MessageGenerator;
+import pl.thinkdata.b2bbase.company.repository.UserRole2CompanyRepository;
 import pl.thinkdata.b2bbase.security.dto.RegisterCredentials;
 import pl.thinkdata.b2bbase.security.dto.UserDto;
 import pl.thinkdata.b2bbase.security.dto.UserEditData;
@@ -50,6 +51,8 @@ class UserServiceTest {
     private UserRepository userRepository;
     @Mock
     AuthenticationManager authenticationManager;
+    @Mock
+    UserRole2CompanyRepository userRole2CompanyRepository;
 
     private static final long expirationTime = 2592000000L;
     private static final String SECRET = "secret";
@@ -72,7 +75,7 @@ class UserServiceTest {
         messageSource.setCacheSeconds(-1);
         messageSource.setBasenames("classpath:i18n/messages");
 
-        TokenUtil tokenUtil1 = new TokenUtil(SECRET, new MessageGenerator(messageSource));
+        TokenUtil tokenUtil = new TokenUtil(SECRET, new MessageGenerator(messageSource), userDetailsService, userRepository, userRole2CompanyRepository);
 
         this.userService = new UserService(
                 SECRET,
@@ -82,7 +85,7 @@ class UserServiceTest {
                 new MessageGenerator(messageSource),
                 this.verificationLinkService,
                 this.authenticationManager,
-                tokenUtil1);
+                tokenUtil);
     }
 
     @Test

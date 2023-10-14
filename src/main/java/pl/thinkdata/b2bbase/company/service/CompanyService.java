@@ -78,25 +78,17 @@ public class CompanyService {
     }
 
     public CompanyToEdit getCompanyToEdit(HttpServletRequest request) {
-        String token = request.getHeader(TOKEN_HEADER);
-        String username = tokenUtil.validTokenAndGetUsername(token);
-        Company company = getCompanyByUsernameFormDataBase(username);
+        Company company = getUserCompanyByToken(request.getHeader(TOKEN_HEADER));
 
         return mapToCompanyToEdit(company);
     }
 
     public Company getCompany(HttpServletRequest request) {
-        String token = request.getHeader(TOKEN_HEADER);
-        String username = tokenUtil.validTokenAndGetUsername(token);
-        Company company = getCompanyByUsernameFormDataBase(username);
-
-        return company;
+        return getUserCompanyByToken(request.getHeader(TOKEN_HEADER));
     }
 
     public CompanyToEdit editCompany(CompanyToEditDto companyToEdit, HttpServletRequest request) {
-        String token = request.getHeader(TOKEN_HEADER);
-        String username = tokenUtil.validTokenAndGetUsername(token);
-        Company companyInBase = getCompanyByUsernameFormDataBase(username);
+        Company companyInBase = getUserCompanyByToken(request.getHeader(TOKEN_HEADER));
         EditCompanyValidator editCompanyValidator= new EditCompanyValidator(companyToEdit, companyInBase, this);
         editCompanyValidator.valid();
 
@@ -118,24 +110,15 @@ public class CompanyService {
     }
 
     public CompanyToEdit editAdditionalDataCompany(AdditionalDataToEdit additionalDataToEdit, HttpServletRequest request) {
-        String token = request.getHeader(TOKEN_HEADER);
-        String username = tokenUtil.validTokenAndGetUsername(token);
-        Company companyInBase = getCompanyByUsernameFormDataBase(username);
-
+        Company companyInBase = getUserCompanyByToken(request.getHeader(TOKEN_HEADER));
         companyInBase.setDescription(additionalDataToEdit.getDescription());
 
         return mapToCompanyToEdit(companyRepository.save(companyInBase));
     }
 
-    private Company getCompanyByUsernameFormDataBase(String username) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        User user = Optional.ofNullable(userRepository.findByUsername(userDetails.getUsername())).get()
-                .orElseThrow(() -> new InvalidRequestDataException(messageGenerator.get(USER_FROM_GIVEN_TOKEN_NOT_FOUND)));
-
-        return Optional.ofNullable(userRole2CompanyRepository.findByUser(user))
-                .get()
-                .orElseThrow(() -> new InvalidRequestDataException(messageGenerator.get(YOU_DONT_OWN_ANY_COMPANIES)))
-                .getCompany();
+    private Company getUserCompanyByToken(String token) {
+        String username = tokenUtil.validTokenAndGetUsername(token);
+        return tokenUtil.getCompanyByUsernameFormDataBase(username);
     }
 
     private String checkIfSlugExistAndAddNumberToName(String name) {
@@ -151,9 +134,5 @@ public class CompanyService {
         int number = Integer.parseInt(lastChar) + 1;
         String slugWithoutNumber = name.substring(0, name.length() - 2);
         return slugWithoutNumber + number;
-    }
-
-    public Optional<Company> getCompanyById(Long companyId) {
-        return companyRepository.findById(companyId);
     }
 }
