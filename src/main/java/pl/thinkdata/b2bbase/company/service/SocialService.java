@@ -8,7 +8,6 @@ import pl.thinkdata.b2bbase.common.util.MessageGenerator;
 import pl.thinkdata.b2bbase.common.util.TokenUtil;
 import pl.thinkdata.b2bbase.company.dto.EditSocialDto;
 import pl.thinkdata.b2bbase.company.dto.SocialDto;
-import pl.thinkdata.b2bbase.company.mapper.SocialMapper;
 import pl.thinkdata.b2bbase.company.model.Company;
 import pl.thinkdata.b2bbase.company.model.Social;
 import pl.thinkdata.b2bbase.company.repository.SocialRepository;
@@ -34,8 +33,7 @@ public class SocialService {
         social.setCompanyId(companyInBase.getId());
 
         boolean socialTypExist = socialRepository.findAllByCompanyId(companyInBase.getId()).stream()
-                .filter(socialExist -> socialExist.getType() == socialDto.getType())
-                .findAny().isPresent();
+                .anyMatch(socialExist -> socialExist.getType() == socialDto.getType());
         if (socialTypExist) throw new InvalidRequestDataException(messageGenerator.get(YOU_CAN_ADD_ONLY_ONE_SOCIAL_TYPE));
         return socialRepository.save(social);
     }
@@ -48,10 +46,13 @@ public class SocialService {
     public Social editSocial(EditSocialDto editSocialDto, HttpServletRequest request) {
         Company companyInBase = getUserCompanyByToken(request.getHeader(TOKEN_HEADER));
         boolean isSocialOwner = socialRepository.findAllByCompanyId(companyInBase.getId()).stream()
-                .filter(socialOwner -> socialOwner.getCompanyId() == editSocialDto.getId())
-                .findAny().isPresent();
+                .anyMatch(socialOwner ->
+                        (socialOwner.getId() == editSocialDto.getId())
+                        && (socialOwner.getType() == editSocialDto.getType()));
         if (!isSocialOwner)  throw new InvalidRequestDataException(messageGenerator.get(YOU_ARE_NOT_OWNER_THIS_SOCIAL_URL));
-        return socialRepository.save(mapToSocial(editSocialDto));
+        Social social = mapToSocial(editSocialDto);
+        social.setCompanyId(companyInBase.getId());
+        return socialRepository.save(social);
     }
 
     private Company getUserCompanyByToken(String token) {
@@ -62,8 +63,7 @@ public class SocialService {
     public void deleteSocial(Long id, HttpServletRequest request) {
         Company companyInBase = getUserCompanyByToken(request.getHeader(TOKEN_HEADER));
         boolean isSocialOwner = socialRepository.findAllByCompanyId(companyInBase.getId()).stream()
-                .filter(socialOwner -> socialOwner.getCompanyId() == id)
-                .findAny().isPresent();
+                .anyMatch(socialOwner -> socialOwner.getId() == id);
         if (!isSocialOwner)  throw new InvalidRequestDataException(messageGenerator.get(YOU_ARE_NOT_OWNER_THIS_SOCIAL_URL));
         socialRepository.deleteById(id);
     }

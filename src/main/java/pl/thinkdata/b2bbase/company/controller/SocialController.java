@@ -33,7 +33,7 @@ public class SocialController {
         return socialService.editSocial(editSocialDto, request);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public void deleteSocial(@PathVariable(value = "id", required = true) Long id, HttpServletRequest request) {
         socialService.deleteSocial(id,request);
     }
