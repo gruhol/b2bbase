@@ -1,4 +1,4 @@
-package pl.thinkdata.b2bbase.company.comonent;
+package pl.thinkdata.b2bbase.company.component;
 
 import java.text.Normalizer;
 import java.util.Locale;

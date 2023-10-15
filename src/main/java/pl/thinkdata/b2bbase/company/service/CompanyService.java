@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.*;
-import static pl.thinkdata.b2bbase.company.comonent.SlugGenerator.toSlug;
+import static pl.thinkdata.b2bbase.company.component.SlugGenerator.toSlug;
 import static pl.thinkdata.b2bbase.company.mapper.CompanyMapper.*;
 import static pl.thinkdata.b2bbase.common.tool.LoginDictionary.TOKEN_HEADER;
 

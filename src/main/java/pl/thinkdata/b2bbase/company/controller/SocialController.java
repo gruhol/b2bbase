@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import pl.thinkdata.b2bbase.company.dto.EditSocialDto;
 import pl.thinkdata.b2bbase.company.dto.SocialDto;
-import pl.thinkdata.b2bbase.company.model.Social;
+import pl.thinkdata.b2bbase.company.dto.SocialResponse;
 import pl.thinkdata.b2bbase.company.service.SocialService;
 
 import java.util.List;
@@ -19,17 +19,22 @@ public class SocialController {
     private final SocialService socialService;
 
     @PostMapping
-    public Social addSocial(@RequestBody @Valid SocialDto socialDto, HttpServletRequest request) {
+    public SocialResponse addSocial(@RequestBody @Valid SocialDto socialDto, HttpServletRequest request) {
         return socialService.addSocial(socialDto, request);
     }
 
     @GetMapping
-    public List<Social> getSocials(HttpServletRequest  request) {
+    public List<SocialResponse> getSocials(HttpServletRequest  request) {
         return socialService.getSocials(request);
     }
 
+    @GetMapping("/{id}")
+    public SocialResponse getSocial(@PathVariable(value = "id", required = true) Long id, HttpServletRequest  request) {
+        return socialService.getSocial(id, request);
+    }
+
     @PutMapping
-    public Social editSocial(@RequestBody @Valid EditSocialDto editSocialDto, HttpServletRequest request) {
+    public SocialResponse editSocial(@RequestBody @Valid EditSocialDto editSocialDto, HttpServletRequest request) {
         return socialService.editSocial(editSocialDto, request);
     }
 

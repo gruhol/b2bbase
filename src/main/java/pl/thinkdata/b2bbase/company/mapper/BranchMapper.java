@@ -6,7 +6,7 @@ import pl.thinkdata.b2bbase.company.dto.BranchToEditDto;
 import pl.thinkdata.b2bbase.company.model.Branch;
 import pl.thinkdata.b2bbase.company.model.Company;
 
-import static pl.thinkdata.b2bbase.company.comonent.SlugGenerator.toSlug;
+import static pl.thinkdata.b2bbase.company.component.SlugGenerator.toSlug;
 
 public class BranchMapper {
     public static Branch mapToBranchFromBranchToEditDto(BranchDto branchDto) {

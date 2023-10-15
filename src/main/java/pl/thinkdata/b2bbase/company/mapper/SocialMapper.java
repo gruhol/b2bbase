@@ -2,6 +2,7 @@ package pl.thinkdata.b2bbase.company.mapper;
 
 import pl.thinkdata.b2bbase.company.dto.EditSocialDto;
 import pl.thinkdata.b2bbase.company.dto.SocialDto;
+import pl.thinkdata.b2bbase.company.dto.SocialResponse;
 import pl.thinkdata.b2bbase.company.model.Social;
 
 public class SocialMapper {
@@ -18,6 +19,14 @@ public class SocialMapper {
                 .id(editSocialDto.getId())
                 .type(editSocialDto.getType())
                 .url(editSocialDto.getUrl())
+                .build();
+    }
+
+    public static SocialResponse mapToSocialResponse(Social social) {
+        return SocialResponse.builder()
+                .id(social.getId())
+                .type(social.getType())
+                .url(social.getUrl())
                 .build();
     }
 
