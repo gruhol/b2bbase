@@ -31,7 +31,7 @@ public class CategoryController {
                 .map(cat -> CategoryResponse.builder()
                         .id(cat.getId())
                         .name(cat.getName())
-                        .child(createChildList(allCategory, cat.getId()))
+                        .children(createChildList(allCategory, cat.getId()))
                         .build())
                 .collect(Collectors.toList());
 
