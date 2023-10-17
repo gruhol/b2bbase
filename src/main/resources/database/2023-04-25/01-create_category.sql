@@ -5,6 +5,5 @@ CREATE TABLE category(
     name VARCHAR(256) NOT NULL,
     parent_id BIGINT,
     slug VARCHAR(256) NOT NULL,
-    description TEXT,
-    logo VARCHAR(256)
+    description TEXT
 );

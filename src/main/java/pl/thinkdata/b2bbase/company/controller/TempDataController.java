@@ -7,12 +7,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.thinkdata.b2bbase.company.model.*;
 import pl.thinkdata.b2bbase.company.repository.BranchRepository;
+import pl.thinkdata.b2bbase.company.repository.CategoryRepository;
 import pl.thinkdata.b2bbase.company.repository.CompanyRepository;
 import pl.thinkdata.b2bbase.company.repository.UserRole2CompanyRepository;
 import pl.thinkdata.b2bbase.security.model.User;
 import pl.thinkdata.b2bbase.security.model.UserRole;
 import pl.thinkdata.b2bbase.security.repository.UserRepository;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -24,6 +26,7 @@ public class TempDataController {
     private final UserRepository userRepository;
     private final UserRole2CompanyRepository userRole2CompanyRepository;
     private final BranchRepository branchRepository;
+    private final CategoryRepository categoryRepository;
 
     @GetMapping("/testdata")
     public String createTempData() {
@@ -73,6 +76,33 @@ public class TempDataController {
                         .email("dabrowskiw@gmail.com")
                         .phone("123456789")
                 .build());
+
+        Category zdrowieIuroda = Category.builder()
+                .name("Zdrowie i uroda")
+                .slug("zdrowie-i-uroda")
+                .build();
+
+        Category zdrowieIurodaSave = categoryRepository.save(zdrowieIuroda);
+
+        Category farmaceutyka = Category.builder()
+                .name("Farmaceutyka")
+                .slug("farmaceutyka")
+                .parentId(zdrowieIuroda.getId())
+                .build();
+
+        Category fryzjerstwo = Category.builder()
+                .name("Fryzjerstwo")
+                .slug("fryzjerstwo")
+                .parentId(zdrowieIuroda.getId())
+                .build();
+
+        Category kosmetyki = Category.builder()
+                .name("kosmetyki")
+                .slug("kosmetyki")
+                .parentId(zdrowieIuroda.getId())
+                .build();
+
+        categoryRepository.saveAll(Arrays.asList(kosmetyki, farmaceutyka, fryzjerstwo));
 
         return "Created";
     }
