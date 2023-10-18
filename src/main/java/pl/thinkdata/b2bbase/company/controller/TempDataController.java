@@ -104,6 +104,27 @@ public class TempDataController {
 
         categoryRepository.saveAll(Arrays.asList(kosmetyki, farmaceutyka, fryzjerstwo));
 
+        Category erotyka = Category.builder()
+                .name("Erotyka")
+                .slug("erotyka")
+                .build();
+
+        Category erotykaSave = categoryRepository.save(erotyka);
+
+        Category bieliznaIodziez = Category.builder()
+                .name("Bielizna i odzież")
+                .slug("bielizna-i-odzież")
+                .parentId(erotykaSave.getId())
+                .build();
+
+        Category drogeriaErotyczna = Category.builder()
+                .name("Drogeria erotyczna")
+                .slug("drogeria-erotyczna")
+                .parentId(erotykaSave.getId())
+                .build();
+
+        categoryRepository.saveAll(Arrays.asList(bieliznaIodziez, drogeriaErotyczna));
+
         return "Created";
     }
 }

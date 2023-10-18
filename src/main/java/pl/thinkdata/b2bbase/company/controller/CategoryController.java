@@ -39,7 +39,7 @@ public class CategoryController {
     }
 
     private List<CategoryResponse> createChildList(List<Category> allCategory, Long id) {
-        if (allCategory.size() <= 0 && id == null) new ArrayList<CategoryResponse>();
+        if (allCategory.size() == 0 && id == null) new ArrayList<CategoryResponse>();
         return allCategory.stream()
                 .filter(cat -> cat.getParentId() == id)
                 .map(cat -> CategoryResponse.builder()
