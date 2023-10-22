@@ -1,12 +1,12 @@
 package pl.thinkdata.b2bbase.company.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.thinkdata.b2bbase.company.dto.CategoryResponse;
 import pl.thinkdata.b2bbase.company.model.Category;
-import pl.thinkdata.b2bbase.company.model.Category2Company;
 import pl.thinkdata.b2bbase.company.model.Company;
 import pl.thinkdata.b2bbase.company.repository.Category2CompanyRepository;
 import pl.thinkdata.b2bbase.company.service.CategoryService;
