@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.thinkdata.b2bbase.company.model.*;
 import pl.thinkdata.b2bbase.company.repository.BranchRepository;
 import pl.thinkdata.b2bbase.company.repository.CategoryRepository;
+import pl.thinkdata.b2bbase.company.repository.Category2CompanyRepository;
 import pl.thinkdata.b2bbase.company.repository.CompanyRepository;
 import pl.thinkdata.b2bbase.company.repository.UserRole2CompanyRepository;
 import pl.thinkdata.b2bbase.security.model.User;
@@ -27,6 +28,7 @@ public class TempDataController {
     private final UserRole2CompanyRepository userRole2CompanyRepository;
     private final BranchRepository branchRepository;
     private final CategoryRepository categoryRepository;
+    private final Category2CompanyRepository company2CategoryRepository;
 
     @GetMapping("/testdata")
     public String createTempData() {
@@ -103,6 +105,14 @@ public class TempDataController {
                 .build();
 
         categoryRepository.saveAll(Arrays.asList(kosmetyki, farmaceutyka, fryzjerstwo));
+
+        Category2Company category2Company = Category2Company.builder()
+                .categoryId(2L)
+                .companyId(newCompany.getId())
+                .build();
+
+        company2CategoryRepository.save(category2Company);
+
 
         return "Created";
     }
