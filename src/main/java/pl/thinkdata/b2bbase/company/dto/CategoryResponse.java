@@ -14,4 +14,5 @@ public class CategoryResponse {
     private String name;
     private List<CategoryResponse> children;
     private Boolean selected;
+    private CategoryResponse parent;
 }

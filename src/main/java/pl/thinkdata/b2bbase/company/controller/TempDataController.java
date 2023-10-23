@@ -89,19 +89,19 @@ public class TempDataController {
         Category farmaceutyka = Category.builder()
                 .name("Farmaceutyka")
                 .slug("farmaceutyka")
-                .parentId(zdrowieIuroda.getId())
+                .parent(zdrowieIuroda)
                 .build();
 
         Category fryzjerstwo = Category.builder()
                 .name("Fryzjerstwo")
                 .slug("fryzjerstwo")
-                .parentId(zdrowieIuroda.getId())
+                .parent(zdrowieIuroda)
                 .build();
 
         Category kosmetyki = Category.builder()
                 .name("kosmetyki")
                 .slug("kosmetyki")
-                .parentId(zdrowieIuroda.getId())
+                .parent(zdrowieIuroda)
                 .build();
 
         categoryRepository.saveAll(Arrays.asList(kosmetyki, farmaceutyka, fryzjerstwo));
@@ -124,13 +124,13 @@ public class TempDataController {
         Category bieliznaIodziez = Category.builder()
                 .name("Bielizna i odzież")
                 .slug("bielizna-i-odzież")
-                .parentId(erotykaSave.getId())
+                .parent(erotykaSave)
                 .build();
 
         Category drogeriaErotyczna = Category.builder()
                 .name("Drogeria erotyczna")
                 .slug("drogeria-erotyczna")
-                .parentId(erotykaSave.getId())
+                .parent(erotykaSave)
                 .build();
 
         categoryRepository.saveAll(Arrays.asList(bieliznaIodziez, drogeriaErotyczna));

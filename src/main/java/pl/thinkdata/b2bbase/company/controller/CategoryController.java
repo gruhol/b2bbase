@@ -37,23 +37,36 @@ public class CategoryController {
                 .collect(Collectors.toList());
 
         List<CategoryResponse> categoryResponses = categoryService.getCategories().stream()
-                .filter(cat -> cat.getParentId() == null)
-                .map(cat -> CategoryResponse.builder()
-                        .id(cat.getId())
-                        .name(cat.getName())
-                        .children(createChildList(allCategory, cat.getId(), category2CompanyList))
-                        .build())
+                .filter(cat -> cat.getParent() == null)
+                .map(cat -> mapToCategoryResponse(category2CompanyList, cat))
                 .collect(Collectors.toList());
 
         return categoryResponses;
     }
 
-    private List<CategoryResponse> createChildList(List<Category> allCategory, Long id, List<Long> userCategory) {
+    private CategoryResponse mapToCategoryResponse(List<Long> category2CompanyList, Category cat) {
+        if (cat == null) return null;
+        return CategoryResponse.builder()
+                .id(cat.getId())
+                .name(cat.getName())
+                .children(createChildList(allCategory, cat.getId(), category2CompanyList, cat))
+                .build();
+    }
+
+
+    private List<CategoryResponse> createChildList(List<Category> allCategory, Long id, List<Long> userCategory, Category parent) {
         if (allCategory.size() <= 0 && id == null) new ArrayList<CategoryResponse>();
         return allCategory.stream()
-                .filter(cat -> cat.getParentId() == id)
+                .filter(cat -> cat.getParent() != null)
+                .filter(cat -> cat.getParent().getId() == id)
                 .map(cat -> CategoryResponse.builder()
                         .id(cat.getId())
+                        .parent(CategoryResponse.builder()
+                                .id(parent.getId())
+                                .name(parent.getName())
+                                .selected(userCategory.contains(parent.getId()))
+                                .parent(mapToCategoryResponse(userCategory, parent.getParent()))
+                                .build())
                         .name(cat.getName())
                         .selected(userCategory.contains(cat.getId()))
                         .build())
