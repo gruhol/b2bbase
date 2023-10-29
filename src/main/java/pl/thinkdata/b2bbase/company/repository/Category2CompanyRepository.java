@@ -8,4 +8,6 @@ import java.util.List;
 public interface Category2CompanyRepository extends JpaRepository<Category2Company, Long> {
 
     List<Category2Company> findAllByCompanyId(Long companyId);
+
+    void deleteByCompanyId(Long companyId);
 }

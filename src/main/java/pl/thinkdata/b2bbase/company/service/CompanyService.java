@@ -1,6 +1,7 @@
 package pl.thinkdata.b2bbase.company.service;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -10,9 +11,11 @@ import pl.thinkdata.b2bbase.common.util.MessageGenerator;
 import pl.thinkdata.b2bbase.common.util.TokenUtil;
 import pl.thinkdata.b2bbase.company.dto.*;
 import pl.thinkdata.b2bbase.company.mapper.CompanyMapper;
+import pl.thinkdata.b2bbase.company.model.Category2Company;
 import pl.thinkdata.b2bbase.company.model.Company;
 import pl.thinkdata.b2bbase.company.model.CompanyRoleEnum;
 import pl.thinkdata.b2bbase.company.model.UserRole2Company;
+import pl.thinkdata.b2bbase.company.repository.Category2CompanyRepository;
 import pl.thinkdata.b2bbase.company.repository.CompanyRepository;
 import pl.thinkdata.b2bbase.company.repository.UserRole2CompanyRepository;
 import pl.thinkdata.b2bbase.company.validator.EditCompanyValidator;
@@ -22,6 +25,7 @@ import pl.thinkdata.b2bbase.security.repository.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.*;
 import static pl.thinkdata.b2bbase.company.component.SlugGenerator.toSlug;
@@ -38,6 +42,7 @@ public class CompanyService {
     private final MessageGenerator messageGenerator;
     private final UserDetailsService userDetailsService;
     private final UserRole2CompanyRepository userRole2CompanyRepository;
+    private final Category2CompanyRepository category2CompanyRepository;
 
     public List<Company> getCompanies() {
         return companyRepository.findAll();
@@ -108,10 +113,22 @@ public class CompanyService {
 
         return mapToCompanyToEdit(companyRepository.save(companyInBase));
     }
-
+    @Transactional
     public CompanyToEdit editAdditionalDataCompany(AdditionalDataToEdit additionalDataToEdit, HttpServletRequest request) {
         Company companyInBase = getUserCompanyByToken(request.getHeader(TOKEN_HEADER));
         companyInBase.setDescription(additionalDataToEdit.getDescription());
+        System.out.println(additionalDataToEdit.getCategory().size());
+
+        if(additionalDataToEdit.getCategory().size() > 0) {
+            //category2CompanyRepository.deleteByCompanyId(companyInBase.getId());
+            List<Category2Company> categoryToSave = additionalDataToEdit.getCategory().stream()
+                            .map(category -> Category2Company.builder()
+                                    .companyId(companyInBase.getId())
+                                    .categoryId(category)
+                                    .build())
+                                    .collect(Collectors.toList());
+            category2CompanyRepository.saveAll(categoryToSave);
+        }
 
         return mapToCompanyToEdit(companyRepository.save(companyInBase));
     }
