@@ -3,8 +3,16 @@ package pl.thinkdata.b2bbase.company.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
-import pl.thinkdata.b2bbase.company.dto.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import pl.thinkdata.b2bbase.company.dto.AdditionalDataToEdit;
+import pl.thinkdata.b2bbase.company.dto.CompanyDto;
+import pl.thinkdata.b2bbase.company.dto.CompanyResponse;
+import pl.thinkdata.b2bbase.company.dto.CompanyToEdit;
+import pl.thinkdata.b2bbase.company.dto.CompanyToEditDto;
 import pl.thinkdata.b2bbase.company.model.Company;
 import pl.thinkdata.b2bbase.company.service.CompanyService;
 

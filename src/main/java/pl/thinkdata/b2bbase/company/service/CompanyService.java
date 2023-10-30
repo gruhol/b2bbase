@@ -2,7 +2,6 @@ package pl.thinkdata.b2bbase.company.service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
