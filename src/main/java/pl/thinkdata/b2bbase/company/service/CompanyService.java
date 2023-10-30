@@ -2,6 +2,7 @@ package pl.thinkdata.b2bbase.company.service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -9,13 +10,17 @@ import org.springframework.stereotype.Service;
 import pl.thinkdata.b2bbase.common.error.InvalidRequestDataException;
 import pl.thinkdata.b2bbase.common.util.MessageGenerator;
 import pl.thinkdata.b2bbase.common.util.TokenUtil;
-import pl.thinkdata.b2bbase.company.dto.*;
+import pl.thinkdata.b2bbase.company.dto.AdditionalDataToEdit;
+import pl.thinkdata.b2bbase.company.dto.CompanyDto;
+import pl.thinkdata.b2bbase.company.dto.CompanyResponse;
+import pl.thinkdata.b2bbase.company.dto.CompanyToEdit;
+import pl.thinkdata.b2bbase.company.dto.CompanyToEditDto;
 import pl.thinkdata.b2bbase.company.mapper.CompanyMapper;
-import pl.thinkdata.b2bbase.company.model.Category2Company;
+import pl.thinkdata.b2bbase.company.model.Category;
 import pl.thinkdata.b2bbase.company.model.Company;
 import pl.thinkdata.b2bbase.company.model.CompanyRoleEnum;
 import pl.thinkdata.b2bbase.company.model.UserRole2Company;
-import pl.thinkdata.b2bbase.company.repository.Category2CompanyRepository;
+import pl.thinkdata.b2bbase.company.repository.CategoryRepository;
 import pl.thinkdata.b2bbase.company.repository.CompanyRepository;
 import pl.thinkdata.b2bbase.company.repository.UserRole2CompanyRepository;
 import pl.thinkdata.b2bbase.company.validator.EditCompanyValidator;
@@ -27,10 +32,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.*;
-import static pl.thinkdata.b2bbase.company.component.SlugGenerator.toSlug;
-import static pl.thinkdata.b2bbase.company.mapper.CompanyMapper.*;
+import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.USER_FROM_GIVEN_TOKEN_NOT_FOUND;
+import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.YOU_CAN_ADD_ONLY_ONE_COMPANY;
 import static pl.thinkdata.b2bbase.common.tool.LoginDictionary.TOKEN_HEADER;
+import static pl.thinkdata.b2bbase.company.component.SlugGenerator.toSlug;
+import static pl.thinkdata.b2bbase.company.mapper.CompanyMapper.mapToCompanyResponse;
+import static pl.thinkdata.b2bbase.company.mapper.CompanyMapper.mapToCompanyToEdit;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +49,8 @@ public class CompanyService {
     private final MessageGenerator messageGenerator;
     private final UserDetailsService userDetailsService;
     private final UserRole2CompanyRepository userRole2CompanyRepository;
-    private final Category2CompanyRepository category2CompanyRepository;
+    private final CategoryRepository categoryRepository;
+    List<Category> allCategory;
 
     public List<Company> getCompanies() {
         return companyRepository.findAll();
@@ -113,24 +121,36 @@ public class CompanyService {
 
         return mapToCompanyToEdit(companyRepository.save(companyInBase));
     }
+
     @Transactional
     public CompanyToEdit editAdditionalDataCompany(AdditionalDataToEdit additionalDataToEdit, HttpServletRequest request) {
         Company companyInBase = getUserCompanyByToken(request.getHeader(TOKEN_HEADER));
         companyInBase.setDescription(additionalDataToEdit.getDescription());
         System.out.println(additionalDataToEdit.getCategory().size());
 
-        if(additionalDataToEdit.getCategory().size() > 0) {
-            //category2CompanyRepository.deleteByCompanyId(companyInBase.getId());
-            List<Category2Company> categoryToSave = additionalDataToEdit.getCategory().stream()
-                            .map(category -> Category2Company.builder()
-                                    .companyId(companyInBase.getId())
-                                    .categoryId(category)
-                                    .build())
-                                    .collect(Collectors.toList());
-            category2CompanyRepository.saveAll(categoryToSave);
-        }
+        companyInBase.getCategories().stream()
+                .filter(cat -> !additionalDataToEdit.getCategory().contains(cat.getId()))
+                .forEach(cat -> companyInBase.removeCategory(cat.getId()));
 
-        return mapToCompanyToEdit(companyRepository.save(companyInBase));
+        List<Long> categoryToCompanyList = companyInBase.getCategories().stream()
+                .map(cat -> cat.getId())
+                .collect(Collectors.toList());
+
+        additionalDataToEdit.getCategory().stream()
+                .filter(cat -> !categoryToCompanyList.contains(cat))
+                .forEach(cat -> companyInBase.addCategory(getCategoryById(cat)));
+
+
+        return mapToCompanyToEdit(companyRepository.saveAndFlush(companyInBase));
+    }
+
+    private Category getCategoryById(Long id) {
+        if (allCategory == null) {
+            allCategory = categoryRepository.findAll();
+        }
+        return allCategory.stream()
+                .filter(cat -> cat.getId() == id)
+                .findFirst().orElse(null);
     }
 
     private Company getUserCompanyByToken(String token) {
