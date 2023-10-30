@@ -125,17 +125,16 @@ public class CompanyService {
     public CompanyToEdit editAdditionalDataCompany(AdditionalDataToEdit additionalDataToEdit, HttpServletRequest request) {
         Company companyInBase = getUserCompanyByToken(request.getHeader(TOKEN_HEADER));
         companyInBase.setDescription(additionalDataToEdit.getDescription());
-        System.out.println(additionalDataToEdit.getCategory().size());
 
         companyInBase.getCategories().stream()
-                .filter(cat -> !additionalDataToEdit.getCategory().contains(cat.getId()))
+                .filter(cat -> !additionalDataToEdit.getCategories().contains(cat.getId()))
                 .forEach(cat -> companyInBase.removeCategory(cat.getId()));
 
         List<Long> categoryToCompanyList = companyInBase.getCategories().stream()
                 .map(cat -> cat.getId())
                 .collect(Collectors.toList());
 
-        additionalDataToEdit.getCategory().stream()
+        additionalDataToEdit.getCategories().stream()
                 .filter(cat -> !categoryToCompanyList.contains(cat))
                 .forEach(cat -> companyInBase.addCategory(getCategoryById(cat)));
 

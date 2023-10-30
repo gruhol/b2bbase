@@ -49,7 +49,6 @@ public class CategoryService {
                 .build();
     }
 
-
     private List<CategoryResponse> createChildList(List<Category> allCategory, List<Long> userCategory, Category parent) {
         if (allCategory.size() == 0 && parent.getId() == null) new ArrayList<CategoryResponse>();
         return allCategory.stream()

@@ -40,7 +40,7 @@ public class Company {
     private String logo;
     @OneToMany(mappedBy = "company")
     private List<Branch> branches;
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "category_2_company",
             joinColumns = { @JoinColumn(name = "companyId") },
             inverseJoinColumns = { @JoinColumn(name = "categoryId") })

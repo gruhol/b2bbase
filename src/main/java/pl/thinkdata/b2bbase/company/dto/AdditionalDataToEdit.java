@@ -9,5 +9,5 @@ import java.util.List;
 @Setter
 public class AdditionalDataToEdit {
     private String description;
-    private List<Long> category;
+    private List<Long> categories;
 }
