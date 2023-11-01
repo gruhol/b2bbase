@@ -27,4 +27,5 @@ public class CompanyToEdit {
     private boolean apiCooperation;
     private boolean productFileCooperation;
     private String description;
+    private String logo;
 }

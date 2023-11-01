@@ -10,4 +10,5 @@ import java.util.List;
 public class AdditionalDataToEdit {
     private String description;
     private List<Long> categories;
+    private String logo;
 }

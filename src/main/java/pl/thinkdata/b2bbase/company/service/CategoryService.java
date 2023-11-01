@@ -5,8 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.thinkdata.b2bbase.company.dto.CategoryResponse;
 import pl.thinkdata.b2bbase.company.model.Category;
-import pl.thinkdata.b2bbase.company.model.Company;
-import pl.thinkdata.b2bbase.company.repository.Category2CompanyRepository;
 import pl.thinkdata.b2bbase.company.repository.CategoryRepository;
 
 import java.util.ArrayList;
@@ -18,7 +16,6 @@ import java.util.stream.Collectors;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
-    private final Category2CompanyRepository category2CompanyRepository;
     private final CompanyService companyService;
 
     List<Category> allCategory;
@@ -26,10 +23,8 @@ public class CategoryService {
     public List<CategoryResponse> getCategories(HttpServletRequest request) {
 
         this.allCategory = categoryRepository.findAll();
-        Company company = companyService.getCompany(request);
-        List<Long> category2CompanyList = category2CompanyRepository.findAllByCompanyId(company.getId())
-                .stream()
-                .map(cat -> cat.getCategoryId())
+        List<Long> category2CompanyList = companyService.getCompany(request).getCategories().stream()
+                .map(cat -> cat.getId())
                 .collect(Collectors.toList());
 
         List<CategoryResponse> categoryResponses = this.allCategory.stream()

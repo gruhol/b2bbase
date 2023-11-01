@@ -20,4 +20,5 @@ public class ErrorDictionary {
     public static final String SOCIAL_NOT_FOUND = "social.not.found";
     public static final String YOU_CAN_ADD_ONLY_ONE_SOCIAL_TYPE = "you.can.add.only.one.social.type";
     public static final String YOU_ARE_NOT_OWNER_THIS_SOCIAL_URL = "you.are.not.owner.this.social.url";
+    public static final String AN_ERROR_OCCURED_FAILED_TO_SAVE_THE_IMAGE = "an.error.occured.Failed.to.save.the.image";
 }
