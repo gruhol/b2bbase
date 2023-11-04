@@ -12,17 +12,18 @@ import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/img")
 public class ImageController {
 
     private final ImageService imageService;
 
-    @PostMapping("/uploadLogo")
-    public UploadResponse uploadLogoImages(@RequestParam("file") MultipartFile multipartFile, String dir) {
+    @PostMapping("/upload/{dir}")
+    public UploadResponse uploadImages(@RequestParam("file") MultipartFile multipartFile, @PathVariable String dir) {
         return imageService.uploadImage(multipartFile, dir);
     }
 
-    @GetMapping("/logoImages/{filename}")
-    public ResponseEntity<Resource> serveLogoImages(@PathVariable String filename) throws IOException {
-        return imageService.serveLogoImages(filename);
+    @GetMapping("/get/{dir}/{filename}")
+    public ResponseEntity<Resource> serveImages(@PathVariable String filename, @PathVariable String dir) throws IOException {
+        return imageService.serveImages(filename, dir);
     }
 }

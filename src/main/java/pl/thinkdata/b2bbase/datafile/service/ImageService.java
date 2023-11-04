@@ -6,16 +6,11 @@ import org.springframework.core.io.FileSystemResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.thinkdata.b2bbase.common.error.SystemException;
 import pl.thinkdata.b2bbase.common.util.MessageGenerator;
-import pl.thinkdata.b2bbase.common.util.TokenUtil;
 import pl.thinkdata.b2bbase.company.dto.UploadResponse;
-import pl.thinkdata.b2bbase.security.repository.UserRepository;
-import pl.thinkdata.b2bbase.security.service.VerificationLinkService;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,7 +22,6 @@ import java.nio.file.Paths;
 import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.AN_ERROR_OCCURED_FAILED_TO_SAVE_THE_IMAGE;
 
 @Service
-@RequiredArgsConstructor
 public class ImageService {
 
     private String directory;
@@ -52,8 +46,8 @@ public class ImageService {
         }
     }
 
-    public ResponseEntity<Resource> serveLogoImages(String filename) throws IOException {
-        String uploadDir = "./data/logoImages/";
+    public ResponseEntity<Resource> serveImages(String filename, String dir) throws IOException {
+        String uploadDir = "./data/" + dir + "/";
         FileSystemResourceLoader fileSystemResourceLoader = new FileSystemResourceLoader();
         Resource file = fileSystemResourceLoader.getResource(uploadDir + filename);
         return ResponseEntity.ok()
