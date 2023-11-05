@@ -12,8 +12,6 @@ import pl.thinkdata.b2bbase.common.util.MessageGenerator;
 import pl.thinkdata.b2bbase.company.dto.UploadResponse;
 import pl.thinkdata.b2bbase.datafile.validator.ImageValidator;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -26,9 +24,6 @@ import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.AN_ERROR_OCCURED_
 @Service
 public class ImageService {
 
-    public static final int MAX_WIDTH = 2000;
-    public static final int MAX_HEIGHT = 1000;
-    public static final double ALLOWED_PROPORTION = 2;
     private String directory;
     private final MessageGenerator messageGenerator;
 
@@ -38,11 +33,9 @@ public class ImageService {
     }
 
     public UploadResponse uploadImage(MultipartFile multipartFile, String dir) {
-//        if (!isValidImage(multipartFile, MAX_WIDTH, MAX_HEIGHT, ALLOWED_PROPORTION)) {
-//            throw new SystemException(messageGenerator.get(AN_ERROR_OCCURED_FAILED_TO_SAVE_THE_IMAGE));
-//        }
         ImageValidator imageValidator = new ImageValidator(multipartFile, messageGenerator);
         imageValidator.valid();
+
         String fileName = multipartFile.getOriginalFilename();
         String uploadDir = directory + dir + "/";
         Path filePath = Paths.get(uploadDir).resolve(fileName);
@@ -63,20 +56,5 @@ public class ImageService {
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_TYPE, Files.probeContentType(Path.of(filename)))
                 .body(file);
-    }
-
-    public static boolean isValidImage(MultipartFile file, int maxWidth, int maxHeight, double allowedProportion) {
-        try {
-            BufferedImage image = ImageIO.read(file.getInputStream());
-            int width = image.getWidth();
-            int height = image.getHeight();
-
-            return width <= maxWidth &&
-                    height <= maxHeight &&
-                    Math.abs((double) width / height - allowedProportion) < 0.1;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
     }
 }
