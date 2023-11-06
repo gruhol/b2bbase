@@ -1,6 +1,7 @@
 package pl.thinkdata.b2bbase.datafile.validator;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
@@ -66,7 +67,8 @@ public class ImageValidator {
 
     @Setter
     @Getter
-    public class Params {
+    @NoArgsConstructor
+    public static class Params {
         private int width;
         private int height;
         private double proportion;
