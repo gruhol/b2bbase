@@ -1,15 +1,19 @@
 package pl.thinkdata.b2bbase.datafile.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.thinkdata.b2bbase.common.error.SystemException;
 import pl.thinkdata.b2bbase.common.util.MessageGenerator;
 import pl.thinkdata.b2bbase.company.dto.UploadResponse;
+import pl.thinkdata.b2bbase.company.model.Company;
+import pl.thinkdata.b2bbase.company.service.CompanyService;
 import pl.thinkdata.b2bbase.datafile.util.TinyPngConverter;
 import pl.thinkdata.b2bbase.datafile.validator.ImageValidator;
 
@@ -28,42 +32,55 @@ public class ImageService {
     private String directory;
     private final MessageGenerator messageGenerator;
     private final TinyPngConverter tinyPngConverter;
+    private final CompanyService companyService;
 
-    public ImageService(@Value("${file.directory}") String directory, MessageGenerator messageGenerator, TinyPngConverter tinyPngConverter) {
+    public ImageService(@Value("${file.directory}") String directory,
+                        MessageGenerator messageGenerator,
+                        TinyPngConverter tinyPngConverter,
+                        CompanyService companyService) {
         this.directory = directory;
         this.messageGenerator = messageGenerator;
         this.tinyPngConverter = tinyPngConverter;
+        this.companyService = companyService;
     }
 
-    public UploadResponse uploadImage(MultipartFile multipartFile, String dir) {
+    public UploadResponse uploadImage(MultipartFile multipartFile, String dir,  HttpServletRequest request) {
         ImageValidator imageValidator = new ImageValidator(multipartFile, messageGenerator);
-        imageValidator.valid();
+        imageValidator.valid(1000, 500, 2);
 
         String fileName = multipartFile.getOriginalFilename();
-        String uploadDir = directory + dir + "/";
+        String uploadDir = directory + dir + "/temp/";
         Path filePath = Paths.get(uploadDir).resolve(fileName);
-
-        try {
-            tinyPngConverter.convertImage(fileName);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        String fileNameToSave = generateFileLogoName(request, fileName);
 
         try (InputStream stream = multipartFile.getInputStream()) {
             OutputStream outputStream = Files.newOutputStream(filePath);
             stream.transferTo(outputStream);
-            return new UploadResponse(fileName);
+            tinyPngConverter.convertImage(fileName, fileNameToSave, dir);
+            Files.deleteIfExists(filePath);
+            return new UploadResponse(fileNameToSave);
         } catch (IOException e) {
             throw new SystemException(messageGenerator.get(AN_ERROR_OCCURED_FAILED_TO_SAVE_THE_IMAGE));
         }
     }
 
-    public ResponseEntity<Resource> serveImages(String filename, String dir) throws IOException {
+    public ResponseEntity<Resource> serveImages(String filename, String dir) {
         String uploadDir = "./data/" + dir + "/";
         FileSystemResourceLoader fileSystemResourceLoader = new FileSystemResourceLoader();
         Resource file = fileSystemResourceLoader.getResource(uploadDir + filename);
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_TYPE, Files.probeContentType(Path.of(filename)))
-                .body(file);
+        try {
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_TYPE, Files.probeContentType(Path.of(filename)))
+                    .body(file);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(null);
+        }
+    }
+
+    private String generateFileLogoName(HttpServletRequest request, String fileName) {
+        Company company = companyService.getCompany(request);
+        String fileExtension = fileName.substring(fileName.lastIndexOf("."));
+        return company.getSlug() + "-logo" + fileExtension;
     }
 }

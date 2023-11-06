@@ -27,9 +27,6 @@ public class ImageValidator {
     private static final String width = "width";
     private static final String height = "height";
     private static final String proportions = "proportions";
-    private static final int requiredWidth = 1000;
-    private static final int requiredHeight = 500;
-    private static final int requiredProportion = 2;
 
     private ImageWidthPredicate<ImageValidator.Params> imageWidthPredicate = new ImageWidthPredicate<ImageValidator.Params>();
     private ImageHeightPredicate<Params> imageHeightPredicate = new ImageHeightPredicate<ImageValidator.Params>();
@@ -40,7 +37,7 @@ public class ImageValidator {
         this.messageGenerator = messageGenerator;
     }
 
-    public void valid() {
+    public void valid(int requiredWidth, int requiredHeight, int requiredProportion) {
         ImageValidator.Params parameters = new ImageValidator.Params();
         parameters.setFile(file);
         parameters.setHeight(requiredHeight);
