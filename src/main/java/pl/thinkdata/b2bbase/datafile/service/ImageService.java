@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import pl.thinkdata.b2bbase.common.error.SystemException;
 import pl.thinkdata.b2bbase.common.util.MessageGenerator;
 import pl.thinkdata.b2bbase.company.dto.UploadResponse;
+import pl.thinkdata.b2bbase.datafile.util.TinyPngConverter;
 import pl.thinkdata.b2bbase.datafile.validator.ImageValidator;
 
 import java.io.IOException;
@@ -26,10 +27,12 @@ public class ImageService {
 
     private String directory;
     private final MessageGenerator messageGenerator;
+    private final TinyPngConverter tinyPngConverter;
 
-    public ImageService(@Value("${file.directory}") String directory, MessageGenerator messageGenerator) {
+    public ImageService(@Value("${file.directory}") String directory, MessageGenerator messageGenerator, TinyPngConverter tinyPngConverter) {
         this.directory = directory;
         this.messageGenerator = messageGenerator;
+        this.tinyPngConverter = tinyPngConverter;
     }
 
     public UploadResponse uploadImage(MultipartFile multipartFile, String dir) {
@@ -39,6 +42,12 @@ public class ImageService {
         String fileName = multipartFile.getOriginalFilename();
         String uploadDir = directory + dir + "/";
         Path filePath = Paths.get(uploadDir).resolve(fileName);
+
+        try {
+            tinyPngConverter.convertImage(fileName);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         try (InputStream stream = multipartFile.getInputStream()) {
             OutputStream outputStream = Files.newOutputStream(filePath);
