@@ -65,16 +65,26 @@ public class ImageService {
     }
 
     public ResponseEntity<Resource> serveImages(String filename, String dir) {
-        String uploadDir = "./data/" + dir + "/";
-        FileSystemResourceLoader fileSystemResourceLoader = new FileSystemResourceLoader();
-        Resource file = fileSystemResourceLoader.getResource(uploadDir + filename);
         try {
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_TYPE, Files.probeContentType(Path.of(filename)))
-                    .body(file);
-        } catch (IOException e) {
+            String uploadDir = directory + dir + "/";
+            FileSystemResourceLoader fileSystemResourceLoader = new FileSystemResourceLoader();
+            Resource file = fileSystemResourceLoader.getResource(uploadDir + filename);
+            if (file.exists()) {
+                return ResponseEntity.ok()
+                        .header(HttpHeaders.CONTENT_TYPE, Files.probeContentType(Path.of(filename)))
+                        .body(file);
+            }
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Custom-Header", "Not found image");
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(null);
+                    .headers(headers)
+                    .build();
+        } catch (IOException e) {
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Custom-Header", "Not found image");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .headers(headers)
+                    .build();
         }
     }
 
