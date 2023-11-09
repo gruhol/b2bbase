@@ -26,6 +26,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -59,7 +60,7 @@ class ImageServiceTest {
         Files.createDirectories(tempDir);
 
         this.imageService = new ImageService(
-                tempolaryDir.toString() + "/",
+                tempolaryDir.toString() + "\\",
                 new MessageGenerator(messageSource),
                 this.tinyPngConverter,
                 this.companyService);
@@ -83,19 +84,19 @@ class ImageServiceTest {
         assertEquals("Wystąpił błąd. Nie udało się zapisać obrazka.", exception.getMessage());
     }
 
-//    @Test
-//    void shouldReturnResponseEntityWithStatusOKWhenImageExist() throws IOException {
-//        generateTemporaryImageInTempFolder(200,100);
-//        ResponseEntity  response = imageService.serveImages("image.jpg", "logos");
-//        assertEquals(HttpStatus.OK.value(), response.getStatusCode().value());
-//    }
-//
-//    @Test
-//    void shouldReturnResponseEntityWithStatusNotFoundWhenImageNotExist() throws IOException {
-//        generateTemporaryImageInTempFolder(200,100);
-//        ResponseEntity  response = imageService.serveImages("ige.jpg", "logos");
-//        assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCode().value());
-//    }
+    @Test
+    void shouldReturnResponseEntityWithStatusOKWhenImageExist() throws IOException {
+        generateTemporaryImageInTempFolder(200,100);
+        ResponseEntity  response = imageService.serveImages("image.jpg", "logos");
+        assertEquals(HttpStatus.OK.value(), response.getStatusCode().value());
+    }
+
+    @Test
+    void shouldReturnResponseEntityWithStatusNotFoundWhenImageNotExist() throws IOException {
+        generateTemporaryImageInTempFolder(200,100);
+        ResponseEntity  response = imageService.serveImages("ige.jpg", "logos");
+        assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCode().value());
+    }
 
     private static MultipartFile generateTemporaryImage(int width, int height) throws IOException {
         Path tempImagePath = Files.createTempFile("image", ".jpg");
@@ -117,7 +118,9 @@ class ImageServiceTest {
         g2d.fillRect(0, 0, width, height);
         g2d.dispose();
         ImageIO.write(bufferedImage, "jpg", tempImagePath.toFile());
-        logosDir.resolve(tempImagePath);
+        Path destinationPath = logosDir.resolve("image.jpg");
+        Files.copy(tempImagePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
+        Files.delete(tempImagePath);
     }
 
     private Company createTempCompany() {
