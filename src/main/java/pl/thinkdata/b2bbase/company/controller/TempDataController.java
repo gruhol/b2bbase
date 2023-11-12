@@ -9,7 +9,7 @@ import pl.thinkdata.b2bbase.company.model.*;
 import pl.thinkdata.b2bbase.company.repository.BranchRepository;
 import pl.thinkdata.b2bbase.company.repository.CategoryRepository;
 import pl.thinkdata.b2bbase.company.repository.Category2CompanyRepository;
-import pl.thinkdata.b2bbase.company.repository.CompanyRepository;
+import pl.thinkdata.b2bbase.common.repository.CompanyRepository;
 import pl.thinkdata.b2bbase.company.repository.UserRole2CompanyRepository;
 import pl.thinkdata.b2bbase.security.model.User;
 import pl.thinkdata.b2bbase.security.model.UserRole;

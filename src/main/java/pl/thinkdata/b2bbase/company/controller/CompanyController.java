@@ -22,12 +22,6 @@ public class CompanyController {
 
     private final CompanyService companyService;
 
-
-    @GetMapping
-    public List<Company> getCompanies() {
-        return companyService.getCompanies();
-    }
-
     @PostMapping("/add")
     public CompanyResponse addCompany(@RequestBody @Valid CompanyDto companyDto, HttpServletRequest request) {
         return companyService.addCompany(companyDto, request);
