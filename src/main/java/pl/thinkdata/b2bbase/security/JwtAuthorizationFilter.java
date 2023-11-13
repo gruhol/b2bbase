@@ -12,8 +12,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import pl.thinkdata.b2bbase.common.error.AuthorizationException;
 
 import java.io.IOException;
+import java.util.Optional;
 
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
@@ -48,11 +50,19 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                     .build()
                     .verify(token.replace(TOKEN_PREFIX, ""))
                     .getSubject();
-            if (userName != null) {
-                UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
+            UserDetails userDetails = getUserDetailsOfNull(userName);
+            if (userDetails != null) {
                 return new UsernamePasswordAuthenticationToken(userDetails.getUsername(), null, userDetails.getAuthorities());
             }
         }
         return null;
+    }
+
+    private UserDetails getUserDetailsOfNull(String userName) {
+        try {
+            return userDetailsService.loadUserByUsername(userName);
+        } catch (AuthorizationException e) {
+            return null;
+        }
     }
 }
