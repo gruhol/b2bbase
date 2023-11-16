@@ -19,7 +19,7 @@ import pl.thinkdata.b2bbase.company.model.Category;
 import pl.thinkdata.b2bbase.company.model.Company;
 import pl.thinkdata.b2bbase.company.model.CompanyRoleEnum;
 import pl.thinkdata.b2bbase.company.model.UserRole2Company;
-import pl.thinkdata.b2bbase.company.repository.CategoryRepository;
+import pl.thinkdata.b2bbase.common.repository.CategoryRepository;
 import pl.thinkdata.b2bbase.common.repository.CompanyRepository;
 import pl.thinkdata.b2bbase.company.repository.UserRole2CompanyRepository;
 import pl.thinkdata.b2bbase.company.validator.EditCompanyValidator;

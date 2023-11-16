@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.thinkdata.b2bbase.company.dto.CategoryResponse;
 import pl.thinkdata.b2bbase.company.model.Category;
-import pl.thinkdata.b2bbase.company.repository.CategoryRepository;
+import pl.thinkdata.b2bbase.common.repository.CategoryRepository;
 
 import java.util.ArrayList;
 import java.util.List;

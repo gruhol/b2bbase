@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.thinkdata.b2bbase.company.model.*;
 import pl.thinkdata.b2bbase.company.repository.BranchRepository;
-import pl.thinkdata.b2bbase.company.repository.CategoryRepository;
+import pl.thinkdata.b2bbase.common.repository.CategoryRepository;
 import pl.thinkdata.b2bbase.company.repository.Category2CompanyRepository;
 import pl.thinkdata.b2bbase.common.repository.CompanyRepository;
 import pl.thinkdata.b2bbase.company.repository.UserRole2CompanyRepository;
