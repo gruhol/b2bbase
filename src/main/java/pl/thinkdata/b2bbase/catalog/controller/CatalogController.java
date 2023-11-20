@@ -3,10 +3,7 @@ package pl.thinkdata.b2bbase.catalog.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.thinkdata.b2bbase.catalog.dto.CategoryToCatalog;
 import pl.thinkdata.b2bbase.catalog.dto.CompanyInCatalog;
 import pl.thinkdata.b2bbase.catalog.dto.CompanyInCatalog2;
@@ -23,9 +20,10 @@ public class CatalogController {
     private final CatalogCompanyService catalogCompanyService;
     private final CatalogCategoryService catalogCategoryService;
 
-    @GetMapping("/{idCategories}")
-    public Page<CompanyInCatalog> getCompanies(@PathVariable List<Long> idCategories, Pageable pageable) {
-        return catalogCompanyService.getCompanies(idCategories, pageable);
+    @GetMapping({"/{idCategories}", "/{idCategories}/{isEdiCooperation}"})
+    @ResponseBody
+    public Page<CompanyInCatalog> getCompanies(@PathVariable List<Long> idCategories, @PathVariable(required = false) boolean isEdiCooperation, Pageable pageable) {
+        return catalogCompanyService.getCompanies(idCategories, isEdiCooperation, pageable);
     }
 
     private String wynik;

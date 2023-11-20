@@ -20,7 +20,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
 
     Optional<Company> findBySlug(String toSlug);
 
-    Page<Company> findAllByCategoriesIn(List<Category> categories, Pageable pageable);
+    Page<Company> findAllByCategoriesInAndEdiCooperation(List<Category> categories, boolean IsEdiCooperation, Pageable pageable);
 
     @Query(value = "SELECT" +
             " c.name," +

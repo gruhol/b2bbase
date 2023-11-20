@@ -24,11 +24,11 @@ public class CatalogCompanyService {
     private final CompanyRepository companyRepository;
     private final CategoryRepository categoryRepository;
 
-    public Page<CompanyInCatalog> getCompanies(List<Long> idCategories, Pageable pageable) {
+    public Page<CompanyInCatalog> getCompanies(List<Long> idCategories, boolean isEdiCooperation,  Pageable pageable) {
         //Page<Company> companies = companyRepository.findAll(pageable);
         List<Category> cats = categoryRepository.findAllById(idCategories);
 
-        Page<Company> companies = companyRepository.findAllByCategoriesIn(cats, pageable);
+        Page<Company> companies = companyRepository.findAllByCategoriesInAndEdiCooperation(cats, isEdiCooperation, pageable);
         List<CompanyInCatalog> companyInCatalogList = companies.stream()
                 .map(company -> mapToCompanyInCatalog(company))
                 .collect(Collectors.toList());
