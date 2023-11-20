@@ -23,10 +23,12 @@ public class CatalogController {
     private final CatalogCompanyService catalogCompanyService;
     private final CatalogCategoryService catalogCategoryService;
 
-    @GetMapping
-    public Page<CompanyInCatalog> getCompanies(Pageable pageable) {
-        return catalogCompanyService.getCompanies(pageable);
+    @GetMapping("/{idCategories}")
+    public Page<CompanyInCatalog> getCompanies(@PathVariable List<Long> idCategories, Pageable pageable) {
+        return catalogCompanyService.getCompanies(idCategories, pageable);
     }
+
+    private String wynik;
 
     @GetMapping("/category")
     public List<CategoryToCatalog> getCategory() {
@@ -34,7 +36,8 @@ public class CatalogController {
     }
 
     @GetMapping("/get/{idCompanies}/{idBranches}")
-    public Page<CompanyInCatalog2> getCompanies(@PathVariable Long[] idCompanies, @PathVariable Long[] idBranches, Pageable pageable) {
+    public Page<CompanyInCatalog2> getCompanies(@PathVariable List<String> idCompanies, @PathVariable List<String> idBranches, Pageable pageable) {
+        String dupa = "dupa";
         return catalogCompanyService.getCompanies2(idCompanies, idBranches, pageable);
     }
 }
