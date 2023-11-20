@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pl.thinkdata.b2bbase.catalog.dto.CompanyInCatalog;
+import pl.thinkdata.b2bbase.catalog.dto.CompanyInCatalog2;
 import pl.thinkdata.b2bbase.common.repository.CompanyRepository;
 import pl.thinkdata.b2bbase.company.model.Company;
 
@@ -27,5 +28,9 @@ public class CatalogCompanyService {
                 .collect(Collectors.toList());
 
         return new PageImpl<>(companyInCatalogList, pageable, companies.getTotalElements());
+    }
+
+    public Page<CompanyInCatalog2> getCompanies2(Long[] idCategories, Long[] idBranches, Pageable pageable) {
+        return companyRepository.getAllCompanyToCatalog(idCategories, idBranches, pageable);
     }
 }

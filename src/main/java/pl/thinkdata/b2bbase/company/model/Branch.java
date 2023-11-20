@@ -33,4 +33,6 @@ public class Branch {
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private Company company;
+    @Column(name="company_id", insertable=false, updatable=false)
+    private Long companyId;
 }
