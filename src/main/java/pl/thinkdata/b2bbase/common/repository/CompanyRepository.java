@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import pl.thinkdata.b2bbase.catalog.dto.CompanyInCatalog2;
 import pl.thinkdata.b2bbase.company.model.Category;
 import pl.thinkdata.b2bbase.company.model.Company;
 
@@ -88,16 +89,20 @@ public interface CompanyRepository extends JpaRepository<Company, Long>, JpaSpec
 
     @Query(value = "SELECT c " +
             " FROM Company c" +
+            " LEFT OUTER JOIN Category2Company c2c ON c.id = c2c.companyId" +
+            " LEFT OUTER JOIN Category cat ON c2c.categoryId = cat.id" +
             " WHERE" +
-            " (COALESCE(:idCategories) IS NULL OR (c.categories IN (:idCategories)))" +
+            " (:idCategories IS NULL OR (cat.id IN (:idCategories)))" +
+//            " cat.id IN (:idCategories)" +
             " GROUP BY c.id" +
             " ORDER BY c.id DESC",
             countQuery = "SELECT count(*) FROM Company c " +
+                    " LEFT OUTER JOIN Category2Company c2c ON c.id=c2c.companyId" +
+                    " LEFT OUTER JOIN Category cat ON c2c.categoryId = cat.id" +
                     " WHERE" +
-                    " (COALESCE(:idCategories) IS NULL OR (c.categories IN (:idCategories)))" +
-//                    " AND (COALESCE(:idBranches) IS NULL OR (b.id IN (:idBranches)))")
-                    "")
+//                    " cat.id IN (:idCategories)")
+                    " (:idCategories IS NULL OR (cat.id IN (:idCategories)))")
     Page<Company> getAllCompanyToCatalog(
-            @Param("idCategories") List<String> idCategories,
+            @Param("idCategories") List<Long> idCategories,
             Pageable pageable);
 }

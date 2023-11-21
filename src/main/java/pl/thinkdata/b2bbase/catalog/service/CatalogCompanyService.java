@@ -45,7 +45,7 @@ public class CatalogCompanyService {
         return new PageImpl<>(companyInCatalogList, pageable, companies.getTotalElements());
     }
 
-    public Page<CompanyInCatalog> getCompanies2(List<String> idCategories, Pageable pageable) {
+    public Page<CompanyInCatalog> getCompanies2(List<Long> idCategories, Pageable pageable) {
         Page<Company> companies = companyRepository.getAllCompanyToCatalog(idCategories, pageable);
 
         List<CompanyInCatalog> companyInCatalogList = companies.stream()

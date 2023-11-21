@@ -38,7 +38,7 @@ public class CatalogController {
     }
 
     @GetMapping("/get/{idCompanies}")
-    public Page<CompanyInCatalog> getCompanies2(@PathVariable List<String> idCompanies, Pageable pageable) {
+    public Page<CompanyInCatalog> getCompanies2(@PathVariable List<Long> idCompanies, Pageable pageable) {
         return catalogCompanyService.getCompanies2(idCompanies, pageable);
     }
 }
