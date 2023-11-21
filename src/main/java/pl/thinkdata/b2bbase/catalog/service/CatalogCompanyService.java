@@ -24,11 +24,20 @@ public class CatalogCompanyService {
     private final CompanyRepository companyRepository;
     private final CategoryRepository categoryRepository;
 
-    public Page<CompanyInCatalog> getCompanies(List<Long> idCategories, boolean isEdiCooperation,  Pageable pageable) {
-        //Page<Company> companies = companyRepository.findAll(pageable);
-        List<Category> cats = categoryRepository.findAllById(idCategories);
+    public Page<CompanyInCatalog> getCompanies(List<Long> idCategories,
+                                               Boolean isEdiCooperation,
+                                               Boolean isApiCooperation,
+                                               Boolean isProductFileCooperation,
+                                               Pageable pageable) {
 
-        Page<Company> companies = companyRepository.findAllByCategoriesInAndEdiCooperation(cats, isEdiCooperation, pageable);
+        List<Category> cats = categoryRepository.findAllById(idCategories);
+        Page<Company> companies;
+        if (isEdiCooperation == null && isApiCooperation == null && isProductFileCooperation==null) {
+            companies = companyRepository.findAllByCategoriesIn(cats, pageable);
+        } else {
+            companies = companyRepository.findAllByCategoriesInAndCriteria(cats, isEdiCooperation, isApiCooperation, isProductFileCooperation, pageable);
+        }
+
         List<CompanyInCatalog> companyInCatalogList = companies.stream()
                 .map(company -> mapToCompanyInCatalog(company))
                 .collect(Collectors.toList());
@@ -36,8 +45,13 @@ public class CatalogCompanyService {
         return new PageImpl<>(companyInCatalogList, pageable, companies.getTotalElements());
     }
 
-    public Page<CompanyInCatalog2> getCompanies2(List<String> idCategories, List<String> idBranches, Pageable pageable) {
-        String dupa = "dupa";
-        return companyRepository.getAllCompanyToCatalog(idCategories, idBranches, pageable);
+    public Page<CompanyInCatalog> getCompanies2(List<String> idCategories, Pageable pageable) {
+        Page<Company> companies = companyRepository.getAllCompanyToCatalog(idCategories, pageable);
+
+        List<CompanyInCatalog> companyInCatalogList = companies.stream()
+                .map(company -> mapToCompanyInCatalog(company))
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(companyInCatalogList, pageable, companies.getTotalElements());
     }
 }

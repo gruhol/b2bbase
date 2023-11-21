@@ -20,10 +20,14 @@ public class CatalogController {
     private final CatalogCompanyService catalogCompanyService;
     private final CatalogCategoryService catalogCategoryService;
 
-    @GetMapping({"/{idCategories}", "/{idCategories}/{isEdiCooperation}"})
+    @GetMapping("/{idCategories}")
     @ResponseBody
-    public Page<CompanyInCatalog> getCompanies(@PathVariable List<Long> idCategories, @PathVariable(required = false) boolean isEdiCooperation, Pageable pageable) {
-        return catalogCompanyService.getCompanies(idCategories, isEdiCooperation, pageable);
+    public Page<CompanyInCatalog> getCompanies(@PathVariable List<Long> idCategories,
+                                               @RequestParam(required = false) Boolean isEdiCooperation,
+                                               @RequestParam(required = false) Boolean isApiCooperation,
+                                               @RequestParam(required = false) Boolean isProductFileCooperation,
+                                               Pageable pageable) {
+        return catalogCompanyService.getCompanies(idCategories, isEdiCooperation, isApiCooperation, isProductFileCooperation, pageable);
     }
 
     private String wynik;
@@ -33,9 +37,8 @@ public class CatalogController {
         return catalogCategoryService.getCategory();
     }
 
-    @GetMapping("/get/{idCompanies}/{idBranches}")
-    public Page<CompanyInCatalog2> getCompanies(@PathVariable List<String> idCompanies, @PathVariable List<String> idBranches, Pageable pageable) {
-        String dupa = "dupa";
-        return catalogCompanyService.getCompanies2(idCompanies, idBranches, pageable);
+    @GetMapping("/get/{idCompanies}")
+    public Page<CompanyInCatalog> getCompanies2(@PathVariable List<String> idCompanies, Pageable pageable) {
+        return catalogCompanyService.getCompanies2(idCompanies, pageable);
     }
 }
