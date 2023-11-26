@@ -28,12 +28,12 @@ public class CatalogController {
         return catalogCategoryService.getCategory();
     }
 
-    @GetMapping("/{idCompanies}")
-    public Page<CompanyInCatalog> getCompanies2(@PathVariable List<Long> idCompanies,
+    @GetMapping({"/{slug}", "/"})
+    public Page<CompanyInCatalog> getCompanies2(@PathVariable(required = false) String slug,
                                                 @RequestParam(required = false) Boolean isEdiCooperation,
                                                 @RequestParam(required = false) Boolean isApiCooperation,
                                                 @RequestParam(required = false) Boolean isProductFileCooperation,
                                                 Pageable pageable) {
-        return catalogCompanyService.getCompanies2(idCompanies, isEdiCooperation, isApiCooperation, isProductFileCooperation, pageable);
+        return catalogCompanyService.getCompanies(slug, isEdiCooperation, isApiCooperation, isProductFileCooperation, pageable);
     }
 }

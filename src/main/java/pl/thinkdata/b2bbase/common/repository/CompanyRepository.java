@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import pl.thinkdata.b2bbase.company.model.Company;
+import pl.thinkdata.b2bbase.company.model.VoivodeshipEnum;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +19,25 @@ public interface CompanyRepository extends JpaRepository<Company, Long>, JpaSpec
     Optional<Company> findByRegon(String regon);
 
     Optional<Company> findBySlug(String toSlug);
+
+    @Query(value = "SELECT c " +
+            " FROM Company c" +
+            " WHERE" +
+            " (:isEdiCooperation IS NULL OR c.ediCooperation = :isEdiCooperation)" +
+            " AND (:isApiCooperation IS NULL OR c.apiCooperation = :isApiCooperation)" +
+            " AND (:isProductFileCooperation IS NULL OR c.productFileCooperation = :isProductFileCooperation)" +
+            " GROUP BY c.id" +
+            " ORDER BY c.id DESC",
+            countQuery = "SELECT count(*) FROM Company c " +
+                    " WHERE" +
+                    " (:isEdiCooperation IS NULL OR c.ediCooperation = :isEdiCooperation)" +
+                    " AND (:isApiCooperation IS NULL OR c.apiCooperation = :isApiCooperation)" +
+                    " AND (:isProductFileCooperation IS NULL OR c.productFileCooperation = :isProductFileCooperation)")
+    Page<Company> getAllCompanyToCatalog(
+            @Param("isEdiCooperation") Boolean isEdiCooperation,
+            @Param("isApiCooperation") Boolean isApiCooperation,
+            @Param("isProductFileCooperation") Boolean isProductFileCooperation,
+            Pageable pageable);
 
     @Query(value = "SELECT c " +
             " FROM Company c" +
@@ -38,8 +58,32 @@ public interface CompanyRepository extends JpaRepository<Company, Long>, JpaSpec
                     " AND (:isEdiCooperation IS NULL OR c.ediCooperation = :isEdiCooperation)" +
                     " AND (:isApiCooperation IS NULL OR c.apiCooperation = :isApiCooperation)" +
                     " AND (:isProductFileCooperation IS NULL OR c.productFileCooperation = :isProductFileCooperation)")
-    Page<Company> getAllCompanyToCatalog(
+    Page<Company> getAllCompanyByCategoryToCatalog(
             @Param("idCategories") List<Long> idCategories,
+            @Param("isEdiCooperation") Boolean isEdiCooperation,
+            @Param("isApiCooperation") Boolean isApiCooperation,
+            @Param("isProductFileCooperation") Boolean isProductFileCooperation,
+            Pageable pageable);
+
+    @Query(value = "SELECT c " +
+            " FROM Company c" +
+            " LEFT JOIN Branch b ON c.id = b.companyId" +
+            " WHERE" +
+            " (:voivodeshipes IS NULL OR (b.voivodeship IN (SELECT ENUM('pl.thinkdata.b2bbase.company.model.VoivodeshipEnum', v) FROM UNNEST(:voivodeshipes) AS v)))" +
+            " AND (:isEdiCooperation IS NULL OR c.ediCooperation = :isEdiCooperation)" +
+            " AND (:isApiCooperation IS NULL OR c.apiCooperation = :isApiCooperation)" +
+            " AND (:isProductFileCooperation IS NULL OR c.productFileCooperation = :isProductFileCooperation)" +
+            " GROUP BY c.id" +
+            " ORDER BY c.id DESC",
+            countQuery = "SELECT count(*) FROM Company c " +
+                    " LEFT JOIN Branch b ON c.id = b.companyId" +
+                    " WHERE" +
+                    " (:voivodeshipes IS NULL OR (b.voivodeship IN (SELECT ENUM('pl.thinkdata.b2bbase.company.model.VoivodeshipEnum', v) FROM UNNEST(:voivodeshipes) AS v)))" +
+                    " AND (:isEdiCooperation IS NULL OR c.ediCooperation = :isEdiCooperation)" +
+                    " AND (:isApiCooperation IS NULL OR c.apiCooperation = :isApiCooperation)" +
+                    " AND (:isProductFileCooperation IS NULL OR c.productFileCooperation = :isProductFileCooperation)")
+    Page<Company> getAllCompanyByVoivodeshipToCatalog(
+            @Param("voivodeshipes") List<VoivodeshipEnum> voivodeshipes,
             @Param("isEdiCooperation") Boolean isEdiCooperation,
             @Param("isApiCooperation") Boolean isApiCooperation,
             @Param("isProductFileCooperation") Boolean isProductFileCooperation,
