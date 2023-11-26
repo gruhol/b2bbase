@@ -69,7 +69,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long>, JpaSpec
             " FROM Company c" +
             " LEFT JOIN Branch b ON c.id = b.companyId" +
             " WHERE" +
-            " (:voivodeshipes IS NULL OR (b.voivodeship IN (SELECT ENUM('pl.thinkdata.b2bbase.company.model.VoivodeshipEnum', v) FROM UNNEST(:voivodeshipes) AS v)))" +
+            "(:voivodeshipes IS NULL OR (b.voivodeship IN (:voivodeshipes)))" +
             " AND (:isEdiCooperation IS NULL OR c.ediCooperation = :isEdiCooperation)" +
             " AND (:isApiCooperation IS NULL OR c.apiCooperation = :isApiCooperation)" +
             " AND (:isProductFileCooperation IS NULL OR c.productFileCooperation = :isProductFileCooperation)" +
@@ -78,12 +78,12 @@ public interface CompanyRepository extends JpaRepository<Company, Long>, JpaSpec
             countQuery = "SELECT count(*) FROM Company c " +
                     " LEFT JOIN Branch b ON c.id = b.companyId" +
                     " WHERE" +
-                    " (:voivodeshipes IS NULL OR (b.voivodeship IN (SELECT ENUM('pl.thinkdata.b2bbase.company.model.VoivodeshipEnum', v) FROM UNNEST(:voivodeshipes) AS v)))" +
+                    " (:voivodeshipes IS NULL OR (b.voivodeship IN (:voivodeshipes)))" +
                     " AND (:isEdiCooperation IS NULL OR c.ediCooperation = :isEdiCooperation)" +
                     " AND (:isApiCooperation IS NULL OR c.apiCooperation = :isApiCooperation)" +
                     " AND (:isProductFileCooperation IS NULL OR c.productFileCooperation = :isProductFileCooperation)")
     Page<Company> getAllCompanyByVoivodeshipToCatalog(
-            @Param("voivodeshipes") List<VoivodeshipEnum> voivodeshipes,
+            @Param("voivodeshipes") List<String> voivodeshipes,
             @Param("isEdiCooperation") Boolean isEdiCooperation,
             @Param("isApiCooperation") Boolean isApiCooperation,
             @Param("isProductFileCooperation") Boolean isProductFileCooperation,

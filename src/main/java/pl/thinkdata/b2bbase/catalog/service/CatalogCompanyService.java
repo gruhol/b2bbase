@@ -31,14 +31,14 @@ public class CatalogCompanyService {
                                                Boolean isProductFileCooperation,
                                                Pageable pageable) {
         List<Long> categories = new ArrayList<>();
-        List<VoivodeshipEnum> voivodeshipes = new ArrayList<>();
+        List<String> voivodeshipes = new ArrayList<>();
         Page<Company> companies;
 
         categories = categoryRepository.findBySlug(slug).stream()
                 .map(company -> company.getId())
                 .collect(Collectors.toList());
         if (findVoivodeshipEnumBySlug(slug) != null) {
-            voivodeshipes = Arrays.asList(findVoivodeshipEnumBySlug(slug));
+            voivodeshipes = Arrays.asList(findVoivodeshipEnumBySlug(slug).name());
         }
 
         if (categories.size() > 0) {
