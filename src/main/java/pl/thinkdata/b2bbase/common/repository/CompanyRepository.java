@@ -83,7 +83,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long>, JpaSpec
                     " AND (:isApiCooperation IS NULL OR c.apiCooperation = :isApiCooperation)" +
                     " AND (:isProductFileCooperation IS NULL OR c.productFileCooperation = :isProductFileCooperation)")
     Page<Company> getAllCompanyByVoivodeshipToCatalog(
-            @Param("voivodeshipes") List<String> voivodeshipes,
+            @Param("voivodeshipes") List<VoivodeshipEnum> voivodeshipes,
             @Param("isEdiCooperation") Boolean isEdiCooperation,
             @Param("isApiCooperation") Boolean isApiCooperation,
             @Param("isProductFileCooperation") Boolean isProductFileCooperation,
