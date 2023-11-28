@@ -44,7 +44,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long>, JpaSpec
             " LEFT OUTER JOIN Category2Company c2c ON c.id = c2c.companyId" +
             " LEFT OUTER JOIN Category cat ON c2c.categoryId = cat.id" +
             " WHERE" +
-            " (:idCategories IS NULL OR (cat.id IN (:idCategories)))" +
+            " (cat.id IN :idCategories)" +
             " AND (:isEdiCooperation IS NULL OR c.ediCooperation = :isEdiCooperation)" +
             " AND (:isApiCooperation IS NULL OR c.apiCooperation = :isApiCooperation)" +
             " AND (:isProductFileCooperation IS NULL OR c.productFileCooperation = :isProductFileCooperation)" +
@@ -54,7 +54,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long>, JpaSpec
                     " LEFT OUTER JOIN Category2Company c2c ON c.id=c2c.companyId" +
                     " LEFT OUTER JOIN Category cat ON c2c.categoryId = cat.id" +
                     " WHERE" +
-                    " (:idCategories IS NULL OR (cat.id IN (:idCategories)))" +
+                    " (cat.id IN :idCategories)" +
                     " AND (:isEdiCooperation IS NULL OR c.ediCooperation = :isEdiCooperation)" +
                     " AND (:isApiCooperation IS NULL OR c.apiCooperation = :isApiCooperation)" +
                     " AND (:isProductFileCooperation IS NULL OR c.productFileCooperation = :isProductFileCooperation)")
@@ -69,7 +69,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long>, JpaSpec
             " FROM Company c" +
             " LEFT JOIN Branch b ON c.id = b.companyId" +
             " WHERE" +
-            "(:voivodeshipes IS NULL OR (b.voivodeship IN (:voivodeshipes)))" +
+            "(b.voivodeship IN :voivodeshipes)" +
             " AND (:isEdiCooperation IS NULL OR c.ediCooperation = :isEdiCooperation)" +
             " AND (:isApiCooperation IS NULL OR c.apiCooperation = :isApiCooperation)" +
             " AND (:isProductFileCooperation IS NULL OR c.productFileCooperation = :isProductFileCooperation)" +
@@ -78,7 +78,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long>, JpaSpec
             countQuery = "SELECT count(*) FROM Company c " +
                     " LEFT JOIN Branch b ON c.id = b.companyId" +
                     " WHERE" +
-                    " (:voivodeshipes IS NULL OR (b.voivodeship IN (:voivodeshipes)))" +
+                    " (b.voivodeship IN :voivodeshipes)" +
                     " AND (:isEdiCooperation IS NULL OR c.ediCooperation = :isEdiCooperation)" +
                     " AND (:isApiCooperation IS NULL OR c.apiCooperation = :isApiCooperation)" +
                     " AND (:isProductFileCooperation IS NULL OR c.productFileCooperation = :isProductFileCooperation)")
