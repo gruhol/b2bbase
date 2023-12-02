@@ -1,6 +1,7 @@
 package pl.thinkdata.b2bbase.catalog.service;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -25,12 +26,12 @@ public class CatalogCompanyService {
     private final CompanyRepository companyRepository;
     private final CategoryRepository categoryRepository;
 
-    public Page<CompanyInCatalog> getCompanies(String slug,
-                                               Boolean isEdiCooperation,
-                                               Boolean isApiCooperation,
-                                               Boolean isProductFileCooperation,
-                                               Pageable pageable) {
-        List<Long> categories = new ArrayList<>();
+    public Page<CompanyInCatalog> getCompaniesBySlug(String slug,
+                                                     Boolean isEdiCooperation,
+                                                     Boolean isApiCooperation,
+                                                     Boolean isProductFileCooperation,
+                                                     Pageable pageable) {
+        List<Long> categories;
         List<VoivodeshipEnum> voivodeshipes = new ArrayList<>();
         Page<Company> companies;
 
@@ -41,10 +42,10 @@ public class CatalogCompanyService {
             voivodeshipes = Arrays.asList(findVoivodeshipEnumBySlug(slug));
         }
 
-        if (categories.size() > 0) {
+        if (CollectionUtils.isNotEmpty(categories)) {
             companies = companyRepository.getAllCompanyByCategoryToCatalog(categories, isEdiCooperation, isApiCooperation, isProductFileCooperation, pageable);
 
-        } else if  (voivodeshipes.size() > 0) {
+        } else if  (CollectionUtils.isNotEmpty(voivodeshipes)) {
             companies = companyRepository.getAllCompanyByVoivodeshipToCatalog(voivodeshipes,  isEdiCooperation, isApiCooperation, isProductFileCooperation, pageable);
 
         } else  {
@@ -58,11 +59,31 @@ public class CatalogCompanyService {
         return new PageImpl<>(companyInCatalogList, pageable, companies.getTotalElements());
     }
 
-    public static VoivodeshipEnum findVoivodeshipEnumBySlug(String searchSlug) {
+    private VoivodeshipEnum findVoivodeshipEnumBySlug(String searchSlug) {
         if (searchSlug == null) return null;
         return Arrays.stream(VoivodeshipEnum.values())
                 .filter(voivodeshipEnum -> voivodeshipEnum.getSlug().toLowerCase().equals(searchSlug.toLowerCase()))
                 .findFirst()
                 .orElse(null);
+    }
+
+    public Page<CompanyInCatalog> getCompanies(List<Long> categories,
+                                               List<String> voivodeshipSlugs,
+                                               Boolean isEdiCooperation,
+                                               Boolean isApiCooperation,
+                                               Boolean isProductFileCooperation,
+                                               Pageable pageable) {
+        List<VoivodeshipEnum> voivodeshipEnumList = voivodeshipSlugs.stream()
+                .map(slug -> findVoivodeshipEnumBySlug(slug))
+                .collect(Collectors.toList());
+
+        Page<Company> companies = companyRepository.getAllCompanyByVoivodeshipAndCategoryToCatalog(categories,
+                voivodeshipEnumList, isEdiCooperation, isApiCooperation, isProductFileCooperation, pageable);
+
+        List<CompanyInCatalog> companyInCatalogList = companies.stream()
+                .map(company -> mapToCompanyInCatalog(company))
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(companyInCatalogList, pageable, companies.getTotalElements());
     }
 }

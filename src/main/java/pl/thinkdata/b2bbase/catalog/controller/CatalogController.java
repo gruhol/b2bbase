@@ -29,11 +29,21 @@ public class CatalogController {
     }
 
     @GetMapping({"/{slug}", "/"})
-    public Page<CompanyInCatalog> getCompanies2(@PathVariable(required = false) String slug,
+    public Page<CompanyInCatalog> getCompaniesBySlug(@PathVariable(required = false) String slug,
                                                 @RequestParam(required = false) Boolean isEdiCooperation,
                                                 @RequestParam(required = false) Boolean isApiCooperation,
                                                 @RequestParam(required = false) Boolean isProductFileCooperation,
                                                 Pageable pageable) {
-        return catalogCompanyService.getCompanies(slug, isEdiCooperation, isApiCooperation, isProductFileCooperation, pageable);
+        return catalogCompanyService.getCompaniesBySlug(slug, isEdiCooperation, isApiCooperation, isProductFileCooperation, pageable);
+    }
+
+    @GetMapping("/wholesales")
+    public Page<CompanyInCatalog> getCompanies(@RequestParam(required = false) List<Long> categories,
+                                               @RequestParam(required = false) List<String> voivodeshipSlugs,
+                                               @RequestParam(required = false) Boolean isEdiCooperation,
+                                               @RequestParam(required = false) Boolean isApiCooperation,
+                                               @RequestParam(required = false) Boolean isProductFileCooperation,
+                                               Pageable pageable) {
+        return catalogCompanyService.getCompanies(categories, voivodeshipSlugs, isEdiCooperation, isApiCooperation, isProductFileCooperation, pageable);
     }
 }

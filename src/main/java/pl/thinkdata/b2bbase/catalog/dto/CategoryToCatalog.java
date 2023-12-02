@@ -10,7 +10,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @AllArgsConstructor
 public class CategoryToCatalog {
-
+    private Long id;
     private String name;
     private String slug;
     private List<CategoryToCatalog> children;
