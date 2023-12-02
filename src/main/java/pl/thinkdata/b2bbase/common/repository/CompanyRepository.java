@@ -95,8 +95,8 @@ public interface CompanyRepository extends JpaRepository<Company, Long>, JpaSpec
             " LEFT OUTER JOIN Category cat ON c2c.categoryId = cat.id" +
             " LEFT JOIN Branch b ON c.id = b.companyId" +
             " WHERE" +
-            "(b.voivodeship IN :voivodeshipes)" +
-            " AND (cat.id IN :idCategories)" +
+            "(:#{#voivodeshipes == null} = true OR b.voivodeship IN :voivodeshipes)" +
+            " AND (:#{#idCategories == null} = true OR cat.id IN :idCategories)" +
             " AND (:isEdiCooperation IS NULL OR c.ediCooperation = :isEdiCooperation)" +
             " AND (:isApiCooperation IS NULL OR c.apiCooperation = :isApiCooperation)" +
             " AND (:isProductFileCooperation IS NULL OR c.productFileCooperation = :isProductFileCooperation)" +
@@ -107,8 +107,8 @@ public interface CompanyRepository extends JpaRepository<Company, Long>, JpaSpec
                     " LEFT OUTER JOIN Category cat ON c2c.categoryId = cat.id" +
                     " LEFT JOIN Branch b ON c.id = b.companyId" +
                     " WHERE" +
-                    " (b.voivodeship IN :voivodeshipes)" +
-                    " AND (cat.id IN :idCategories)" +
+                    "(:#{#voivodeshipes == null} = true OR b.voivodeship IN :voivodeshipes)" +
+                    " AND (:#{#idCategories == null} = true OR cat.id IN :idCategories)" +
                     " AND (:isEdiCooperation IS NULL OR c.ediCooperation = :isEdiCooperation)" +
                     " AND (:isApiCooperation IS NULL OR c.apiCooperation = :isApiCooperation)" +
                     " AND (:isProductFileCooperation IS NULL OR c.productFileCooperation = :isProductFileCooperation)")

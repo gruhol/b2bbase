@@ -73,9 +73,12 @@ public class CatalogCompanyService {
                                                Boolean isApiCooperation,
                                                Boolean isProductFileCooperation,
                                                Pageable pageable) {
-        List<VoivodeshipEnum> voivodeshipEnumList = voivodeshipSlugs.stream()
-                .map(slug -> findVoivodeshipEnumBySlug(slug))
-                .collect(Collectors.toList());
+        List<VoivodeshipEnum> voivodeshipEnumList = null;
+        if (voivodeshipSlugs != null) {
+            voivodeshipEnumList = voivodeshipSlugs.stream()
+                    .map(slug -> findVoivodeshipEnumBySlug(slug))
+                    .collect(Collectors.toList());
+        }
 
         Page<Company> companies = companyRepository.getAllCompanyByVoivodeshipAndCategoryToCatalog(categories,
                 voivodeshipEnumList, isEdiCooperation, isApiCooperation, isProductFileCooperation, pageable);
