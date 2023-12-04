@@ -9,12 +9,15 @@ import org.springframework.stereotype.Service;
 import pl.thinkdata.b2bbase.catalog.dto.CompanyInCatalog;
 import pl.thinkdata.b2bbase.common.repository.CategoryRepository;
 import pl.thinkdata.b2bbase.common.repository.CompanyRepository;
+import pl.thinkdata.b2bbase.company.model.Branch;
 import pl.thinkdata.b2bbase.company.model.Company;
 import pl.thinkdata.b2bbase.company.model.VoivodeshipEnum;
+import pl.thinkdata.b2bbase.company.repository.BranchRepository;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static pl.thinkdata.b2bbase.catalog.mapper.CatalogMapper.mapToCompanyInCatalog;
@@ -25,6 +28,7 @@ public class CatalogCompanyService {
 
     private final CompanyRepository companyRepository;
     private final CategoryRepository categoryRepository;
+    private final BranchRepository branchRepository;
 
     public Page<CompanyInCatalog> getCompaniesBySlug(String slug,
                                                      Boolean isEdiCooperation,
@@ -86,6 +90,11 @@ public class CatalogCompanyService {
         List<CompanyInCatalog> companyInCatalogList = companies.stream()
                 .map(company -> mapToCompanyInCatalog(company))
                 .collect(Collectors.toList());
+
+        companyInCatalogList.stream().forEach(company -> {
+            Optional<Branch> branch = branchRepository.findByCompanyIdAndHeadquarter(company.getId(), true);
+            company.setBranch(branch.isPresent() ? branch.get() : null );
+        });
 
         return new PageImpl<>(companyInCatalogList, pageable, companies.getTotalElements());
     }

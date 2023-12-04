@@ -7,6 +7,7 @@ public class CatalogMapper {
 
     public static CompanyInCatalog mapToCompanyInCatalog(Company company) {
         return CompanyInCatalog.builder()
+                .id(company.getId())
                 .name(company.getName())
                 .slug(company.getSlug())
                 .type(company.getType())

@@ -1,6 +1,7 @@
 package pl.thinkdata.b2bbase.catalog.dto;
 
 import lombok.*;
+import pl.thinkdata.b2bbase.company.model.Branch;
 import pl.thinkdata.b2bbase.company.model.CompanyTypeEnum;
 import pl.thinkdata.b2bbase.company.model.LegalFormEnum;
 
@@ -10,6 +11,7 @@ import pl.thinkdata.b2bbase.company.model.LegalFormEnum;
 @RequiredArgsConstructor
 @AllArgsConstructor
 public class CompanyInCatalog {
+    private Long id;
     private String name;
     private String slug;
     private CompanyTypeEnum type;
@@ -25,4 +27,5 @@ public class CompanyInCatalog {
     private boolean apiCooperation;
     private boolean productFileCooperation;
     private String logo;
+    private Branch branch;
 }
