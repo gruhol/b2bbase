@@ -28,6 +28,11 @@ public class CatalogController {
         return catalogCategoryService.getCategory();
     }
 
+    @GetMapping("/company/{slug}")
+    public CompanyInCatalog getCompanyInCatalogBySlug(@PathVariable String slug) {
+        return catalogCompanyService.getCompanyBySlug(slug);
+    }
+
     @GetMapping({"/{slug}", "/"})
     public Page<CompanyInCatalog> getCompaniesBySlug(@PathVariable(required = false) String slug,
                                                 @RequestParam(required = false) Boolean isEdiCooperation,

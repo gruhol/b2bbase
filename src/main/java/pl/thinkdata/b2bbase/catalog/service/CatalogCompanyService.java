@@ -98,4 +98,8 @@ public class CatalogCompanyService {
 
         return new PageImpl<>(companyInCatalogList, pageable, companies.getTotalElements());
     }
+
+    public CompanyInCatalog getCompanyBySlug(String slug) {
+        return mapToCompanyInCatalog(companyRepository.findBySlug(slug).orElseThrow());
+    }
 }
