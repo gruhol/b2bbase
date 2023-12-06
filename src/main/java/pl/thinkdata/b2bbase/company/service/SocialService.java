@@ -11,7 +11,7 @@ import pl.thinkdata.b2bbase.company.dto.SocialDto;
 import pl.thinkdata.b2bbase.company.dto.SocialResponse;
 import pl.thinkdata.b2bbase.company.model.Company;
 import pl.thinkdata.b2bbase.company.model.Social;
-import pl.thinkdata.b2bbase.company.repository.SocialRepository;
+import pl.thinkdata.b2bbase.common.repository.SocialRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;

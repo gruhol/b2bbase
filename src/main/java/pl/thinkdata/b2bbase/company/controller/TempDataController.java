@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pl.thinkdata.b2bbase.common.repository.SocialRepository;
 import pl.thinkdata.b2bbase.company.model.*;
 import pl.thinkdata.b2bbase.company.repository.BranchRepository;
 import pl.thinkdata.b2bbase.common.repository.CategoryRepository;
@@ -29,6 +30,7 @@ public class TempDataController {
     private final BranchRepository branchRepository;
     private final CategoryRepository categoryRepository;
     private final Category2CompanyRepository company2CategoryRepository;
+    private final SocialRepository socialRepository;
 
     @GetMapping("/testdata")
     public String createTempData() {
@@ -79,6 +81,24 @@ public class TempDataController {
                 .user(user)
                 .build();
         userRole2CompanyRepository.save(userRole2Company);
+
+        socialRepository.save(Social.builder()
+                        .url("https://www.etutor.pl/profil")
+                        .type(SocialType.FACEBOOK)
+                        .companyId(newCompany.getId())
+                .build());
+
+        socialRepository.save(Social.builder()
+                .url("https://www.twitch.tv")
+                .type(SocialType.LINKEDIN)
+                .companyId(newCompany.getId())
+                .build());
+
+        socialRepository.save(Social.builder()
+                .url("https://www.hltv.org/")
+                .type(SocialType.INSTAGRAM)
+                .companyId(newCompany.getId())
+                .build());
 
         branchRepository.save(Branch.builder()
                 .name("Dupa Warszawa")
