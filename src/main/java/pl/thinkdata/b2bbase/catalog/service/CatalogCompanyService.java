@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pl.thinkdata.b2bbase.catalog.dto.CompanyInCatalog;
+import pl.thinkdata.b2bbase.catalog.dto.CompanyInCatalogExtended;
 import pl.thinkdata.b2bbase.common.repository.CategoryRepository;
 import pl.thinkdata.b2bbase.common.repository.CompanyRepository;
 import pl.thinkdata.b2bbase.company.model.Branch;
@@ -21,6 +22,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static pl.thinkdata.b2bbase.catalog.mapper.CatalogMapper.mapToCompanyInCatalog;
+import static pl.thinkdata.b2bbase.catalog.mapper.CatalogMapper.mapToCompanyInCatalogExtended;
 
 @Service
 @RequiredArgsConstructor
@@ -99,7 +101,10 @@ public class CatalogCompanyService {
         return new PageImpl<>(companyInCatalogList, pageable, companies.getTotalElements());
     }
 
-    public CompanyInCatalog getCompanyBySlug(String slug) {
-        return mapToCompanyInCatalog(companyRepository.findBySlug(slug).orElseThrow());
+    public CompanyInCatalogExtended getCompanyBySlug(String slug) {
+        CompanyInCatalogExtended companyInCatalogExtended = mapToCompanyInCatalogExtended(companyRepository.findBySlug(slug).orElseThrow());
+        Optional<Branch> branch = branchRepository.findByCompanyIdAndHeadquarter(companyInCatalogExtended.getId(), true);
+        companyInCatalogExtended.setBranch(branch.isPresent() ? branch.get() : null );
+        return companyInCatalogExtended;
     }
 }

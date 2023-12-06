@@ -53,6 +53,22 @@ public class TempDataController {
                 .krs("1234567899")
                 .email("dabrowskiw@gmail.com")
                 .phone("123456789")
+                .description("<h2>Czym jest Lorem Ipsum?</h2><p><strong>Lorem Ipsum</strong>&#160;jest tekstem stosowanym jako " +
+                        "przyk&#322;adowy wype&#322;niacz w przemy&#347;le poligraficznym. Zosta&#322; po raz pierwszy u&#380;yty " +
+                        "w XV w. przez nieznanego drukarza do wype&#322;nienia tekstem pr&#243;bnej ksi&#261;&#380;ki. Pi&#281;&#263; " +
+                        "wiek&#243;w p&#243;&#378;niej zacz&#261;&#322; by&#263; u&#380;ywany przemy&#347;le elektronicznym, " +
+                        "pozostaj&#261;c praktycznie niezmienionym. Spopularyzowa&#322; si&#281; w latach 60. XX w. wraz z publikacj&#261; " +
+                        "arkuszy Letrasetu, zawieraj&#261;cych fragmenty Lorem Ipsum, a ostatnio z zawieraj&#261;cym r&#243;&#380;ne " +
+                        "wersje Lorem Ipsum oprogramowaniem przeznaczonym do realizacji druk&#243;w na komputerach osobistych, jak Aldus " +
+                        "PageMaker</p><h2>Do czego tego u&#380;y&#263;?</h2><p>Og&#243;lnie znana teza g&#322;osi, i&#380; u&#380;ytkownika " +
+                        "mo&#380;e rozprasza&#263; zrozumia&#322;a zawarto&#347;&#263; strony, kiedy ten chce zobaczy&#263; sam jej wygl&#261;d." +
+                        " Jedn&#261; z mocnych stron u&#380;ywania Lorem Ipsum jest to, &#380;e ma wiele r&#243;&#380;nych &#8222;" +
+                        "kombinacji&#8221; zda&#324;, s&#322;&#243;w i akapit&#243;w, w przeciwie&#324;stwie do zwyk&#322;ego: &#8222;tekst, " +
+                        "tekst, tekst&#8221;, sprawiaj&#261;cego, &#380;e wygl&#261;da to &#8222;zbyt czytelnie&#8221; po polsku. Wielu " +
+                        "webmaster&#243;w i designer&#243;w u&#380;ywa Lorem Ipsum jako domy&#347;lnego modelu tekstu i wpisanie w internetowej " +
+                        "wyszukiwarce &#8216;lorem ipsum&#8217; spowoduje znalezienie bardzo wielu stron, kt&#243;re wci&#261;&#380; s&#261; " +
+                        "w budowie. Wiele wersji tekstu ewoluowa&#322;o i zmienia&#322;o si&#281; przez lata, czasem przez przypadek, czasem " +
+                        "specjalnie (humorystyczne wstawki itd).</p>")
                 .wwwSite("http://www.wp.pl")
                 .wwwStore("http://www.wp.pl")
                 .build());

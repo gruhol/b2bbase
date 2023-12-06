@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import pl.thinkdata.b2bbase.catalog.dto.CategoryToCatalog;
 import pl.thinkdata.b2bbase.catalog.dto.CompanyInCatalog;
+import pl.thinkdata.b2bbase.catalog.dto.CompanyInCatalogExtended;
 import pl.thinkdata.b2bbase.catalog.service.CatalogCategoryService;
 import pl.thinkdata.b2bbase.catalog.service.CatalogCompanyService;
 
@@ -29,7 +30,7 @@ public class CatalogController {
     }
 
     @GetMapping("/company/{slug}")
-    public CompanyInCatalog getCompanyInCatalogBySlug(@PathVariable String slug) {
+    public CompanyInCatalogExtended getCompanyInCatalogBySlug(@PathVariable String slug) {
         return catalogCompanyService.getCompanyBySlug(slug);
     }
 
