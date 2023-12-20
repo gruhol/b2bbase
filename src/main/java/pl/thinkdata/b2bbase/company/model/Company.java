@@ -40,6 +40,7 @@ public class Company {
     private String description;
     private String logo;
     private Date created;
+    private boolean active;
     @OneToMany(mappedBy = "company")
     private List<Branch> branches;
     @ManyToMany(fetch = FetchType.EAGER)

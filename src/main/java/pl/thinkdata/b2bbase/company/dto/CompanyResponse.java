@@ -32,4 +32,5 @@ public class CompanyResponse {
     private String description;
     private String logo;
     private List<Branch> branches;
+    private boolean active;
 }

@@ -34,6 +34,7 @@ public class CompanyInCatalogWithCategory {
     private boolean ediCooperation;
     private boolean apiCooperation;
     private boolean productFileCooperation;
+    private boolean active;
     private String logo;
     private Branch branch;
     private List<CategoryToCatalog> categories;

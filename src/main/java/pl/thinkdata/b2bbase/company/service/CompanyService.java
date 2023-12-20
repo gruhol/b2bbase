@@ -71,7 +71,6 @@ public class CompanyService {
         }
 
         String slug = checkIfSlugExistAndAddNumberToName(companyDto.getName());
-
         Company newCompany = companyRepository.save(CompanyMapper.mapToCompany(companyDto, slug));
         UserRole2Company userRole2Company = UserRole2Company.builder()
                 .company(newCompany)

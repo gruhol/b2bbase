@@ -17,5 +17,6 @@ CREATE TABLE company(
     api_cooperation BOOLEAN default false,
     product_file_cooperation BOOLEAN default false,
     description TEXT,
-    logo VARCHAR(256)
+    logo VARCHAR(256),
+    active BOOLEAN default false
 );

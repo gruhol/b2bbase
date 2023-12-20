@@ -64,6 +64,7 @@ public class CatalogCompanyService {
         }
 
         List<CompanyInCatalog> companyInCatalogList = companies.stream()
+                .filter(Company::isActive)
                 .map(company -> mapToCompanyInCatalog(company))
                 .collect(Collectors.toList());
 
@@ -95,6 +96,7 @@ public class CatalogCompanyService {
                 voivodeshipEnumList, isEdiCooperation, isApiCooperation, isProductFileCooperation, pageable);
 
         List<CompanyInCatalog> companyInCatalogList = companies.stream()
+                .filter(Company::isActive)
                 .map(company -> mapToCompanyInCatalog(company))
                 .collect(Collectors.toList());
 
@@ -122,6 +124,7 @@ public class CatalogCompanyService {
         }
 
         return companyRepository.findAllByOrderByCreatedDesc(pageable).stream()
+                .filter(Company::isActive)
                 .map(company -> mapToCompanyInCatalogWithCategory(company)).collect(Collectors.toList());
     }
 }

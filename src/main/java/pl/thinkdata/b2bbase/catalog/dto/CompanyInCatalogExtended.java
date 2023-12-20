@@ -29,4 +29,5 @@ public class CompanyInCatalogExtended {
     private boolean productFileCooperation;
     private String logo;
     private Branch branch;
+    private boolean active;
 }
