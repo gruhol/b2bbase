@@ -20,6 +20,8 @@ public interface CompanyRepository extends JpaRepository<Company, Long>, JpaSpec
 
     Optional<Company> findBySlug(String toSlug);
 
+    List<Company> findAllByOrderByCreatedDesc(Pageable pageable);
+
     @Query(value = "SELECT c " +
             " FROM Company c" +
             " WHERE" +

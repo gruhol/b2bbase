@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -38,6 +39,7 @@ public class Company {
     private boolean productFileCooperation;
     private String description;
     private String logo;
+    private Date created;
     @OneToMany(mappedBy = "company")
     private List<Branch> branches;
     @ManyToMany(fetch = FetchType.EAGER)
@@ -64,5 +66,10 @@ public class Company {
                     .collect(Collectors.toSet())
             );
         }
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        created = new Date();
     }
 }

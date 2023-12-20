@@ -60,4 +60,9 @@ public class CatalogController {
                                                Pageable pageable) {
         return catalogCompanyService.getCompanies(categories, voivodeshipSlugs, isEdiCooperation, isApiCooperation, isProductFileCooperation, pageable);
     }
+
+    @GetMapping("/company/last/{howMany}")
+    public List<CompanyInCatalog> getLastCompanies(@PathVariable(required = false) Integer howMany) {
+        return catalogCompanyService.getLastCompanies(howMany);
+    }
 }

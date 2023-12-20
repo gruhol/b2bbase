@@ -2,9 +2,12 @@ package pl.thinkdata.b2bbase.catalog.service;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import pl.thinkdata.b2bbase.catalog.dto.CompanyInCatalog;
 import pl.thinkdata.b2bbase.catalog.dto.CompanyInCatalogExtended;
@@ -106,5 +109,16 @@ public class CatalogCompanyService {
         Optional<Branch> branch = branchRepository.findByCompanyIdAndHeadquarter(companyInCatalogExtended.getId(), true);
         companyInCatalogExtended.setBranch(branch.isPresent() ? branch.get() : null );
         return companyInCatalogExtended;
+    }
+
+    public List<CompanyInCatalog> getLastCompanies(Integer howMany) {
+        Pageable pageable;
+        if (howMany != null) {
+            pageable = PageRequest.of(0, howMany, Sort.by("created").descending());
+        } else {
+            pageable = PageRequest.of(0, 10, Sort.by("created").descending());
+        }
+        return companyRepository.findAllByOrderByCreatedDesc(pageable).stream()
+                .map(company -> mapToCompanyInCatalog(company)).collect(Collectors.toList());
     }
 }
