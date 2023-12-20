@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import pl.thinkdata.b2bbase.catalog.dto.CompanyInCatalog;
 import pl.thinkdata.b2bbase.catalog.dto.CompanyInCatalogExtended;
+import pl.thinkdata.b2bbase.catalog.dto.CompanyInCatalogWithCategory;
 import pl.thinkdata.b2bbase.common.repository.CategoryRepository;
 import pl.thinkdata.b2bbase.common.repository.CompanyRepository;
 import pl.thinkdata.b2bbase.company.model.Branch;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 
 import static pl.thinkdata.b2bbase.catalog.mapper.CatalogMapper.mapToCompanyInCatalog;
 import static pl.thinkdata.b2bbase.catalog.mapper.CatalogMapper.mapToCompanyInCatalogExtended;
+import static pl.thinkdata.b2bbase.catalog.mapper.CatalogMapper.mapToCompanyInCatalogWithCategory;
 
 @Service
 @RequiredArgsConstructor
@@ -111,14 +113,15 @@ public class CatalogCompanyService {
         return companyInCatalogExtended;
     }
 
-    public List<CompanyInCatalog> getLastCompanies(Integer howMany) {
+    public List<CompanyInCatalogWithCategory> getLastCompanies(Integer howMany) {
         Pageable pageable;
         if (howMany != null) {
             pageable = PageRequest.of(0, howMany, Sort.by("created").descending());
         } else {
             pageable = PageRequest.of(0, 10, Sort.by("created").descending());
         }
+
         return companyRepository.findAllByOrderByCreatedDesc(pageable).stream()
-                .map(company -> mapToCompanyInCatalog(company)).collect(Collectors.toList());
+                .map(company -> mapToCompanyInCatalogWithCategory(company)).collect(Collectors.toList());
     }
 }
