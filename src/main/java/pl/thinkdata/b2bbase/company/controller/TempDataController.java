@@ -5,23 +5,35 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pl.thinkdata.b2bbase.common.repository.CategoryRepository;
+import pl.thinkdata.b2bbase.common.repository.CompanyRepository;
 import pl.thinkdata.b2bbase.common.repository.SocialRepository;
-import pl.thinkdata.b2bbase.company.model.*;
+import pl.thinkdata.b2bbase.company.model.Branch;
+import pl.thinkdata.b2bbase.company.model.Category;
+import pl.thinkdata.b2bbase.company.model.Category2Company;
+import pl.thinkdata.b2bbase.company.model.Company;
+import pl.thinkdata.b2bbase.company.model.PackageOrder;
+import pl.thinkdata.b2bbase.company.model.Social;
+import pl.thinkdata.b2bbase.company.model.UserRole2Company;
 import pl.thinkdata.b2bbase.company.model.enums.CompanyRoleEnum;
 import pl.thinkdata.b2bbase.company.model.enums.CompanyTypeEnum;
 import pl.thinkdata.b2bbase.company.model.enums.LegalFormEnum;
+import pl.thinkdata.b2bbase.company.model.enums.PackageTypeEnum;
+import pl.thinkdata.b2bbase.company.model.enums.PaymentStatusEnum;
+import pl.thinkdata.b2bbase.company.model.enums.PaymentTypeEnum;
 import pl.thinkdata.b2bbase.company.model.enums.SocialTypeEnum;
 import pl.thinkdata.b2bbase.company.model.enums.VoivodeshipEnum;
 import pl.thinkdata.b2bbase.company.repository.BranchRepository;
-import pl.thinkdata.b2bbase.common.repository.CategoryRepository;
 import pl.thinkdata.b2bbase.company.repository.Category2CompanyRepository;
-import pl.thinkdata.b2bbase.common.repository.CompanyRepository;
+import pl.thinkdata.b2bbase.company.repository.PackageOrderRepository;
 import pl.thinkdata.b2bbase.company.repository.UserRole2CompanyRepository;
 import pl.thinkdata.b2bbase.security.model.User;
 import pl.thinkdata.b2bbase.security.model.UserRole;
 import pl.thinkdata.b2bbase.security.repository.UserRepository;
 
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -36,6 +48,7 @@ public class TempDataController {
     private final CategoryRepository categoryRepository;
     private final Category2CompanyRepository company2CategoryRepository;
     private final SocialRepository socialRepository;
+    private final PackageOrderRepository packageOrderRepository;
 
     @GetMapping("/testdata")
     public String createTempData() {
@@ -175,6 +188,20 @@ public class TempDataController {
                 .build();
 
         categoryRepository.saveAll(Arrays.asList(bieliznaIodziez, drogeriaErotyczna));
+
+        Date now = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(now);
+        calendar.add(Calendar.YEAR, 1000);
+
+        packageOrderRepository.save(PackageOrder.builder()
+                .companyId(newCompany.getId())
+                .startDate(now)
+                .endDate(calendar.getTime())
+                .packageType(PackageTypeEnum.BASIC)
+                .paymentType(PaymentTypeEnum.BANK_TRANSFER)
+                .paymentStatus(PaymentStatusEnum.NOTPAID)
+                .build());
 
         return "Created";
     }

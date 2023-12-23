@@ -21,18 +21,18 @@ import java.util.Date;
 @Builder
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class PacketOrder {
+public class PackageOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long CompanyId;
+    private Long companyId;
     @Enumerated(EnumType.STRING)
     private PackageTypeEnum packageType;
-    private Date start_date;
-    private Date end_date;
+    private Date startDate;
+    private Date endDate;
     @Enumerated(EnumType.STRING)
-    private PaymentTypeEnum paymentTypeEnum;
+    private PaymentTypeEnum paymentType;
     @Enumerated(EnumType.STRING)
-    private PaymentStatusEnum paymentStatusEnum;
+    private PaymentStatusEnum paymentStatus;
 
 }
