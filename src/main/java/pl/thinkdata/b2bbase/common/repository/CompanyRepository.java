@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import pl.thinkdata.b2bbase.company.model.Company;
-import pl.thinkdata.b2bbase.company.model.VoivodeshipEnum;
+import pl.thinkdata.b2bbase.company.model.enums.VoivodeshipEnum;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +18,9 @@ public interface CompanyRepository extends JpaRepository<Company, Long>, JpaSpec
 
     Optional<Company> findByRegon(String regon);
 
-    Optional<Company> findBySlug(String toSlug);
+    Optional<Company> findBySlugAndActive(String toSlug, boolean isActive);
+
+    Optional<Company> findBySlug(String slug);
 
     List<Company> findAllByOrderByCreatedDesc(Pageable pageable);
 
@@ -102,6 +104,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long>, JpaSpec
             " AND (:isEdiCooperation IS NULL OR c.ediCooperation = :isEdiCooperation)" +
             " AND (:isApiCooperation IS NULL OR c.apiCooperation = :isApiCooperation)" +
             " AND (:isProductFileCooperation IS NULL OR c.productFileCooperation = :isProductFileCooperation)" +
+            " AND (c.active = true)" +
             " GROUP BY c.id" +
             " ORDER BY c.id DESC",
             countQuery = "SELECT count(*) FROM Company c " +
@@ -113,7 +116,9 @@ public interface CompanyRepository extends JpaRepository<Company, Long>, JpaSpec
                     " AND (:#{#idCategories == null} = true OR cat.id IN :idCategories)" +
                     " AND (:isEdiCooperation IS NULL OR c.ediCooperation = :isEdiCooperation)" +
                     " AND (:isApiCooperation IS NULL OR c.apiCooperation = :isApiCooperation)" +
-                    " AND (:isProductFileCooperation IS NULL OR c.productFileCooperation = :isProductFileCooperation)")
+                    " AND (:isProductFileCooperation IS NULL OR c.productFileCooperation = :isProductFileCooperation)" +
+                    " AND (c.active = true)" +
+                    " GROUP BY c.id")
     Page<Company> getAllCompanyByVoivodeshipAndCategoryToCatalog(
             @Param("idCategories") List<Long> idCategories,
             @Param("voivodeshipes") List<VoivodeshipEnum> voivodeshipes,

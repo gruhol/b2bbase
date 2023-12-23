@@ -2,6 +2,7 @@ package pl.thinkdata.b2bbase.company.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import pl.thinkdata.b2bbase.company.model.enums.SocialTypeEnum;
 
 @Entity
 @Getter
@@ -14,7 +15,7 @@ public class Social {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Enumerated(EnumType.STRING)
-    private SocialType type;
+    private SocialTypeEnum type;
     private String url;
     private Long companyId;
 }

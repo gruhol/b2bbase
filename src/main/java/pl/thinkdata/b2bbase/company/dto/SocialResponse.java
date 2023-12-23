@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import pl.thinkdata.b2bbase.company.model.SocialType;
+import pl.thinkdata.b2bbase.company.model.enums.SocialTypeEnum;
 
 @Getter
 @Builder
@@ -12,6 +12,6 @@ import pl.thinkdata.b2bbase.company.model.SocialType;
 @AllArgsConstructor
 public class SocialResponse {
     private Long id;
-    private SocialType type;
+    private SocialTypeEnum type;
     private String url;
 }

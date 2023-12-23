@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import pl.thinkdata.b2bbase.company.model.enums.VoivodeshipEnum;
 
 @Entity
 @Getter

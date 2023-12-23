@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import pl.thinkdata.b2bbase.company.model.VoivodeshipEnum;
+import pl.thinkdata.b2bbase.company.model.enums.VoivodeshipEnum;
 
 @Getter
 @Setter

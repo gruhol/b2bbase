@@ -5,11 +5,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import pl.thinkdata.b2bbase.company.dto.CategoryResponse;
 import pl.thinkdata.b2bbase.company.model.Branch;
-import pl.thinkdata.b2bbase.company.model.Category2Company;
-import pl.thinkdata.b2bbase.company.model.CompanyTypeEnum;
-import pl.thinkdata.b2bbase.company.model.LegalFormEnum;
+import pl.thinkdata.b2bbase.company.model.enums.CompanyTypeEnum;
+import pl.thinkdata.b2bbase.company.model.enums.LegalFormEnum;
 
 import java.util.List;
 

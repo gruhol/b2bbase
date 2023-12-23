@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import pl.thinkdata.b2bbase.company.model.SocialType;
+import pl.thinkdata.b2bbase.company.model.enums.SocialTypeEnum;
 
 @Getter
 @Setter
@@ -13,6 +13,6 @@ import pl.thinkdata.b2bbase.company.model.SocialType;
 @RequiredArgsConstructor
 @AllArgsConstructor
 public class SocialToCatalog {
-    private SocialType type;
+    private SocialTypeEnum type;
     private String url;
 }

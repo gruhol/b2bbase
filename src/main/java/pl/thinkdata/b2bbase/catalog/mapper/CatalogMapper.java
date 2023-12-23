@@ -73,6 +73,7 @@ public class CatalogMapper {
                 .ediCooperation(company.isEdiCooperation())
                 .apiCooperation(company.isApiCooperation())
                 .logo(company.getLogo())
+                .active(company.isActive())
                 .build();
     }
 

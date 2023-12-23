@@ -2,7 +2,6 @@ package pl.thinkdata.b2bbase.catalog.service;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -16,7 +15,7 @@ import pl.thinkdata.b2bbase.common.repository.CategoryRepository;
 import pl.thinkdata.b2bbase.common.repository.CompanyRepository;
 import pl.thinkdata.b2bbase.company.model.Branch;
 import pl.thinkdata.b2bbase.company.model.Company;
-import pl.thinkdata.b2bbase.company.model.VoivodeshipEnum;
+import pl.thinkdata.b2bbase.company.model.enums.VoivodeshipEnum;
 import pl.thinkdata.b2bbase.company.repository.BranchRepository;
 
 import java.util.ArrayList;
@@ -96,7 +95,6 @@ public class CatalogCompanyService {
                 voivodeshipEnumList, isEdiCooperation, isApiCooperation, isProductFileCooperation, pageable);
 
         List<CompanyInCatalog> companyInCatalogList = companies.stream()
-                .filter(Company::isActive)
                 .map(company -> mapToCompanyInCatalog(company))
                 .collect(Collectors.toList());
 
@@ -109,7 +107,7 @@ public class CatalogCompanyService {
     }
 
     public CompanyInCatalogExtended getCompanyBySlug(String slug) {
-        CompanyInCatalogExtended companyInCatalogExtended = mapToCompanyInCatalogExtended(companyRepository.findBySlug(slug).orElseThrow());
+        CompanyInCatalogExtended companyInCatalogExtended = mapToCompanyInCatalogExtended(companyRepository.findBySlugAndActive(slug, true).orElseThrow());
         Optional<Branch> branch = branchRepository.findByCompanyIdAndHeadquarter(companyInCatalogExtended.getId(), true);
         companyInCatalogExtended.setBranch(branch.isPresent() ? branch.get() : null );
         return companyInCatalogExtended;

@@ -2,8 +2,8 @@ package pl.thinkdata.b2bbase.catalog.dto;
 
 import lombok.*;
 import pl.thinkdata.b2bbase.company.model.Branch;
-import pl.thinkdata.b2bbase.company.model.CompanyTypeEnum;
-import pl.thinkdata.b2bbase.company.model.LegalFormEnum;
+import pl.thinkdata.b2bbase.company.model.enums.CompanyTypeEnum;
+import pl.thinkdata.b2bbase.company.model.enums.LegalFormEnum;
 
 @Getter
 @Setter

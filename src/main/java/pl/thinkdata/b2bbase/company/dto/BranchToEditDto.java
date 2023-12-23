@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import pl.thinkdata.b2bbase.common.validator.PhoneValidation;
-import pl.thinkdata.b2bbase.company.model.VoivodeshipEnum;
+import pl.thinkdata.b2bbase.company.model.enums.VoivodeshipEnum;
 
 @Getter
 @Setter

@@ -15,7 +15,7 @@ import pl.thinkdata.b2bbase.company.dto.EditSocialDto;
 import pl.thinkdata.b2bbase.company.dto.SocialDto;
 import pl.thinkdata.b2bbase.company.model.Company;
 import pl.thinkdata.b2bbase.company.model.Social;
-import pl.thinkdata.b2bbase.company.model.SocialType;
+import pl.thinkdata.b2bbase.company.model.enums.SocialTypeEnum;
 import pl.thinkdata.b2bbase.common.repository.SocialRepository;
 
 import java.util.Arrays;
@@ -57,7 +57,7 @@ class SocialServiceTest {
     void shouldThrowInvalidRequestDataExceptionWhenTypeOfSocialExistInDataBase() {
         Social socialInDataBase = Social.builder()
                 .id(2L)
-                .type(SocialType.FACEBOOK)
+                .type(SocialTypeEnum.FACEBOOK)
                 .build();
         Company tempCompany = Company.builder()
                 .id(2L)
@@ -65,7 +65,7 @@ class SocialServiceTest {
         when(tokenUtil.getCompanyByUsernameFormDataBase(any())).thenReturn(tempCompany);
         when(socialRepository.findAllByCompanyId(any())).thenReturn(Arrays.asList(socialInDataBase));
         SocialDto socialDto = new SocialDto();
-        socialDto.setType(SocialType.FACEBOOK);
+        socialDto.setType(SocialTypeEnum.FACEBOOK);
         InvalidRequestDataException exception = assertThrows(InvalidRequestDataException.class,
                 () -> service.addSocial(socialDto, new MockHttpServletRequest()));
         assertEquals("Możesz dodać tylko jeden link z danego social mediów.", exception.getMessage());
@@ -75,7 +75,7 @@ class SocialServiceTest {
     void shouldThrowInvalidRequestDataExceptionWhenEditNotTheSameSocial() {
         Social socialInDataBase = Social.builder()
                 .id(1L)
-                .type(SocialType.FACEBOOK)
+                .type(SocialTypeEnum.FACEBOOK)
                 .build();
         Company tempCompany = Company.builder()
                 .id(2L)
@@ -84,7 +84,7 @@ class SocialServiceTest {
         when(socialRepository.findAllByCompanyId(any())).thenReturn(Arrays.asList(socialInDataBase));
         EditSocialDto editSocialDto = new EditSocialDto();
         editSocialDto.setId(2L);
-        editSocialDto.setType(SocialType.FACEBOOK);
+        editSocialDto.setType(SocialTypeEnum.FACEBOOK);
         InvalidRequestDataException exception = assertThrows(InvalidRequestDataException.class,
                 () -> service.editSocial(editSocialDto, new MockHttpServletRequest()));
         assertEquals("Nie jesteś właścicielem tego linku społecznościowego.", exception.getMessage());
@@ -94,11 +94,11 @@ class SocialServiceTest {
     void shouldThrowInvalidRequestDataExceptionWhenEditToSocialTypeWitchExist() {
         Social socialInDataBase1 = Social.builder()
                 .id(1L)
-                .type(SocialType.FACEBOOK)
+                .type(SocialTypeEnum.FACEBOOK)
                 .build();
         Social socialInDataBase2 = Social.builder()
                 .id(2L)
-                .type(SocialType.LINKEDIN)
+                .type(SocialTypeEnum.LINKEDIN)
                 .build();
         Company tempCompany = Company.builder()
                 .id(2L)
@@ -108,7 +108,7 @@ class SocialServiceTest {
         when(socialRepository.findAllByCompanyId(any())).thenReturn(Arrays.asList(socialInDataBase1, socialInDataBase2));
         EditSocialDto editSocialDto = new EditSocialDto();
         editSocialDto.setId(2L);
-        editSocialDto.setType(SocialType.FACEBOOK);
+        editSocialDto.setType(SocialTypeEnum.FACEBOOK);
         InvalidRequestDataException exception = assertThrows(InvalidRequestDataException.class,
                 () -> service.editSocial(editSocialDto, new MockHttpServletRequest()));
         assertEquals("Możesz dodać tylko jeden link z danego social mediów.", exception.getMessage());

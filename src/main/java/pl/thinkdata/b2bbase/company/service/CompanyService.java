@@ -17,7 +17,7 @@ import pl.thinkdata.b2bbase.company.dto.CompanyToEditDto;
 import pl.thinkdata.b2bbase.company.mapper.CompanyMapper;
 import pl.thinkdata.b2bbase.company.model.Category;
 import pl.thinkdata.b2bbase.company.model.Company;
-import pl.thinkdata.b2bbase.company.model.CompanyRoleEnum;
+import pl.thinkdata.b2bbase.company.model.enums.CompanyRoleEnum;
 import pl.thinkdata.b2bbase.company.model.UserRole2Company;
 import pl.thinkdata.b2bbase.common.repository.CategoryRepository;
 import pl.thinkdata.b2bbase.common.repository.CompanyRepository;

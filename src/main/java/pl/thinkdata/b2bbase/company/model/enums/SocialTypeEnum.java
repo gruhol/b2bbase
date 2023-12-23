@@ -1,6 +1,6 @@
-package pl.thinkdata.b2bbase.company.model;
+package pl.thinkdata.b2bbase.company.model.enums;
 
-public enum SocialType {
+public enum SocialTypeEnum {
     FACEBOOK("Facebook"),
     LINKEDIN("LinkedIn"),
     TWITTER("Twitter"),
@@ -10,7 +10,7 @@ public enum SocialType {
 
     private String value;
 
-    SocialType(String value) {
+    SocialTypeEnum(String value) {
         this.value = value;
     }
 

@@ -7,6 +7,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.thinkdata.b2bbase.common.repository.SocialRepository;
 import pl.thinkdata.b2bbase.company.model.*;
+import pl.thinkdata.b2bbase.company.model.enums.CompanyRoleEnum;
+import pl.thinkdata.b2bbase.company.model.enums.CompanyTypeEnum;
+import pl.thinkdata.b2bbase.company.model.enums.LegalFormEnum;
+import pl.thinkdata.b2bbase.company.model.enums.SocialTypeEnum;
+import pl.thinkdata.b2bbase.company.model.enums.VoivodeshipEnum;
 import pl.thinkdata.b2bbase.company.repository.BranchRepository;
 import pl.thinkdata.b2bbase.common.repository.CategoryRepository;
 import pl.thinkdata.b2bbase.company.repository.Category2CompanyRepository;
@@ -84,19 +89,19 @@ public class TempDataController {
 
         socialRepository.save(Social.builder()
                         .url("https://www.etutor.pl/profil")
-                        .type(SocialType.FACEBOOK)
+                        .type(SocialTypeEnum.FACEBOOK)
                         .companyId(newCompany.getId())
                 .build());
 
         socialRepository.save(Social.builder()
                 .url("https://www.twitch.tv")
-                .type(SocialType.LINKEDIN)
+                .type(SocialTypeEnum.LINKEDIN)
                 .companyId(newCompany.getId())
                 .build());
 
         socialRepository.save(Social.builder()
                 .url("https://www.hltv.org/")
-                .type(SocialType.INSTAGRAM)
+                .type(SocialTypeEnum.INSTAGRAM)
                 .companyId(newCompany.getId())
                 .build());
 

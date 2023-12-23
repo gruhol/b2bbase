@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import pl.thinkdata.b2bbase.company.model.CompanyTypeEnum;
-import pl.thinkdata.b2bbase.company.model.LegalFormEnum;
+import pl.thinkdata.b2bbase.company.model.enums.CompanyTypeEnum;
+import pl.thinkdata.b2bbase.company.model.enums.LegalFormEnum;
 
 @Getter
 @Builder
@@ -28,4 +28,5 @@ public class CompanyToEdit {
     private boolean productFileCooperation;
     private String description;
     private String logo;
+    private boolean active;
 }

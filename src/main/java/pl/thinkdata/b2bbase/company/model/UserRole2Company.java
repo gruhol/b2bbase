@@ -2,6 +2,7 @@ package pl.thinkdata.b2bbase.company.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import pl.thinkdata.b2bbase.company.model.enums.CompanyRoleEnum;
 import pl.thinkdata.b2bbase.security.model.User;
 
 @Entity

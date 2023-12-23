@@ -1,4 +1,4 @@
-package pl.thinkdata.b2bbase.company.model;
+package pl.thinkdata.b2bbase.company.model.enums;
 
 public enum CompanyTypeEnum {
     CUSTOMER("Customer"),

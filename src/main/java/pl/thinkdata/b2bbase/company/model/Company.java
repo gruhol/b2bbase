@@ -3,6 +3,8 @@ package pl.thinkdata.b2bbase.company.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import pl.thinkdata.b2bbase.company.model.enums.CompanyTypeEnum;
+import pl.thinkdata.b2bbase.company.model.enums.LegalFormEnum;
 
 import java.util.Date;
 import java.util.HashSet;

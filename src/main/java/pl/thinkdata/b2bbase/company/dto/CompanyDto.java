@@ -11,8 +11,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.URL;
 import org.hibernate.validator.constraints.pl.NIP;
-import pl.thinkdata.b2bbase.company.model.CompanyTypeEnum;
-import pl.thinkdata.b2bbase.company.model.LegalFormEnum;
+import pl.thinkdata.b2bbase.company.model.enums.CompanyTypeEnum;
+import pl.thinkdata.b2bbase.company.model.enums.LegalFormEnum;
 import pl.thinkdata.b2bbase.common.validator.PhoneValidation;
 
 @Getter

@@ -58,6 +58,7 @@ public class CompanyMapper {
                 .productFileCooperation(company.isProductFileCooperation())
                 .description(company.getDescription())
                 .logo(company.getLogo())
+                .active(company.isActive())
                 .build();
     }
 }
