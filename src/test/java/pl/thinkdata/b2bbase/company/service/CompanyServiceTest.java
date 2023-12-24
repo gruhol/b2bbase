@@ -18,6 +18,7 @@ import pl.thinkdata.b2bbase.company.dto.CompanyDto;
 import pl.thinkdata.b2bbase.company.model.UserRole2Company;
 import pl.thinkdata.b2bbase.common.repository.CategoryRepository;
 import pl.thinkdata.b2bbase.common.repository.CompanyRepository;
+import pl.thinkdata.b2bbase.company.repository.SubscriptionOrderRepository;
 import pl.thinkdata.b2bbase.company.repository.UserRole2CompanyRepository;
 import pl.thinkdata.b2bbase.security.model.PrivateUserDetails;
 import pl.thinkdata.b2bbase.security.model.User;
@@ -46,6 +47,8 @@ class CompanyServiceTest {
     private UserRole2CompanyRepository userRole2CompanyRepository;
     @Mock
     private CategoryRepository categoryRepository;
+    @Mock
+    private SubscriptionOrderRepository subscriptionOrderRepository;
     private CompanyService companyService;
 
     @BeforeEach
@@ -63,7 +66,8 @@ class CompanyServiceTest {
                 new MessageGenerator(messageSource),
                 this.userDetailsService,
                 this.userRole2CompanyRepository,
-                this.categoryRepository);
+                this.categoryRepository,
+                this.subscriptionOrderRepository);
     }
 
     @Test

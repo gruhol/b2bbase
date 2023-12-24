@@ -17,16 +17,23 @@ import pl.thinkdata.b2bbase.company.dto.CompanyToEditDto;
 import pl.thinkdata.b2bbase.company.mapper.CompanyMapper;
 import pl.thinkdata.b2bbase.company.model.Category;
 import pl.thinkdata.b2bbase.company.model.Company;
+import pl.thinkdata.b2bbase.company.model.SubscriptionOrder;
 import pl.thinkdata.b2bbase.company.model.enums.CompanyRoleEnum;
 import pl.thinkdata.b2bbase.company.model.UserRole2Company;
 import pl.thinkdata.b2bbase.common.repository.CategoryRepository;
 import pl.thinkdata.b2bbase.common.repository.CompanyRepository;
+import pl.thinkdata.b2bbase.company.model.enums.PaymentStatusEnum;
+import pl.thinkdata.b2bbase.company.model.enums.PaymentTypeEnum;
+import pl.thinkdata.b2bbase.company.model.enums.SubscriptionTypeEnum;
+import pl.thinkdata.b2bbase.company.repository.SubscriptionOrderRepository;
 import pl.thinkdata.b2bbase.company.repository.UserRole2CompanyRepository;
 import pl.thinkdata.b2bbase.company.validator.EditCompanyValidator;
 import pl.thinkdata.b2bbase.company.validator.RegistrationValidator;
 import pl.thinkdata.b2bbase.security.model.User;
 import pl.thinkdata.b2bbase.security.repository.UserRepository;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -50,6 +57,7 @@ public class CompanyService {
     private final UserDetailsService userDetailsService;
     private final UserRole2CompanyRepository userRole2CompanyRepository;
     private final CategoryRepository categoryRepository;
+    private final SubscriptionOrderRepository subscriptionOrderRepository;
     List<Category> allCategory;
 
     public List<Company> getCompanies() {
@@ -78,6 +86,7 @@ public class CompanyService {
                 .user(user)
                 .build();
         userRole2CompanyRepository.save(userRole2Company);
+        subscriptionOrderRepository.save(createBasicSubscriptionOrder(newCompany.getId()));
         return mapToCompanyResponse(newCompany);
     }
 
@@ -139,8 +148,23 @@ public class CompanyService {
                 .filter(cat -> !categoryToCompanyList.contains(cat))
                 .forEach(cat -> companyInBase.addCategory(getCategoryById(cat)));
 
-
         return mapToCompanyToEdit(companyRepository.saveAndFlush(companyInBase));
+    }
+
+    private static SubscriptionOrder createBasicSubscriptionOrder(Long companyId) {
+        Date now = new Date();
+        Calendar nowPlusOneYear = Calendar.getInstance();
+        nowPlusOneYear.setTime(now);
+        nowPlusOneYear.add(Calendar.YEAR, 1);
+
+        return SubscriptionOrder.builder()
+                .companyId(companyId)
+                .startDate(now)
+                .endDate(nowPlusOneYear.getTime())
+                .subscriptionType(SubscriptionTypeEnum.BASIC)
+                .paymentStatus(PaymentStatusEnum.NOTPAID)
+                .paymentType(PaymentTypeEnum.BANK_TRANSFER)
+                .build();
     }
     private Category getCategoryById(Long id) {
         if (allCategory == null) {
