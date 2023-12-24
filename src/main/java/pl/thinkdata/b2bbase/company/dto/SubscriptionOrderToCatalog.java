@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import pl.thinkdata.b2bbase.company.model.enums.PackageTypeEnum;
+import pl.thinkdata.b2bbase.company.model.enums.SubscriptionTypeEnum;
 import pl.thinkdata.b2bbase.company.model.enums.PaymentStatusEnum;
 import pl.thinkdata.b2bbase.company.model.enums.PaymentTypeEnum;
 
@@ -17,8 +17,8 @@ import java.util.Date;
 @Builder
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class PackageOrderToCatalog {
-    private PackageTypeEnum packageType;
+public class SubscriptionOrderToCatalog {
+    private SubscriptionTypeEnum packageType;
     private Date startDate;
     private Date endDate;
     private PaymentTypeEnum paymentType;

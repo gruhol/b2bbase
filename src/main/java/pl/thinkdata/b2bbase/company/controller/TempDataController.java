@@ -12,20 +12,20 @@ import pl.thinkdata.b2bbase.company.model.Branch;
 import pl.thinkdata.b2bbase.company.model.Category;
 import pl.thinkdata.b2bbase.company.model.Category2Company;
 import pl.thinkdata.b2bbase.company.model.Company;
-import pl.thinkdata.b2bbase.company.model.PackageOrder;
+import pl.thinkdata.b2bbase.company.model.SubscriptionOrder;
 import pl.thinkdata.b2bbase.company.model.Social;
 import pl.thinkdata.b2bbase.company.model.UserRole2Company;
 import pl.thinkdata.b2bbase.company.model.enums.CompanyRoleEnum;
 import pl.thinkdata.b2bbase.company.model.enums.CompanyTypeEnum;
 import pl.thinkdata.b2bbase.company.model.enums.LegalFormEnum;
-import pl.thinkdata.b2bbase.company.model.enums.PackageTypeEnum;
+import pl.thinkdata.b2bbase.company.model.enums.SubscriptionTypeEnum;
 import pl.thinkdata.b2bbase.company.model.enums.PaymentStatusEnum;
 import pl.thinkdata.b2bbase.company.model.enums.PaymentTypeEnum;
 import pl.thinkdata.b2bbase.company.model.enums.SocialTypeEnum;
 import pl.thinkdata.b2bbase.company.model.enums.VoivodeshipEnum;
 import pl.thinkdata.b2bbase.company.repository.BranchRepository;
 import pl.thinkdata.b2bbase.company.repository.Category2CompanyRepository;
-import pl.thinkdata.b2bbase.company.repository.PackageOrderRepository;
+import pl.thinkdata.b2bbase.company.repository.SubscriptionOrderRepository;
 import pl.thinkdata.b2bbase.company.repository.UserRole2CompanyRepository;
 import pl.thinkdata.b2bbase.security.model.User;
 import pl.thinkdata.b2bbase.security.model.UserRole;
@@ -48,7 +48,7 @@ public class TempDataController {
     private final CategoryRepository categoryRepository;
     private final Category2CompanyRepository company2CategoryRepository;
     private final SocialRepository socialRepository;
-    private final PackageOrderRepository packageOrderRepository;
+    private final SubscriptionOrderRepository packageOrderRepository;
 
     @GetMapping("/testdata")
     public String createTempData() {
@@ -192,13 +192,13 @@ public class TempDataController {
         Date now = new Date();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(now);
-        calendar.add(Calendar.YEAR, 1000);
+        calendar.add(Calendar.YEAR, 1);
 
-        packageOrderRepository.save(PackageOrder.builder()
+        packageOrderRepository.save(SubscriptionOrder.builder()
                 .companyId(newCompany.getId())
                 .startDate(now)
                 .endDate(calendar.getTime())
-                .packageType(PackageTypeEnum.BASIC)
+                .subscriptionType(SubscriptionTypeEnum.BASIC)
                 .paymentType(PaymentTypeEnum.BANK_TRANSFER)
                 .paymentStatus(PaymentStatusEnum.NOTPAID)
                 .build());

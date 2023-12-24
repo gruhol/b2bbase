@@ -10,7 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import pl.thinkdata.b2bbase.company.model.enums.PackageTypeEnum;
+import pl.thinkdata.b2bbase.company.model.enums.SubscriptionTypeEnum;
 import pl.thinkdata.b2bbase.company.model.enums.PaymentStatusEnum;
 import pl.thinkdata.b2bbase.company.model.enums.PaymentTypeEnum;
 
@@ -21,13 +21,13 @@ import java.util.Date;
 @Builder
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class PackageOrder {
+public class SubscriptionOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long companyId;
     @Enumerated(EnumType.STRING)
-    private PackageTypeEnum packageType;
+    private SubscriptionTypeEnum subscriptionType;
     private Date startDate;
     private Date endDate;
     @Enumerated(EnumType.STRING)
