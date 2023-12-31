@@ -13,13 +13,9 @@ import pl.thinkdata.b2bbase.common.repository.CompanyRepository;
 import pl.thinkdata.b2bbase.company.model.Branch;
 import pl.thinkdata.b2bbase.company.model.Category;
 import pl.thinkdata.b2bbase.company.model.Company;
-import pl.thinkdata.b2bbase.company.model.enums.VoivodeshipEnum;
 import pl.thinkdata.b2bbase.search.dto.SearchCompanyResult;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static pl.thinkdata.b2bbase.catalog.mapper.CatalogMapper.mapToCategoryToCatalog;
@@ -45,7 +41,7 @@ public class SearchService {
         Page<CompanyInCatalog> pageCompanyList = new PageImpl<>(companyInCatalogList, pageable, companies.getTotalElements());
 
         Set<CategoryToCatalog> categoryListForCompany = getCategoryToCatalogListFromCompany(companies);
-        List<VoivodeshipEnum> voivodeshipEnumList = createVoivodeshipEnumListFromCompanies(companies);
+        Map<String, String> voivodeshipEnumList = createVoivodeshipEnumListFromCompanies(companies);
 
         return SearchCompanyResult.builder()
                 .companies(pageCompanyList)
@@ -68,12 +64,13 @@ public class SearchService {
     }
 
     @NotNull
-    private static List<VoivodeshipEnum> createVoivodeshipEnumListFromCompanies(Page<Company> companies) {
-        return companies.stream()
+    private static Map<String, String> createVoivodeshipEnumListFromCompanies(Page<Company> companies) {
+        Map<String, String> mapVoivodeshipList = new HashMap<>();
+        companies.stream()
                 .flatMap(company -> company.getBranches().stream())
                 .filter(bramch -> bramch.isHeadquarter())
-                .map(branch -> branch.getVoivodeship())
-                .collect(Collectors.toList());
+                .forEach(branch -> mapVoivodeshipList.put(branch.getVoivodeship().getSlug(), branch.getVoivodeship().getValue()));
+        return mapVoivodeshipList;
     }
 
 
