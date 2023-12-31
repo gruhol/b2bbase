@@ -130,16 +130,16 @@ public interface CompanyRepository extends JpaRepository<Company, Long>, JpaSpec
     @Query(value = "SELECT c FROM Company c " +
             "LEFT JOIN c.categories cat " +
             "WHERE c.active = true " +
-            "AND (c.name LIKE :keyword " +
+            "AND (LOWER(c.name) LIKE :keyword " +
             "OR c.nip LIKE :keyword " +
             "OR c.regon LIKE :keyword " +
-            "OR cat.name LIKE :keyword)",
+            "OR LOWER(cat.name) LIKE :keyword)",
             countQuery = "SELECT COUNT(c) FROM Company c " +
                     "LEFT JOIN c.categories cat " +
                     "WHERE c.active = true " +
-                    "AND (c.name LIKE :keyword " +
+                    "AND (LOWER(c.name) LIKE :keyword " +
                     "OR c.nip LIKE :keyword " +
                     "OR c.regon LIKE :keyword " +
-                    "OR cat.name LIKE :keyword)")
+                    "OR LOWER(cat.name) LIKE :keyword)")
     Page<Company> searchByKeyword(@Param("keyword") String keyword, Pageable pageable);
 }

@@ -7,6 +7,7 @@ import pl.thinkdata.b2bbase.catalog.dto.CompanyInCatalogWithCategory;
 import pl.thinkdata.b2bbase.company.model.Category;
 import pl.thinkdata.b2bbase.company.model.Company;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -84,5 +85,24 @@ public class CatalogMapper {
                 .name(category.getName())
                 .slug(category.getSlug())
                 .build();
+    }
+
+    public static CategoryToCatalog mapToCategoryToCatalog(Category cat, boolean isNotChildren, List<Category> categories) {
+        if (cat == null) return null;
+        return CategoryToCatalog.builder()
+                .id(cat.getId())
+                .name(cat.getName())
+                .slug(cat.getSlug())
+                .children(isNotChildren ? createChildList(categories, cat) : null)
+                .build();
+    }
+
+    private static List<CategoryToCatalog> createChildList(List<Category> allCategory, Category parent) {
+        if (allCategory.size() == 0 && parent.getId() == null) return new ArrayList<CategoryToCatalog>();
+        return allCategory.stream()
+                .filter(cat -> cat.getParent() != null)
+                .filter(cat -> cat.getParent().getId() == parent.getId())
+                .map(cat -> mapToCategoryToCatalog(cat, false, null))
+                .collect(Collectors.toList());
     }
 }

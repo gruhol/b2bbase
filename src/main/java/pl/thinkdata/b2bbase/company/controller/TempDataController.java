@@ -23,7 +23,7 @@ import pl.thinkdata.b2bbase.company.model.enums.PaymentStatusEnum;
 import pl.thinkdata.b2bbase.company.model.enums.PaymentTypeEnum;
 import pl.thinkdata.b2bbase.company.model.enums.SocialTypeEnum;
 import pl.thinkdata.b2bbase.company.model.enums.VoivodeshipEnum;
-import pl.thinkdata.b2bbase.company.repository.BranchRepository;
+import pl.thinkdata.b2bbase.common.repository.BranchRepository;
 import pl.thinkdata.b2bbase.company.repository.Category2CompanyRepository;
 import pl.thinkdata.b2bbase.company.repository.SubscriptionOrderRepository;
 import pl.thinkdata.b2bbase.company.repository.UserRole2CompanyRepository;
@@ -73,6 +73,7 @@ public class TempDataController {
                 .krs("1234567899")
                 .email("dabrowskiw@gmail.com")
                 .phone("123456789")
+                .active(true)
                 .description("<h2>Czym jest Lorem Ipsum?</h2><p><strong>Lorem Ipsum</strong>&#160;jest tekstem stosowanym jako " +
                         "przyk&#322;adowy wype&#322;niacz w przemy&#347;le poligraficznym. Zosta&#322; po raz pierwszy u&#380;yty " +
                         "w XV w. przez nieznanego drukarza do wype&#322;nienia tekstem pr&#243;bnej ksi&#261;&#380;ki. Pi&#281;&#263; " +

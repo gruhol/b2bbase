@@ -13,7 +13,7 @@ import pl.thinkdata.b2bbase.company.dto.BranchDto;
 import pl.thinkdata.b2bbase.company.dto.BranchToEditDto;
 import pl.thinkdata.b2bbase.company.model.Branch;
 import pl.thinkdata.b2bbase.company.model.Company;
-import pl.thinkdata.b2bbase.company.repository.BranchRepository;
+import pl.thinkdata.b2bbase.common.repository.BranchRepository;
 
 import java.util.Arrays;
 

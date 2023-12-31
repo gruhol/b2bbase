@@ -6,53 +6,27 @@ import pl.thinkdata.b2bbase.catalog.dto.CategoryToCatalog;
 import pl.thinkdata.b2bbase.common.repository.CategoryRepository;
 import pl.thinkdata.b2bbase.company.model.Category;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static pl.thinkdata.b2bbase.catalog.mapper.CatalogMapper.mapToCategoryToCatalog;
 
 @Service
 @RequiredArgsConstructor
 public class CatalogCategoryService {
 
-    private List<Category> allCategory;
-
     private final CategoryRepository categoryRepository;
 
     public List<CategoryToCatalog> getCategory() {
-        this.allCategory = categoryRepository.findAll();
+        List<Category> categories = categoryRepository.findAll();
 
-        List<CategoryToCatalog> categoryResponses = this.allCategory.stream()
+        List<CategoryToCatalog> categoryResponses = categories.stream()
                 .filter(cat -> cat.getParent() == null)
-                .map(cat -> mapToCategoryToCatalog(cat))
+                .map(cat -> mapToCategoryToCatalog(cat, true, categories))
                 .collect(Collectors.toList());
 
         return categoryResponses;
     }
 
-    private CategoryToCatalog mapToCategoryToCatalog(Category cat) {
-        if (cat == null) return null;
-        return CategoryToCatalog.builder()
-                .id(cat.getId())
-                .name(cat.getName())
-                .slug(cat.getSlug())
-                .children(createChildList(allCategory, cat))
-                .build();
-    }
 
-    private List<CategoryToCatalog> createChildList(List<Category> allCategory, Category parent) {
-        if (allCategory.size() == 0 && parent.getId() == null) new ArrayList<CategoryToCatalog>();
-        return allCategory.stream()
-                .filter(cat -> cat.getParent() != null)
-                .filter(cat -> cat.getParent().getId() == parent.getId())
-                .map(cat -> mapToCategoryResponse(parent, cat))
-                .collect(Collectors.toList());
-    }
-
-    private CategoryToCatalog mapToCategoryResponse(Category parentCategory, Category category) {
-        return CategoryToCatalog.builder()
-                .id(category.getId())
-                .name(category.getName())
-                .slug(category.getSlug())
-                .build();
-    }
 }

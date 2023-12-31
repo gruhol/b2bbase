@@ -16,7 +16,7 @@ import pl.thinkdata.b2bbase.common.repository.CompanyRepository;
 import pl.thinkdata.b2bbase.company.model.Branch;
 import pl.thinkdata.b2bbase.company.model.Company;
 import pl.thinkdata.b2bbase.company.model.enums.VoivodeshipEnum;
-import pl.thinkdata.b2bbase.company.repository.BranchRepository;
+import pl.thinkdata.b2bbase.common.repository.BranchRepository;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -126,17 +126,5 @@ public class CatalogCompanyService {
                 .map(company -> mapToCompanyInCatalogWithCategory(company)).collect(Collectors.toList());
     }
 
-    public Page<CompanyInCatalog> searchCompanyByKeyword(String keyword, Pageable pageable) {
-        Page<Company> companies = companyRepository.searchByKeyword(keyword, pageable);
-        List<CompanyInCatalog> companyInCatalogList = companies.stream()
-                .map(company -> mapToCompanyInCatalog(company))
-                .collect(Collectors.toList());
 
-        companyInCatalogList.stream().forEach(company -> {
-            Optional<Branch> branch = branchRepository.findByCompanyIdAndHeadquarter(company.getId(), true);
-            company.setBranch(branch.isPresent() ? branch.get() : null );
-        });
-
-        return new PageImpl<>(companyInCatalogList, pageable, companies.getTotalElements());
-    }
 }

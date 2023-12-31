@@ -11,7 +11,7 @@ import pl.thinkdata.b2bbase.company.dto.BranchToEditDto;
 import pl.thinkdata.b2bbase.company.mapper.BranchMapper;
 import pl.thinkdata.b2bbase.company.model.Branch;
 import pl.thinkdata.b2bbase.company.model.Company;
-import pl.thinkdata.b2bbase.company.repository.BranchRepository;
+import pl.thinkdata.b2bbase.common.repository.BranchRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
