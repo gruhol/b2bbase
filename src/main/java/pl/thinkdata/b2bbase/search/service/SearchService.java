@@ -13,6 +13,7 @@ import pl.thinkdata.b2bbase.common.repository.CompanyRepository;
 import pl.thinkdata.b2bbase.company.model.Branch;
 import pl.thinkdata.b2bbase.company.model.Category;
 import pl.thinkdata.b2bbase.company.model.Company;
+import pl.thinkdata.b2bbase.company.model.enums.VoivodeshipEnum;
 import pl.thinkdata.b2bbase.search.dto.SearchCompanyResult;
 
 import java.util.*;
@@ -28,18 +29,25 @@ public class SearchService {
     private final CompanyRepository companyRepository;
     private final BranchRepository branchRepository;
 
-    public SearchCompanyResult searchCompanyWithCategoryAndVoivodeshipByKeyword(String keyword, Pageable pageable) {
-        Page<Company> companies = companyRepository.searchByKeyword(keyword.toLowerCase(), pageable);
+    public SearchCompanyResult searchCompanyWithCategoryAndVoivodeshipByKeyword(String keyword,
+                                                                                List<Long> categories,
+                                                                                List<String> voivodeshipSlugs,
+                                                                                Boolean isEdiCooperation,
+                                                                                Boolean isApiCooperation,
+                                                                                Boolean isProductFileCooperation,
+                                                                                Pageable pageable)
+    {
+        List<VoivodeshipEnum> voivodeshipList = getVoivodeshipEnums(voivodeshipSlugs);
+
+        Page<Company> companies = companyRepository
+                .searchByKeyword(keyword.toLowerCase(), categories, voivodeshipList, isEdiCooperation, isApiCooperation, isProductFileCooperation , pageable);
 
         List<CompanyInCatalog> companyInCatalogList = companies.getContent().stream()
                 .map(company -> mapToCompanyInCatalog(company))
                 .collect(Collectors.toList());
-        companyInCatalogList.stream().forEach(company -> {
-            Optional<Branch> branch = branchRepository.findByCompanyIdAndHeadquarter(company.getId(), true);
-            company.setBranch(branch.isPresent() ? branch.get() : null );
-        });
-        Page<CompanyInCatalog> pageCompanyList = new PageImpl<>(companyInCatalogList, pageable, companies.getTotalElements());
+        addHeadquarterBranchToCompanies(companyInCatalogList);
 
+        Page<CompanyInCatalog> pageCompanyList = new PageImpl<>(companyInCatalogList, pageable, companies.getTotalElements());
         Set<CategoryToCatalog> categoryListForCompany = getCategoryToCatalogListFromCompany(companies);
         Map<String, String> voivodeshipEnumList = createVoivodeshipEnumListFromCompanies(companies);
 
@@ -48,6 +56,23 @@ public class SearchService {
                 .categoryListForCompany(categoryListForCompany)
                 .voivodeshipEnumList(voivodeshipEnumList)
                 .build();
+    }
+
+    private List<VoivodeshipEnum> getVoivodeshipEnums(List<String> voivodeshipSlugs) {
+        List<VoivodeshipEnum> voivodeshipList = null;
+        if (voivodeshipSlugs != null) {
+            voivodeshipList = voivodeshipSlugs.stream()
+                    .map(slug -> findVoivodeshipEnumBySlug(slug))
+                    .collect(Collectors.toList());
+        }
+        return voivodeshipList;
+    }
+
+    private void addHeadquarterBranchToCompanies(List<CompanyInCatalog> companyInCatalogList) {
+        companyInCatalogList.stream().forEach(company -> {
+            Optional<Branch> branch = branchRepository.findByCompanyIdAndHeadquarter(company.getId(), true);
+            company.setBranch(branch.isPresent() ? branch.get() : null );
+        });
     }
 
     @NotNull
@@ -71,6 +96,14 @@ public class SearchService {
                 .filter(bramch -> bramch.isHeadquarter())
                 .forEach(branch -> mapVoivodeshipList.put(branch.getVoivodeship().getSlug(), branch.getVoivodeship().getValue()));
         return mapVoivodeshipList;
+    }
+
+    private VoivodeshipEnum findVoivodeshipEnumBySlug(String searchSlug) {
+        if (searchSlug == null) return null;
+        return Arrays.stream(VoivodeshipEnum.values())
+                .filter(voivodeshipEnum -> voivodeshipEnum.getSlug().toLowerCase().equals(searchSlug.toLowerCase()))
+                .findFirst()
+                .orElse(null);
     }
 
 

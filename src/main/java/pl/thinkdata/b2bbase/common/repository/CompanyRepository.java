@@ -127,19 +127,59 @@ public interface CompanyRepository extends JpaRepository<Company, Long>, JpaSpec
             @Param("isProductFileCooperation") Boolean isProductFileCooperation,
             Pageable pageable);
 
-    @Query(value = "SELECT c FROM Company c " +
-            "LEFT JOIN c.categories cat " +
-            "WHERE c.active = true " +
-            "AND (LOWER(c.name) LIKE :keyword " +
-            "OR c.nip LIKE :keyword " +
-            "OR c.regon LIKE :keyword " +
-            "OR LOWER(cat.name) LIKE :keyword)",
-            countQuery = "SELECT COUNT(c) FROM Company c " +
-                    "LEFT JOIN c.categories cat " +
-                    "WHERE c.active = true " +
-                    "AND (LOWER(c.name) LIKE :keyword " +
-                    "OR c.nip LIKE :keyword " +
-                    "OR c.regon LIKE :keyword " +
-                    "OR LOWER(cat.name) LIKE :keyword)")
-    Page<Company> searchByKeyword(@Param("keyword") String keyword, Pageable pageable);
+//    @Query(value = "SELECT c FROM Company c " +
+//            "LEFT JOIN c.categories cat " +
+//            "WHERE c.active = true " +
+//            "AND (LOWER(c.name) LIKE :keyword " +
+//            "OR c.nip LIKE :keyword " +
+//            "OR c.regon LIKE :keyword " +
+//            "OR LOWER(cat.name) LIKE :keyword)",
+//            countQuery = "SELECT COUNT(c) FROM Company c " +
+//                    "LEFT JOIN c.categories cat " +
+//                    "WHERE c.active = true " +
+//                    "AND (LOWER(c.name) LIKE :keyword " +
+//                    "OR c.nip LIKE :keyword " +
+//                    "OR c.regon LIKE :keyword " +
+//                    "OR LOWER(cat.name) LIKE :keyword)")
+    @Query(value = "SELECT c " +
+            " FROM Company c" +
+            " LEFT OUTER JOIN Category2Company c2c ON c.id = c2c.companyId" +
+            " LEFT OUTER JOIN Category cat ON c2c.categoryId = cat.id" +
+            " LEFT JOIN Branch b ON c.id = b.companyId" +
+            " WHERE" +
+            "(:#{#voivodeshipes == null} = true OR b.voivodeship IN :voivodeshipes)" +
+            " AND (:#{#idCategories == null} = true OR cat.id IN :idCategories)" +
+            " AND (:isEdiCooperation IS NULL OR c.ediCooperation = :isEdiCooperation)" +
+            " AND (:isApiCooperation IS NULL OR c.apiCooperation = :isApiCooperation)" +
+            " AND (:isProductFileCooperation IS NULL OR c.productFileCooperation = :isProductFileCooperation)" +
+            " AND (c.active = true)" +
+            " AND (LOWER(c.name) LIKE :keyword " +
+            " OR c.nip LIKE :keyword " +
+            " OR c.regon LIKE :keyword " +
+            " OR LOWER(cat.name) LIKE :keyword)" +
+            " GROUP BY c.id" +
+            " ORDER BY c.id DESC",
+            countQuery = "SELECT count(*) FROM Company c " +
+                    " LEFT OUTER JOIN Category2Company c2c ON c.id = c2c.companyId" +
+                    " LEFT OUTER JOIN Category cat ON c2c.categoryId = cat.id" +
+                    " LEFT JOIN Branch b ON c.id = b.companyId" +
+                    " WHERE" +
+                    "(:#{#voivodeshipes == null} = true OR b.voivodeship IN :voivodeshipes)" +
+                    " AND (:#{#idCategories == null} = true OR cat.id IN :idCategories)" +
+                    " AND (:isEdiCooperation IS NULL OR c.ediCooperation = :isEdiCooperation)" +
+                    " AND (:isApiCooperation IS NULL OR c.apiCooperation = :isApiCooperation)" +
+                    " AND (:isProductFileCooperation IS NULL OR c.productFileCooperation = :isProductFileCooperation)" +
+                    " AND (c.active = true)" +
+                    " AND (LOWER(c.name) LIKE :keyword " +
+                    " OR c.nip LIKE :keyword " +
+                    " OR c.regon LIKE :keyword " +
+                    " OR LOWER(cat.name) LIKE :keyword)" +
+                    " GROUP BY c.id")
+    Page<Company> searchByKeyword(@Param("keyword") String keyword,
+                                  @Param("idCategories") List<Long> idCategories,
+                                  @Param("voivodeshipes") List<VoivodeshipEnum> voivodeshipes,
+                                  @Param("isEdiCooperation") Boolean isEdiCooperation,
+                                  @Param("isApiCooperation") Boolean isApiCooperation,
+                                  @Param("isProductFileCooperation") Boolean isProductFileCooperation,
+                                  Pageable pageable);
 }
