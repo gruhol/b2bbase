@@ -51,7 +51,7 @@ public class ImageService {
 
         String fileName = multipartFile.getOriginalFilename();
         String uploadDir = directory + dir + File.separator + "temp" + File.separator;
-        Path filePath = Paths.get(uploadDir).resolve(fileName);
+        Path filePath = Paths.get(uploadDir, fileName);
         String fileNameToSave = generateFileLogoName(request, fileName);
 
         try (InputStream stream = multipartFile.getInputStream()) {
