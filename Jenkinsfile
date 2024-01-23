@@ -5,7 +5,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Pobierz źródło kodu z repozytorium
-                git 'https://github.com/gruhol/b2bbase.git'
+                git branch: 'main', credentialsId: 'dabrowskiw@gmail.com', url: 'https://github.com/gruhol/b2bbase.git'
             }
         }
 
