@@ -17,6 +17,7 @@ import pl.thinkdata.b2bbase.company.service.CompanyService;
 import pl.thinkdata.b2bbase.datafile.util.TinyPngConverter;
 import pl.thinkdata.b2bbase.datafile.validator.ImageValidator;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -66,7 +67,7 @@ public class ImageService {
 
     public ResponseEntity<Resource> serveImages(String filename, String dir) {
         try {
-            String uploadDir = directory + dir + "/";
+            String uploadDir = directory + dir + File.separator;
             FileSystemResourceLoader fileSystemResourceLoader = new FileSystemResourceLoader();
             Resource file = fileSystemResourceLoader.getResource(uploadDir + filename);
             if (file.exists()) {
