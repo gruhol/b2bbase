@@ -50,7 +50,7 @@ public class ImageService {
         imageValidator.valid(1000, 500, 2);
 
         String fileName = multipartFile.getOriginalFilename();
-        String uploadDir = directory + dir + "/temp/";
+        String uploadDir = directory + dir + File.separator + "temp" + File.separator;
         Path filePath = Paths.get(uploadDir).resolve(fileName);
         String fileNameToSave = generateFileLogoName(request, fileName);
 
