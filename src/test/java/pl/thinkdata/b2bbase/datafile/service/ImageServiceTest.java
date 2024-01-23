@@ -22,6 +22,7 @@ import pl.thinkdata.b2bbase.datafile.util.TinyPngConverter;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -59,7 +60,7 @@ class ImageServiceTest {
         Files.createDirectories(tempDir);
 
         this.imageService = new ImageService(
-                tempolaryDir.toString() + "\\",
+                tempolaryDir.toString() + File.separator,
                 new MessageGenerator(messageSource),
                 this.tinyPngConverter,
                 this.companyService);
