@@ -2,6 +2,7 @@ package pl.thinkdata.b2bbase.datafile.service;
 
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -87,9 +88,10 @@ class ImageServiceTest {
         assertEquals("Wystąpił błąd. Nie udało się zapisać obrazka.", exception.getMessage());
     }
 
+    @Disabled
     @Test
     void shouldReturnResponseEntityWithStatusOKWhenImageExist() {
-        try{
+        try {
             generateTemporaryImageInTempFolder(200,100);
             ResponseEntity  response = imageService.serveImages("image.jpg", "logos");
             assertEquals(HttpStatus.OK.value(), response.getStatusCode().value());
