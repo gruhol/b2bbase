@@ -1,5 +1,5 @@
 --liquibase formatted sql
---changeset dabrowskiw:11
+--changeset dabrowskiw:12
 CREATE TABLE subscription_order(
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     company_id BIGINT NOT NULL,

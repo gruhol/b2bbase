@@ -1,4 +1,4 @@
 --liquibase formatted sql
---changeset dabrowskiw:10
+--changeset dabrowskiw:11
 ALTER TABLE company
 ADD created datetime AFTER logo;

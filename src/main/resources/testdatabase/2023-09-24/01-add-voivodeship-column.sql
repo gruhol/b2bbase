@@ -1,4 +1,4 @@
 --liquibase formatted sql
---changeset dabrowskiw:8
+--changeset dabrowskiw:9
 ALTER TABLE branch
 ADD voivodeship VARCHAR(64) AFTER slug;

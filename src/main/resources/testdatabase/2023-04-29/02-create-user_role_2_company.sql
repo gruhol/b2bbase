@@ -1,5 +1,5 @@
 --liquibase formatted sql
---changeset dabrowskiw:5
+--changeset dabrowskiw:6
 CREATE TABLE user_role_2_company(
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     user_id BIGINT NOT NULL,

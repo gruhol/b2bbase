@@ -1,5 +1,5 @@
 --liquibase formatted sql
---changeset dabrowskiw:7
+--changeset dabrowskiw:8
 CREATE TABLE verification_link (
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     id_user BIGINT NOT NULL,
