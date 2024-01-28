@@ -24,9 +24,20 @@ public class SecurityConfig {
                                            AuthenticationManager authenticationManager,
                                            UserDetailsService userDetailsService) throws Exception {
         http.authorizeHttpRequests(authorize -> authorize
-                //.requestMatchers("/user/**").hasRole("USER")
-                //.requestMatchers("/company/**").hasRole("USER")
-                .anyRequest().permitAll()
+                .requestMatchers("/catalog/**").permitAll()
+                .requestMatchers("/category/**").permitAll()
+                .requestMatchers("/search/**").permitAll()
+                .requestMatchers("/remember-password/**").permitAll()
+                .requestMatchers("/send-password/**").permitAll()
+                .requestMatchers("/login/**").permitAll()
+                .requestMatchers("/register/**").permitAll()
+                .requestMatchers("/branch/**").hasRole("USER")
+                .requestMatchers("/company/**").hasRole("USER")
+                .requestMatchers("/social/**").hasRole("USER")
+                .requestMatchers("/subscription/**").hasRole("USER")
+                .requestMatchers("/img/**").hasRole("USER")
+                .requestMatchers("/user/**").hasRole("USER")
+                .anyRequest().denyAll()
         );
         http.csrf().disable();
         http.headers().frameOptions().disable();
