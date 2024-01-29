@@ -1,21 +1,30 @@
 pipeline {
+    agent any
 
-    agent {
-        any
-        docker { image 'maven:3.9.6-eclipse-temurin-17-alpine' }
+    tools {
+        maven "maven"
+    }
+
+    environment {
+        JWT_SECRET = credentials('JWT-SECRET')
+        DATABASE_IP = credentials('DATABASE-IP')
+        DATABASE_NAME = credentials('DATABASE-NAME')
+        DATABASE_PASSWORD = credentials('DATABASE-PASSWORD')
+        DATABASE_USERNAME = credentials('DATABASE-USERNAME')
+        EMAIL = credentials('EMAIL')
+        EMAIL_PASSWORD = credentials('EMAIL-PASSWORD')
+        TINYAPI = credentials('TINYAPI')
     }
 
     stages {
         stage('Checkout') {
             steps {
-                // Pobierz źródło kodu z repozytorium
-                git branch: 'main', credentialsId: 'dabrowskiw@gmail.com', url: 'https://github.com/gruhol/b2bbase.git'
+                git branch: 'main', url: 'https://github.com/gruhol/b2bbase.git'
             }
         }
 
         stage('Build') {
             steps {
-                // Uruchom proces budowania Maven
                 script {
                     sh 'mvn clean install'
                 }
@@ -27,6 +36,56 @@ pipeline {
                 // Uruchom testy jednostkowe
                 script {
                     sh 'mvn test'
+                }
+            }
+        }
+
+        stage('Package') {
+            steps {
+                script {
+                    sh 'mvn package'
+                }
+            }
+        }
+
+        stage('Stop and remove container') {
+            steps {
+                script {
+                    sh 'docker stop b2bpoint && docker rm b2bpoint'
+                }
+            }
+        }
+
+        stage('Remove image') {
+            steps {
+                script {
+                    sh 'docker rmi b2bpoint:b2bpoint'
+                }
+            }
+        }
+
+        stage('Build docker') {
+            steps {
+                script {
+                    sh 'docker build -t b2bpoint:b2bpoint .'
+                }
+            }
+        }
+
+        stage('Run docker') {
+            steps {
+                script {
+                    sh 'docker run -p 90:8080 ' +
+                    '-e JWT-SECRET=${JWT_SECRET} ' +
+                    '-e DATABASE-IP=${DATABASE_IP} ' +
+                    '-e DATABASE-NAME=${DATABASE_NAME} ' +
+                    '-e DATABASE-PASSWORD=${DATABASE_PASSWORD} ' +
+                    '-e DATABASE-USERNAME=${DATABASE_USERNAME} ' +
+                    '-e EMAIL=${EMAIL} ' +
+                    '-e EMAIL-PASSWORD=${EMAIL_PASSWORD} ' +
+                    '-e TINYAPI=${TINYAPI} ' +
+                    '-e PROFILE=prod ' +
+                    '--name b2bpoint b2bpoint:b2bpoint'
                 }
             }
         }
