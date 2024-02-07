@@ -31,6 +31,7 @@ public class SecurityConfig {
                 .requestMatchers("/send-password/**").permitAll()
                 .requestMatchers("/login/**").permitAll()
                 .requestMatchers("/register/**").permitAll()
+                .requestMatchers("/verify/**").permitAll()
                 .requestMatchers("/branch/**").hasRole("USER")
                 .requestMatchers("/company/**").hasRole("USER")
                 .requestMatchers("/social/**").hasRole("USER")
