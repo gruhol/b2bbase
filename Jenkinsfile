@@ -51,7 +51,12 @@ pipeline {
         stage('Stop and remove container') {
             steps {
                 script {
-                    sh 'docker stop b2bpoint && docker rm b2bpoint'
+                    try {
+                        sh 'docker inspect b2bpoint > /dev/null 2>&1'
+                        sh 'docker stop b2bpoint && docker rm b2bpoint'
+                    } catch (Exception e) {
+                        echo "Kontener nie istnieje. Pominięcie etapu."
+                    }
                 }
             }
         }
@@ -59,7 +64,11 @@ pipeline {
         stage('Remove image') {
             steps {
                 script {
-                    sh 'docker rmi b2bpoint:b2bpoint'
+                    try {
+                        sh 'docker rmi b2bpoint:b2bpoint'
+                    } catch (Exception e) {
+                        echo "Obraz nie istnieje. Pominięcie etapu."
+                    }
                 }
             }
         }
@@ -85,7 +94,7 @@ pipeline {
                     '-e EMAIL-PASSWORD=${EMAIL_PASSWORD} ' +
                     '-e TINYAPI=${TINYAPI} ' +
                     '-e PROFILE=prod ' +
-                    '--name b2bpoint b2bpoint:b2bpoint'
+                    '-d --name b2bpoint b2bpoint:b2bpoint'
                 }
             }
         }
