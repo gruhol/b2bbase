@@ -11,13 +11,15 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 
-@Profile("prod")
+import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
+
+@Profile("dev")
 @Configuration
-public class SecurityConfig {
+public class SecurityConfigDev {
 
     private String secret;
 
-    public SecurityConfig(@Value("${jwt.secret}") String secret) {
+    public SecurityConfigDev(@Value("${jwt.secret}") String secret) {
         this.secret = secret;
     }
 
@@ -34,14 +36,19 @@ public class SecurityConfig {
                 .requestMatchers("/login").permitAll()
                 .requestMatchers("/register").permitAll()
                 .requestMatchers("/verify/**").permitAll()
+                .requestMatchers("/testdata").permitAll()
+                .requestMatchers("/swagger-ui/**", "/swagger-resources/*", "/v3/api-docs/**").permitAll()
                 .requestMatchers("/branch/**").hasRole("USER")
                 .requestMatchers("/company/**").hasRole("USER")
                 .requestMatchers("/social/**").hasRole("USER")
                 .requestMatchers("/subscription/**").hasRole("USER")
                 .requestMatchers("/img/**").hasRole("USER")
                 .requestMatchers("/user/**").permitAll()
+                .requestMatchers(toH2Console()).permitAll()
                 .anyRequest().denyAll()
         );
+
+        http.csrf().ignoringRequestMatchers(toH2Console());
         http.csrf().disable();
         http.headers().frameOptions().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
