@@ -111,7 +111,7 @@ public class UserService {
         if (userRepository.existsByUsername(registerCredentials.getUsername())) {
             fields.put(LoginDictionary.USERNAME, LoginDictionary.USERNAME_ALREADY_EXIST);
             throw new ValidationException(error_message, fields);
-        };
+        }
         User user = userRepository.save(User.builder()
                 .firstname(registerCredentials.getFirstName())
                 .lastname(registerCredentials.getLastName())

@@ -2,11 +2,10 @@ package pl.thinkdata.b2bbase.security.service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+import pl.thinkdata.b2bbase.common.service.baseUrlService.BaseUrlService;
 import pl.thinkdata.b2bbase.common.service.emailservice.MyEmailService;
 import pl.thinkdata.b2bbase.security.model.PasswordToSendRequest;
 import pl.thinkdata.b2bbase.security.model.User;
@@ -27,6 +26,7 @@ public class VerificationLinkService {
     private final MyEmailService myEmailService;
     private final TemplateEngine templateEngine;
     private final HttpServletRequest request;
+    private final BaseUrlService baseUrlService;
 
     private static final String URL = "url";
     private static final String BASEURL = "baseurl";
@@ -40,7 +40,7 @@ public class VerificationLinkService {
         verificationLinkRepository.save(link);
 
         Context context = new Context();
-        String baseUrl = createBaseUrl();
+        String baseUrl = baseUrlService.getUrl();
         String url = baseUrl + request.getTargetUrl() + link.getToken();
         context.setVariable(URL, url);
         context.setVariable(BASEURL, baseUrl);
@@ -58,7 +58,7 @@ public class VerificationLinkService {
 
     public boolean createEmailWithDataAndSendEmail(PasswordToSendRequest request) {
 
-        String baseUrl = createBaseUrl();
+        String baseUrl = baseUrlService.getUrl();
         Context context = new Context();
         context.setVariable(BASEURL, baseUrl);
         for (Map.Entry variable : request.getListVariable().entrySet()) {
@@ -77,13 +77,6 @@ public class VerificationLinkService {
                 .collect(Collectors.toList());
 
         verificationLinkRepository.deleteAllById(verificationLinkIdsList);
-    }
-
-    private String createBaseUrl() {
-        return ServletUriComponentsBuilder.fromRequestUri(this.request)
-                .replacePath(null)
-                .build()
-                .toUriString();
     }
 
     private Boolean updateLink(VerificationLink verificationLink) {
