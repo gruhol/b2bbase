@@ -50,14 +50,13 @@ public class ImageService {
         imageValidator.valid(1000, 500, 2);
 
         String fileName = multipartFile.getOriginalFilename();
-        String uploadDir = directory + dir + File.separator + "temp" + File.separator;
-        Path filePath = Paths.get(uploadDir, fileName);
+        Path filePath = Paths.get(directory).resolve(dir).resolve("temp").resolve(fileName);
         String fileNameToSave = generateFileLogoName(request, fileName);
 
         try (InputStream stream = multipartFile.getInputStream()) {
             OutputStream outputStream = Files.newOutputStream(filePath);
             stream.transferTo(outputStream);
-            tinyPngConverter.convertImage(fileName, fileNameToSave, dir);
+            tinyPngConverter.convertImage(filePath, fileNameToSave, Paths.get(directory).resolve(dir));
             Files.deleteIfExists(filePath);
             return new UploadResponse(fileNameToSave);
         } catch (IOException e) {
@@ -67,9 +66,9 @@ public class ImageService {
 
     public ResponseEntity<Resource> serveImages(String filename, String dir) {
         try {
-            String uploadDir = directory + dir + File.separator;
+            String uploadDir = Paths.get(directory).resolve(dir).resolve(filename).toString();
             FileSystemResourceLoader fileSystemResourceLoader = new FileSystemResourceLoader();
-            Resource file = fileSystemResourceLoader.getResource(uploadDir + filename);
+            Resource file = fileSystemResourceLoader.getResource(uploadDir);
             if (file.exists()) {
                 return ResponseEntity.ok()
                         .header(HttpHeaders.CONTENT_TYPE, Files.probeContentType(Path.of(filename)))

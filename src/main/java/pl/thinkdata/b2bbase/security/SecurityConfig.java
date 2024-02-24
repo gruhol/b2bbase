@@ -38,7 +38,8 @@ public class SecurityConfig {
                 .requestMatchers("/company/**").hasRole("USER")
                 .requestMatchers("/social/**").hasRole("USER")
                 .requestMatchers("/subscription/**").hasRole("USER")
-                .requestMatchers("/img/**").hasRole("USER")
+                .requestMatchers("/img/get/**").permitAll()
+                .requestMatchers("/img/upload/**").hasRole("USER")
                 .requestMatchers("/user/**").permitAll()
                 .anyRequest().denyAll()
         );

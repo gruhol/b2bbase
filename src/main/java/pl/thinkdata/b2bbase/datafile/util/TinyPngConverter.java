@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.nio.file.Path;
 
 @Component
 public class TinyPngConverter {
@@ -19,14 +20,14 @@ public class TinyPngConverter {
         this.tinyPngApiKey = tinyPngApiKey;
     }
 
-    public void convertImage(String filename, String fileNameToSave, String dir) throws IOException {
+    public void convertImage(Path fileToConvert, String fileNameToSave, Path dir) throws IOException {
         Tinify.setKey(tinyPngApiKey);
-        Source source = Tinify.fromFile("./data/" + dir + "/temp/" + filename);
+        Source source = Tinify.fromFile(fileToConvert.toString());
         Options options = new Options()
                 .with("method", method)
                 .with("width", width)
                 .with("height", height);
         Source resized = source.resize(options);
-        resized.toFile("./data/logos/" + fileNameToSave);
+        resized.toFile(dir.resolve(fileNameToSave).toString());
     }
 }
