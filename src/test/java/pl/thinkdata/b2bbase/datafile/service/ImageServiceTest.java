@@ -67,17 +67,17 @@ class ImageServiceTest {
                 this.companyService);
     }
 
-//    @Test
-//    void shouldReturnNewFileName() {
-//        try {
-//            when(companyService.getCompany(any())).thenReturn(createTempCompany());
-//            doNothing().when(tinyPngConverter).convertImage(any(), any(), any());
-//            UploadResponse uploadImage = imageService.uploadImage(generateTemporaryImage(200, 100), "logos", new MockHttpServletRequest());
-//            assertEquals("slug-logo.jpg", uploadImage.filename());
-//        } catch (Exception e) {
-//            System.out.println("Test skipped due to system settings.");
-//        }
-//    }
+    @Test
+    void shouldReturnNewFileName() {
+        try {
+            when(companyService.getCompany(any())).thenReturn(createTempCompany());
+            doNothing().when(tinyPngConverter).convertImage(any(), any(), any());
+            UploadResponse uploadImage = imageService.uploadImage(generateTemporaryImage(200, 100), "logos", new MockHttpServletRequest());
+            assertEquals("slug-logo.jpg", uploadImage.filename());
+        } catch (Exception e) {
+            System.out.println("Test skipped due to system settings.");
+        }
+    }
 
     @Test
     void shouldReturnExceptionWhenPathisWrong() {

@@ -57,7 +57,7 @@ public class ImageService {
         try (InputStream stream = multipartFile.getInputStream()) {
             OutputStream outputStream = Files.newOutputStream(filePath);
             stream.transferTo(outputStream);
-            //tinyPngConverter.convertImage(fileName, fileNameToSave, dir);
+            tinyPngConverter.convertImage(fileName, fileNameToSave, dir);
             Files.deleteIfExists(filePath);
             return new UploadResponse(fileNameToSave);
         } catch (IOException e) {
