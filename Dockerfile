@@ -1,4 +1,5 @@
 FROM openjdk:17
+RUN mkdir -p /app/data
 WORKDIR /app
 COPY target/b2bbase-0.1.jar /app
 EXPOSE 8080
