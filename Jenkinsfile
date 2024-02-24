@@ -94,7 +94,7 @@ pipeline {
                     '-e EMAIL-PASSWORD=${EMAIL_PASSWORD} ' +
                     '-e TINYAPI=${TINYAPI} ' +
                     '-e PROFILE=prod ' +
-                    '-v /home/ubuntu/b2bpoint.pl/images/:/data/ ' +
+                    '-v /home/ubuntu/b2bpoint.pl/images/:/app/data/ ' +
                     '-d --name b2bpoint b2bpoint:b2bpoint'
                 }
             }
