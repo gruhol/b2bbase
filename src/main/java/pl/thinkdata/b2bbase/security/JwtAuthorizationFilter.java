@@ -15,7 +15,6 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import pl.thinkdata.b2bbase.common.error.AuthorizationException;
 
 import java.io.IOException;
-import java.util.Optional;
 
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
