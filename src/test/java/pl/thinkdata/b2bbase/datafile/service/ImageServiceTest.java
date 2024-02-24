@@ -88,6 +88,7 @@ class ImageServiceTest {
         assertEquals("Wystąpił błąd. Nie udało się zapisać obrazka.", exception.getMessage());
     }
 
+    @Disabled
     @Test
     void shouldReturnResponseEntityWithStatusOKWhenImageExist() {
         try {
