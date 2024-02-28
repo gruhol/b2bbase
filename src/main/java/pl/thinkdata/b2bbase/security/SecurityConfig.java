@@ -41,6 +41,7 @@ public class SecurityConfig {
                 .requestMatchers("/img/get/**").permitAll()
                 .requestMatchers("/img/upload/**").hasRole("USER")
                 .requestMatchers("/user/**").permitAll()
+                .requestMatchers("/page/**").permitAll()
                 .anyRequest().denyAll()
         );
         http.csrf().disable();
