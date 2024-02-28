@@ -20,9 +20,9 @@ public class StaticPage {
     private Long id;
     private String title;
     @CreatedDate
-    private Date add_date;
+    private Date addDate;
     @LastModifiedDate
-    private Date edit_date;
+    private Date editDate;
     private String content;
     private String slug;
 }
