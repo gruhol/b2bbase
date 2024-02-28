@@ -45,6 +45,7 @@ public class SecurityConfigDev {
                 .requestMatchers("/img/get/**").permitAll()
                 .requestMatchers("/img/upload/**").hasRole("USER")
                 .requestMatchers("/user/**").permitAll()
+                .requestMatchers("/page/**").permitAll()
                 .requestMatchers(toH2Console()).permitAll()
                 .anyRequest().denyAll()
         );
