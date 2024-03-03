@@ -11,6 +11,8 @@ public class UserMapper {
                 .lastName(user.getLastname())
                 .username(user.getUsername())
                 .phone(user.getPhone())
+                .emailAgreement(user.isEmailAgreement())
+                .smsAgreement(user.isSmsAgreement())
                 .build();
     }
 }

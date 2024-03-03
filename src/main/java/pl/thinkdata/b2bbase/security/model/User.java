@@ -28,6 +28,9 @@ public class User implements Serializable {
     private String password;
     private String phone;
     private boolean enabled;
+    private boolean regulationsAgreement;
+    private boolean emailAgreement;
+    private boolean smsAgreement;
     @ElementCollection
     @CollectionTable(name = "authorities", joinColumns = @JoinColumn(name = "username", referencedColumnName = "username"))
     @Column(name = "authority")

@@ -21,4 +21,6 @@ public class UserDto {
     private String repeatNewPassword;
     @PhoneValidation
     private String phone;
+    private boolean emailAgreement;
+    private boolean smsAgreement;
 }

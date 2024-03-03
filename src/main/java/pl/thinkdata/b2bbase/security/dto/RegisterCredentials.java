@@ -24,4 +24,7 @@ public class RegisterCredentials {
     private String repeatPassword;
     @PhoneValidation
     private String phone;
+    private boolean regulationsAgreement;
+    private boolean emailAgreement;
+    private boolean smsAgreement;
 }

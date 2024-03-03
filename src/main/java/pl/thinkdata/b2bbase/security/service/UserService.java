@@ -112,6 +112,10 @@ public class UserService {
             fields.put(LoginDictionary.USERNAME, LoginDictionary.USERNAME_ALREADY_EXIST);
             throw new ValidationException(error_message, fields);
         }
+        if (!registerCredentials.isRegulationsAgreement()) {
+            fields.put(LoginDictionary.REGULATIONS, LoginDictionary.REGULATIONS_MUST_BY_ACCEPTED);
+            throw new ValidationException(error_message, fields);
+        }
         User user = userRepository.save(User.builder()
                 .firstname(registerCredentials.getFirstName())
                 .lastname(registerCredentials.getLastName())
@@ -119,6 +123,9 @@ public class UserService {
                 .phone(registerCredentials.getPhone())
                 .password("{bcrypt}" + new BCryptPasswordEncoder().encode(registerCredentials.getPassword()))
                 .enabled(false)
+                .regulationsAgreement(registerCredentials.isRegulationsAgreement())
+                .emailAgreement(registerCredentials.isEmailAgreement())
+                .smsAgreement(registerCredentials.isSmsAgreement())
                 .authorities(List.of(UserRole.ROLE_USER))
                 .build());
 
@@ -165,6 +172,8 @@ public class UserService {
         userBackend.setFirstname(userDto.getFirstName());
         userBackend.setLastname(userDto.getLastName());
         userBackend.setPhone(userDto.getPhone());
+        userBackend.setEmailAgreement(userDto.isEmailAgreement());
+        userBackend.setSmsAgreement(userDto.isSmsAgreement());
 
         if (passwordsIsNotEmpty(userDto)) {
             if (!passwordMatch(userBackend.getId(), userDto.getPassword()))

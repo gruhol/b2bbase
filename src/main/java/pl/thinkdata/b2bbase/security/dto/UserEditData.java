@@ -11,4 +11,6 @@ public class UserEditData {
     private String lastName;
     private String username;
     private String phone;
+    private boolean emailAgreement;
+    private boolean smsAgreement;
 }
