@@ -171,6 +171,17 @@ class UserServiceTest {
     }
 
     @Test
+    void shouldThrowInvalidRequestDataExceptionWhenRegulationsAgreementNotTrue() {
+        //given
+        RegisterCredentials registerCredentials = createTempRegisterCredentialsWithoutRegulationsAgreement();
+        //when
+        ValidationException exception = assertThrows(ValidationException.class, () -> userService.register(registerCredentials));
+        //then
+        assertEquals(1, exception.getFileds().size());
+        assertEquals("Regulamin musi zostać zaakceptowany", exception.getFileds().get("regulations"));
+    }
+
+    @Test
     void shouldThrowValidationExceptionThenUserIsInDataBase() {
         //given
         RegisterCredentials registerCredentials = createTempRegisterCredentials();
@@ -290,6 +301,18 @@ class UserServiceTest {
     }
 
     private static RegisterCredentials createTempRegisterCredentials() {
+        return RegisterCredentials.builder()
+                .firstName("Jan")
+                .lastName("Kowalski")
+                .username("kowalski@test.pl")
+                .password("password")
+                .repeatPassword("password")
+                .phone("123456789")
+                .regulationsAgreement(true)
+                .build();
+    }
+
+    private static RegisterCredentials createTempRegisterCredentialsWithoutRegulationsAgreement() {
         return RegisterCredentials.builder()
                 .firstName("Jan")
                 .lastName("Kowalski")
