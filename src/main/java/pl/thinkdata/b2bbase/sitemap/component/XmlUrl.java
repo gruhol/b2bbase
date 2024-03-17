@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-@XmlAccessorType(value = XmlAccessType.NONE)
+@XmlAccessorType(value = XmlAccessType.FIELD)
 @XmlRootElement(name = "url")
 public class XmlUrl {
     public enum Priority {

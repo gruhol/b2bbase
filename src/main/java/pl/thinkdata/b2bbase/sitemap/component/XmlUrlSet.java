@@ -16,4 +16,7 @@ public class XmlUrlSet {
         xmlUrls.add(xmlUrl);
     }
 
+    public Collection<XmlUrl> getXmlUrls() {
+        return xmlUrls;
+    }
 }
