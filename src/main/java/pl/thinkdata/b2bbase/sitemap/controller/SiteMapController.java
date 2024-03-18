@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import pl.thinkdata.b2bbase.sitemap.component.BaseUrlGenerator;
+import pl.thinkdata.b2bbase.common.service.baseUrlService.BaseUrlService;
 import pl.thinkdata.b2bbase.sitemap.component.XmlUrl;
 import pl.thinkdata.b2bbase.sitemap.component.XmlUrlSet;
 
@@ -13,7 +13,7 @@ import pl.thinkdata.b2bbase.sitemap.component.XmlUrlSet;
 @RequiredArgsConstructor
 public class SiteMapController {
 
-    private final BaseUrlGenerator baseUrlGenerator;
+    private final BaseUrlService baseUrlService;
 
     @RequestMapping(value = "/sitemap.xml", method = RequestMethod.GET, produces = "text/xml; charset=utf-8")
     @ResponseBody
@@ -31,7 +31,7 @@ public class SiteMapController {
     }
 
     private void create(XmlUrlSet xmlUrlSet, String link, XmlUrl.Priority priority) {
-        String DOMAIN = baseUrlGenerator.getUrl();
+        String DOMAIN = baseUrlService.getUrl();
         xmlUrlSet.addUrl(new XmlUrl(DOMAIN + link, priority));
     }
 }
