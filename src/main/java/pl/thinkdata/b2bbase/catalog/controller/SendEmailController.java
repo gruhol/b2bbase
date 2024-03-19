@@ -12,12 +12,12 @@ import pl.thinkdata.b2bbase.catalog.service.ContactFormService;
 @RestController
 @RequestMapping("/sendEmail")
 @RequiredArgsConstructor
-public class ContactFormController {
+public class SendEmailController {
 
     private ContactFormService contactFormService;
 
     @PostMapping("/contactForm")
-    public boolean sendEmailByContactForm(@RequestBody @Valid EmailData emailData) {
-        return contactFormService.sendEmailByContactForm(emailData);
+    public boolean sendEmail(@RequestBody @Valid EmailData emailData) {
+        return contactFormService.sendEmail(emailData);
     }
 }
