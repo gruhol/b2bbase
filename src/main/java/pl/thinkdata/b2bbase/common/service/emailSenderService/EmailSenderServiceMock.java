@@ -1,12 +1,11 @@
-package pl.thinkdata.b2bbase.common.service.emailservice;
+package pl.thinkdata.b2bbase.common.service.emailSenderService;
 
 import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 @Profile("dev")
 @Service
-public class MyEmailServiceMock implements MyEmailService {
+public class EmailSenderServiceMock implements EmailSenderService {
 
     @Override
     public boolean sendEmail(String to, String title, String content, String url) {

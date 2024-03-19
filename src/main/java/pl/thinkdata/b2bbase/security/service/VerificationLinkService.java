@@ -1,12 +1,11 @@
 package pl.thinkdata.b2bbase.security.service;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import pl.thinkdata.b2bbase.common.service.baseUrlService.BaseUrlService;
-import pl.thinkdata.b2bbase.common.service.emailservice.MyEmailService;
+import pl.thinkdata.b2bbase.common.service.emailSenderService.EmailSenderService;
 import pl.thinkdata.b2bbase.security.model.PasswordToSendRequest;
 import pl.thinkdata.b2bbase.security.model.User;
 import pl.thinkdata.b2bbase.security.model.VerificationLink;
@@ -23,9 +22,8 @@ import java.util.stream.Collectors;
 public class VerificationLinkService {
 
     private final VerificationLinkRepository verificationLinkRepository;
-    private final MyEmailService myEmailService;
+    private final EmailSenderService emailSenderService;
     private final TemplateEngine templateEngine;
-    private final HttpServletRequest request;
     private final BaseUrlService baseUrlService;
 
     private static final String URL = "url";
@@ -45,7 +43,7 @@ public class VerificationLinkService {
         context.setVariable(URL, url);
         context.setVariable(BASEURL, baseUrl);
         String body = templateEngine.process(request.getEmailTemplate(), context);
-        myEmailService.sendEmail(request.getUser().getUsername(), request.getEmailSubject(), body, url);
+        emailSenderService.sendEmail(request.getUser().getUsername(), request.getEmailSubject(), body, url);
     }
 
     public boolean checkVerificationLink(String token) {
@@ -66,7 +64,7 @@ public class VerificationLinkService {
         }
         String body = templateEngine.process(request.getEmailTemplate(), context);
         String newPassword = request.getListVariable().containsKey("newPassword") ? request.getListVariable().get("newPassword") : null;
-        return myEmailService.sendEmail(request.getUser().getUsername(), request.getEmailSubject(), body, newPassword);
+        return emailSenderService.sendEmail(request.getUser().getUsername(), request.getEmailSubject(), body, newPassword);
     }
 
     private void findActiveTokenAndDeleteThem(User user) {

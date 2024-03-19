@@ -1,4 +1,4 @@
-package pl.thinkdata.b2bbase.common.service.emailservice;
+package pl.thinkdata.b2bbase.common.service.emailSenderService;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @Profile("prod")
 @Service
 @RequiredArgsConstructor
-public class MyEmailServiceImpl implements MyEmailService {
+public class EmailSenderServiceImpl implements EmailSenderService {
 
     private final JavaMailSender javaMailSender;
 
