@@ -43,6 +43,7 @@ public class SecurityConfig {
                 .requestMatchers("/user/**").permitAll()
                 .requestMatchers("/page/**").permitAll()
                 .requestMatchers("/sitemap.xml").permitAll()
+                .requestMatchers("/sendEmail/**").permitAll()
                 .anyRequest().denyAll()
         );
         http.csrf().disable();

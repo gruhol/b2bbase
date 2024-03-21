@@ -8,12 +8,12 @@ import pl.thinkdata.b2bbase.common.repository.CompanyRepository;
 import pl.thinkdata.b2bbase.common.service.baseUrlService.BaseUrlService;
 import pl.thinkdata.b2bbase.common.service.emailBuilder.EmailBuilder;
 import pl.thinkdata.b2bbase.common.service.emailSenderService.EmailSenderService;
-import pl.thinkdata.b2bbase.company.service.CompanyService;
+import pl.thinkdata.b2bbase.common.util.MessageGenerator;
 
 import java.util.HashMap;
-import java.util.Optional;
 
-import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.USER_FROM_GIVEN_TOKEN_NOT_FOUND;
+import static pl.thinkdata.b2bbase.common.tool.CommonDictionary.MESSAGE_FROM;
+import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.EMAIL_SUPPLIER_NOT_FOUND_BY_COMPANY_ID;
 
 @Service
 @RequiredArgsConstructor
@@ -24,10 +24,12 @@ public class ContactFormService {
     public static final String EMAIL = "email";
     public static final String MESSAGE = "message";
     public static final String BASEURL = "baseurl";
-    private EmailBuilder emailBuilder;
-    private EmailSenderService emailSenderService;
+
+    private final EmailBuilder emailBuilder;
+    private final EmailSenderService emailSenderService;
     private final BaseUrlService baseUrlService;
-    private CompanyRepository companyRepository;
+    private final MessageGenerator messageGenerator;
+    private final CompanyRepository companyRepository;
 
     public boolean sendEmail(EmailData emailData) {
         HashMap<String, String> values = new HashMap<>();
@@ -36,9 +38,22 @@ public class ContactFormService {
         values.put(EMAIL, emailData.getEmail());
         values.put(MESSAGE, emailData.getMessage());
         values.put(BASEURL, baseUrlService.getUrl());
-        //String emailSupplier = companyRepository.findById(emailData.getCompanyId()).ifPresent(.orElseThrow(() -> new InvalidRequestDataException(messageGenerator.get(USER_FROM_GIVEN_TOKEN_NOT_FOUND)));
+        String emailSupplier = companyRepository.findById(emailData.getCompanyId())
+                .orElseThrow(() -> new InvalidRequestDataException(messageGenerator.get(EMAIL_SUPPLIER_NOT_FOUND_BY_COMPANY_ID)))
+                .getEmail();
 
         String body = emailBuilder.prepareEmail("email-templates/contact_form", values);
-        return false;
+        String url = generateURL(emailData);
+        return emailSenderService.sendEmail(emailSupplier, messageGenerator.get(MESSAGE_FROM), body, url);
+    }
+
+    /*
+    * Method to generate string values from EmailData to test sendEmail method in mock function.
+     */
+    private String generateURL(EmailData emailData) {
+        return emailData.getName() + "|" +
+                emailData.getPhone() + "|" +
+                emailData.getEmail() + "|" +
+                emailData.getMessage() + "|";
     }
 }

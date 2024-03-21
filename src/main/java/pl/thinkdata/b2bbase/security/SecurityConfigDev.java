@@ -37,7 +37,7 @@ public class SecurityConfigDev {
                 .requestMatchers("/register").permitAll()
                 .requestMatchers("/verify/**").permitAll()
                 .requestMatchers("/testdata").permitAll()
-                .requestMatchers("/swagger-ui/**", "/swagger-resources/*", "/v3/api-docs/**").permitAll()
+                .requestMatchers("/swagger-ui/**", "/swagger-resources/*", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                 .requestMatchers("/branch/**").hasRole("USER")
                 .requestMatchers("/company/**").hasRole("USER")
                 .requestMatchers("/social/**").hasRole("USER")
@@ -47,6 +47,7 @@ public class SecurityConfigDev {
                 .requestMatchers("/user/**").permitAll()
                 .requestMatchers("/page/**").permitAll()
                 .requestMatchers("/sitemap.xml").permitAll()
+                .requestMatchers("/sendEmail/**").permitAll()
                 .requestMatchers(toH2Console()).permitAll()
                 .anyRequest().denyAll()
         );

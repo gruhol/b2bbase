@@ -14,7 +14,7 @@ import pl.thinkdata.b2bbase.catalog.service.ContactFormService;
 @RequiredArgsConstructor
 public class SendEmailController {
 
-    private ContactFormService contactFormService;
+    private final ContactFormService contactFormService;
 
     @PostMapping("/contactForm")
     public boolean sendEmail(@RequestBody @Valid EmailData emailData) {
