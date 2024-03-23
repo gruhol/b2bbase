@@ -44,11 +44,13 @@ public class ContactFormService {
 
         String body = emailBuilder.prepareEmail("email-templates/contact_form", values);
         String url = generateURL(emailData);
-        return emailSenderService.sendEmail(emailSupplier, messageGenerator.get(MESSAGE_FROM), body, url);
+        String title = messageGenerator.get(MESSAGE_FROM) + " " +  baseUrlService.getUrl();
+        return emailSenderService.sendEmail(emailSupplier, title, body, url);
     }
 
     /*
     * Method to generate string values from EmailData to test sendEmail method in mock function.
+    * Not using on production
      */
     private String generateURL(EmailData emailData) {
         return emailData.getName() + "|" +

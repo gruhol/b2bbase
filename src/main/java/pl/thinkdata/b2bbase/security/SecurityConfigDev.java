@@ -47,7 +47,7 @@ public class SecurityConfigDev {
                 .requestMatchers("/user/**").permitAll()
                 .requestMatchers("/page/**").permitAll()
                 .requestMatchers("/sitemap.xml").permitAll()
-                .requestMatchers("/sendEmail/**").permitAll()
+                .requestMatchers("/sendEmail/**").hasRole("USER")
                 .requestMatchers(toH2Console()).permitAll()
                 .anyRequest().denyAll()
         );
