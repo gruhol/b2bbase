@@ -9,6 +9,7 @@ import pl.thinkdata.b2bbase.company.model.Company;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class CatalogMapper {
@@ -54,7 +55,7 @@ public class CatalogMapper {
                 .productFileCooperation(company.isProductFileCooperation())
                 .logo(company.getLogo())
                 .categories(company.getCategories().stream()
-                        .map(category -> mapToCategoryToCatalog(category))
+                        .map(CatalogMapper::mapToCategoryToCatalog)
                         .collect(Collectors.toList()))
                 .build();
     }
@@ -101,10 +102,10 @@ public class CatalogMapper {
     }
 
     private static List<CategoryToCatalog> createChildList(List<Category> allCategory, Category parent) {
-        if (allCategory.size() == 0 && parent.getId() == null) return new ArrayList<CategoryToCatalog>();
+        if (allCategory.isEmpty() && parent.getId() == null) return new ArrayList<>();
         return allCategory.stream()
                 .filter(cat -> cat.getParent() != null)
-                .filter(cat -> cat.getParent().getId() == parent.getId())
+                .filter(cat -> Objects.equals(cat.getParent().getId(), parent.getId()))
                 .map(cat -> mapToCategoryToCatalog(cat, false, null))
                 .collect(Collectors.toList());
     }
