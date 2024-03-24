@@ -27,6 +27,7 @@ public class CatalogMapper {
                 .phone(company.getPhone())
                 .wwwSite(company.getWwwSite())
                 .wwwStore(company.getWwwStore())
+                .productFileCooperation(company.isProductFileCooperation())
                 .ediCooperation(company.isEdiCooperation())
                 .apiCooperation(company.isApiCooperation())
                 .logo(company.getLogo())
@@ -50,6 +51,7 @@ public class CatalogMapper {
                 .wwwStore(company.getWwwStore())
                 .ediCooperation(company.isEdiCooperation())
                 .apiCooperation(company.isApiCooperation())
+                .productFileCooperation(company.isProductFileCooperation())
                 .logo(company.getLogo())
                 .categories(company.getCategories().stream()
                         .map(category -> mapToCategoryToCatalog(category))
@@ -74,6 +76,7 @@ public class CatalogMapper {
                 .description(company.getDescription())
                 .ediCooperation(company.isEdiCooperation())
                 .apiCooperation(company.isApiCooperation())
+                .productFileCooperation(company.isProductFileCooperation())
                 .logo(company.getLogo())
                 .active(company.isActive())
                 .build();
