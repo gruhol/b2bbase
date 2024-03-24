@@ -3,17 +3,9 @@ package pl.thinkdata.b2bbase.company.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.FileSystemResourceLoader;
-import org.springframework.core.io.Resource;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import pl.thinkdata.b2bbase.company.dto.*;
-import pl.thinkdata.b2bbase.company.model.Company;
 import pl.thinkdata.b2bbase.company.service.CompanyService;
-
-import java.io.IOException;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
