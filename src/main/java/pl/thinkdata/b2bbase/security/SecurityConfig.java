@@ -27,6 +27,7 @@ public class SecurityConfig {
                                            UserDetailsService userDetailsService) throws Exception {
         http.authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/catalog/**").permitAll()
+                .requestMatchers("/blog/**").permitAll()
                 .requestMatchers("/category/**").permitAll()
                 .requestMatchers("/search/**").permitAll()
                 .requestMatchers("/remember-password/**").permitAll()

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import pl.thinkdata.b2bbase.security.model.User;
 
 import java.util.Date;
 
@@ -28,4 +29,7 @@ public class Blog {
     private Date editDate;
     private String content;
     private String slug;
+    @ManyToOne
+    @JoinColumn(name = "author", insertable = false, updatable = false)
+    private User author;
 }
