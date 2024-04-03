@@ -21,7 +21,7 @@ public class Blog {
     private Long id;
     private String title;
     @ManyToOne
-    @JoinColumn(name = "category_id", insertable = false, updatable = false)
+    @JoinColumn(name = "category_id")
     private BlogCategory category;
     @CreatedDate
     private Date addDate;
@@ -30,6 +30,6 @@ public class Blog {
     private String content;
     private String slug;
     @ManyToOne
-    @JoinColumn(name = "author", insertable = false, updatable = false)
+    @JoinColumn(name = "author")
     private User author;
 }

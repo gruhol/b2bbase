@@ -38,6 +38,7 @@ public class SecurityConfigDev {
                 .requestMatchers("/register").permitAll()
                 .requestMatchers("/verify/**").permitAll()
                 .requestMatchers("/testdata").permitAll()
+                .requestMatchers("/blogtestdata").permitAll()
                 .requestMatchers("/swagger-ui/**", "/swagger-resources/*", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                 .requestMatchers("/branch/**").hasRole("USER")
                 .requestMatchers("/company/**").hasRole("USER")
