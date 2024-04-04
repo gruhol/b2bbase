@@ -22,5 +22,5 @@ public class BlogResponse {
     private Date editDate;
     private String content;
     private String slug;
-    private User author;
+    private UserResponse author;
 }
