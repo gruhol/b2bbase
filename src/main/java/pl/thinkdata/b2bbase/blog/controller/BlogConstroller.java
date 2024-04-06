@@ -3,12 +3,11 @@ package pl.thinkdata.b2bbase.blog.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.thinkdata.b2bbase.blog.dto.BlogResponse;
 import pl.thinkdata.b2bbase.blog.service.BlogService;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,7 +22,7 @@ public class BlogConstroller {
     }
 
     @GetMapping
-    public Page<BlogResponse> getBlogPosts(Pageable pageable) {
-        return blogService.getBlogPosts(pageable);
+    public Page<BlogResponse> getBlogPosts(@RequestParam(required = false) List<Long> categories, Pageable pageable) {
+        return blogService.getBlogPosts(categories, pageable);
     }
 }

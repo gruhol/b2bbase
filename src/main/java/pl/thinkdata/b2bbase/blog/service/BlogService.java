@@ -30,8 +30,8 @@ public class BlogService {
         return BlogMapper.mapToBlogResponse(blog);
     }
 
-    public Page<BlogResponse> getBlogPosts(Pageable pageable) {
-        Page<Blog> blogPosts = blogRepository.findAll(pageable);
+    public Page<BlogResponse> getBlogPosts(List<Long> categories, Pageable pageable) {
+        Page<Blog> blogPosts = blogRepository.findAllByCategory(categories, pageable);
 
         List<BlogResponse> posts = blogPosts.stream()
                 .map(BlogMapper::mapToBlogResponse)
