@@ -5,6 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import pl.thinkdata.b2bbase.blog.dto.BlogResponse;
+import pl.thinkdata.b2bbase.blog.model.BlogCategory;
+import pl.thinkdata.b2bbase.blog.service.BlogCategoryService;
 import pl.thinkdata.b2bbase.blog.service.BlogService;
 
 import java.util.List;
@@ -15,6 +17,7 @@ import java.util.List;
 public class BlogConstroller {
 
     private final BlogService blogService;
+    private final BlogCategoryService blogCategoryService;
 
     @GetMapping("/{slug}")
     public BlogResponse getBlogPost(@PathVariable String slug) {
@@ -24,5 +27,10 @@ public class BlogConstroller {
     @GetMapping
     public Page<BlogResponse> getBlogPosts(@RequestParam(required = false) List<Long> categories, Pageable pageable) {
         return blogService.getBlogPosts(categories, pageable);
+    }
+
+    @GetMapping("/categories")
+    public List<BlogCategory> getBlogCategory() {
+        return blogCategoryService.getBlogCategories();
     }
 }
