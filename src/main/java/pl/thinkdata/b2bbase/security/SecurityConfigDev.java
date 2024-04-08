@@ -29,6 +29,7 @@ public class SecurityConfigDev {
                                            UserDetailsService userDetailsService) throws Exception {
         http.authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/catalog/**").permitAll()
+                .requestMatchers("/blog/**").permitAll()
                 .requestMatchers("/category/**").permitAll()
                 .requestMatchers("/search/**").permitAll()
                 .requestMatchers("/remember-password/**").permitAll()
@@ -37,6 +38,7 @@ public class SecurityConfigDev {
                 .requestMatchers("/register").permitAll()
                 .requestMatchers("/verify/**").permitAll()
                 .requestMatchers("/testdata").permitAll()
+                .requestMatchers("/blogtestdata").permitAll()
                 .requestMatchers("/swagger-ui/**", "/swagger-resources/*", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                 .requestMatchers("/branch/**").hasRole("USER")
                 .requestMatchers("/company/**").hasRole("USER")
@@ -47,6 +49,7 @@ public class SecurityConfigDev {
                 .requestMatchers("/user/**").permitAll()
                 .requestMatchers("/page/**").permitAll()
                 .requestMatchers("/sitemap.xml").permitAll()
+                .requestMatchers("/blog/**").permitAll()
                 .requestMatchers("/sendEmail/**").hasRole("USER")
                 .requestMatchers(toH2Console()).permitAll()
                 .anyRequest().denyAll()
