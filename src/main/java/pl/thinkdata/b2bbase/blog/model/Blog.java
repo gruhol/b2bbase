@@ -27,6 +27,7 @@ public class Blog {
     private Date addDate;
     @LastModifiedDate
     private Date editDate;
+    private String introduction;
     private String content;
     private String slug;
     @ManyToOne

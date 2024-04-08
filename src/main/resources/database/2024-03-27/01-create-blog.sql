@@ -6,6 +6,7 @@ CREATE TABLE blog(
     title VARCHAR(50) NOT NULL,
     add_date DATETIME NOT NULL,
     edit_date DATETIME NOT NULL,
+    introduction VARCHAR(500),
     content TEXT,
     author BIGINT  NOT NULL,
     slug VARCHAR(128) NOT NULL UNIQUE

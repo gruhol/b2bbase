@@ -20,6 +20,7 @@ public class BlogResponse {
     private BlogCategory category;
     private Date addDate;
     private Date editDate;
+    private String introduction;
     private String content;
     private String slug;
     private UserResponse author;

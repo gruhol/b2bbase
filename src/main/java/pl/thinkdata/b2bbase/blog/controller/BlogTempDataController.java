@@ -46,6 +46,9 @@ public class BlogTempDataController {
         Blog blog1 = Blog.builder()
                 .title("Wpis testowy nr1")
                 .slug("wpis-testowy-nr1")
+                .introduction("Wstęp Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been " +
+                        "the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of " +
+                        "type and scrambled it to make a type specimen book. It has survived not only five centuries, but")
                 .content("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been " +
                         "the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of " +
                         "type and scrambled it to make a type specimen book. It has survived not only five centuries, but " +
@@ -61,6 +64,9 @@ public class BlogTempDataController {
         Blog blog2 = Blog.builder()
                 .title("Wpis testowy nr2")
                 .slug("wpis-testowy-nr2")
+                .introduction("Wstęp Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been " +
+                        "the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of " +
+                        "type and scrambled it to make a type specimen book. It has survived not only five centuries, but")
                 .content("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been " +
                         "the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of " +
                         "type and scrambled it to make a type specimen book. It has survived not only five centuries, but " +
@@ -76,6 +82,9 @@ public class BlogTempDataController {
         Blog blog3 = Blog.builder()
                 .title("Wpis testowy nr3")
                 .slug("wpis-testowy-nr3")
+                .introduction("Wstęp Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been " +
+                        "the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of " +
+                        "type and scrambled it to make a type specimen book. It has survived not only five centuries, but")
                 .content("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been " +
                         "the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of " +
                         "type and scrambled it to make a type specimen book. It has survived not only five centuries, but " +
@@ -91,6 +100,9 @@ public class BlogTempDataController {
         Blog blog4 = Blog.builder()
                 .title("Wpis testowy nr4")
                 .slug("wpis-testowy-nr4")
+                .introduction("Wstęp Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been " +
+                        "the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of " +
+                        "type and scrambled it to make a type specimen book. It has survived not only five centuries, but")
                 .content("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been " +
                         "the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of " +
                         "type and scrambled it to make a type specimen book. It has survived not only five centuries, but " +
@@ -106,6 +118,9 @@ public class BlogTempDataController {
         Blog blog5 = Blog.builder()
                 .title("Wpis testowy nr5")
                 .slug("wpis-testowy-nr5")
+                .introduction("Wstęp Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been " +
+                        "the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of " +
+                        "type and scrambled it to make a type specimen book. It has survived not only five centuries, but")
                 .content("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been " +
                         "the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of " +
                         "type and scrambled it to make a type specimen book. It has survived not only five centuries, but " +
@@ -121,6 +136,9 @@ public class BlogTempDataController {
         Blog blog6 = Blog.builder()
                 .title("Wpis testowy nr6")
                 .slug("wpis-testowy-nr6")
+                .introduction("Wstęp Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been " +
+                        "the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of " +
+                        "type and scrambled it to make a type specimen book. It has survived not only five centuries, but")
                 .content("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been " +
                         "the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of " +
                         "type and scrambled it to make a type specimen book. It has survived not only five centuries, but " +
@@ -136,6 +154,9 @@ public class BlogTempDataController {
         Blog blog7 = Blog.builder()
                 .title("Wpis testowy nr7")
                 .slug("wpis-testowy-nr7")
+                .introduction("Wstęp Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been " +
+                        "the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of " +
+                        "type and scrambled it to make a type specimen book. It has survived not only five centuries, but")
                 .content("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been " +
                         "the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of " +
                         "type and scrambled it to make a type specimen book. It has survived not only five centuries, but " +
@@ -151,6 +172,9 @@ public class BlogTempDataController {
         Blog blog8 = Blog.builder()
                 .title("Wpis testowy nr8")
                 .slug("wpis-testowy-nr8")
+                .introduction("Wstęp Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been " +
+                        "the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of " +
+                        "type and scrambled it to make a type specimen book. It has survived not only five centuries, but")
                 .content("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been " +
                         "the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of " +
                         "type and scrambled it to make a type specimen book. It has survived not only five centuries, but " +
@@ -166,6 +190,9 @@ public class BlogTempDataController {
         Blog blog9 = Blog.builder()
                 .title("Wpis testowy nr9")
                 .slug("wpis-testowy-nr9")
+                .introduction("Wstęp Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been " +
+                        "the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of " +
+                        "type and scrambled it to make a type specimen book. It has survived not only five centuries, but")
                 .content("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been " +
                         "the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of " +
                         "type and scrambled it to make a type specimen book. It has survived not only five centuries, but " +
@@ -181,6 +208,9 @@ public class BlogTempDataController {
         Blog blog10 = Blog.builder()
                 .title("Wpis testowy nr10")
                 .slug("wpis-testowy-nr10")
+                .introduction("Wstęp Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been " +
+                        "the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of " +
+                        "type and scrambled it to make a type specimen book. It has survived not only five centuries, but")
                 .content("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been " +
                         "the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of " +
                         "type and scrambled it to make a type specimen book. It has survived not only five centuries, but " +
@@ -196,6 +226,9 @@ public class BlogTempDataController {
         Blog blog11 = Blog.builder()
                 .title("Wpis testowy nr11")
                 .slug("wpis-testowy-nr11")
+                .introduction("Wstęp Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been " +
+                        "the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of " +
+                        "type and scrambled it to make a type specimen book. It has survived not only five centuries, but")
                 .content("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been " +
                         "the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of " +
                         "type and scrambled it to make a type specimen book. It has survived not only five centuries, but " +
@@ -211,6 +244,9 @@ public class BlogTempDataController {
         Blog blog12 = Blog.builder()
                 .title("Wpis testowy nr12")
                 .slug("wpis-testowy-nr12")
+                .introduction("Wstęp Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been " +
+                        "the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of " +
+                        "type and scrambled it to make a type specimen book. It has survived not only five centuries, but")
                 .content("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been " +
                         "the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of " +
                         "type and scrambled it to make a type specimen book. It has survived not only five centuries, but " +
@@ -226,6 +262,9 @@ public class BlogTempDataController {
         Blog blog13 = Blog.builder()
                 .title("Wpis testowy nr13")
                 .slug("wpis-testowy-nr13")
+                .introduction("Wstęp Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been " +
+                        "the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of " +
+                        "type and scrambled it to make a type specimen book. It has survived not only five centuries, but")
                 .content("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been " +
                         "the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of " +
                         "type and scrambled it to make a type specimen book. It has survived not only five centuries, but " +

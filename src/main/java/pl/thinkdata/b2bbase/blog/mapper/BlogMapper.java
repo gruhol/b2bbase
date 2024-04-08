@@ -13,6 +13,7 @@ public class BlogMapper {
                 .category(blog.getCategory())
                 .addDate(blog.getAddDate())
                 .editDate(blog.getEditDate())
+                .introduction(blog.getIntroduction())
                 .content(blog.getContent())
                 .slug(blog.getSlug())
                 .author(mapToUserResponse(blog.getAuthor()))
