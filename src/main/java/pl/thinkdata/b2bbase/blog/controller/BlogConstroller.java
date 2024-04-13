@@ -29,6 +29,11 @@ public class BlogConstroller {
         return blogService.getBlogPosts(categories, pageable);
     }
 
+    @GetMapping("/category/{slug}")
+    public Page<BlogResponse> getBlogPostsByCategoryName(@PathVariable String slug, Pageable pageable) {
+        return blogService.getBlogPostsByCategoryName(slug, pageable);
+    }
+
     @GetMapping("/categories")
     public List<BlogCategory> getBlogCategory() {
         return blogCategoryService.getBlogCategories();
