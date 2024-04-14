@@ -16,11 +16,11 @@ public interface BlogRepository extends JpaRepository<Blog, Long> {
     @Query(value = "SELECT b " +
                 " FROM Blog b" +
                 " WHERE" +
-                " b.category.id IN :category" +
+                "(:#{#category == null} = true OR b.category.id IN :category)" +
                 " ORDER BY b.id DESC",
             countQuery = "SELECT count(*) FROM Blog b " +
                 " WHERE" +
-                " b.category.id IN :category" +
+                "(:#{#category == null} = true OR b.category.id IN :category)" +
                 " GROUP BY b.id")
     Page<Blog> findAllByCategory(@Param("category") List<Long> category, Pageable pageable);
 
