@@ -43,6 +43,7 @@ public class SecurityConfig {
                 .requestMatchers("/img/upload/**").hasRole("USER")
                 .requestMatchers("/user/**").permitAll()
                 .requestMatchers("/page/**").permitAll()
+                .requestMatchers("/htmlpage/**").permitAll()
                 .requestMatchers("/sitemap.xml").permitAll()
                 .requestMatchers("/sendEmail/**").hasRole("USER")
                 .anyRequest().denyAll()
