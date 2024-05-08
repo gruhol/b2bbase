@@ -50,6 +50,7 @@ public class SecurityConfigDev {
                 .requestMatchers("/page/**").permitAll()
                 .requestMatchers("/sitemap.xml").permitAll()
                 .requestMatchers("/blog/**").permitAll()
+                .requestMatchers("/htmlpage/**").permitAll()
                 .requestMatchers("/sendEmail/**").hasRole("USER")
                 .requestMatchers(toH2Console()).permitAll()
                 .anyRequest().denyAll()
