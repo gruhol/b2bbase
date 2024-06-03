@@ -45,12 +45,7 @@ public class CompanyService {
     private final UserDetailsService userDetailsService;
     private final UserRole2CompanyRepository userRole2CompanyRepository;
     private final CategoryRepository categoryRepository;
-    private final SubscriptionOrderService subscriptionOrderService;
     List<Category> allCategory;
-
-    public List<Company> getCompanies() {
-        return companyRepository.findAll();
-    }
 
     public CompanyResponse addCompany(CompanyDto companyDto, HttpServletRequest request) {
         String token = request.getHeader(TOKEN_HEADER);

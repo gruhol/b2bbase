@@ -5,9 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.thinkdata.b2bbase.common.util.MessageGenerator;
 import pl.thinkdata.b2bbase.company.dto.SubscriptionOrderToCatalog;
+import pl.thinkdata.b2bbase.company.mapper.SubscriptionOrderMapper;
 import pl.thinkdata.b2bbase.company.model.Company;
 import pl.thinkdata.b2bbase.company.model.SubscriptionOrder;
-import pl.thinkdata.b2bbase.company.model.enums.PaymentStatusEnum;
 import pl.thinkdata.b2bbase.company.model.enums.PaymentTypeEnum;
 import pl.thinkdata.b2bbase.company.model.enums.SubscriptionTypeEnum;
 import pl.thinkdata.b2bbase.company.repository.SubscriptionOrderRepository;
@@ -40,15 +40,12 @@ public class SubscriptionOrderService {
         nowPlusOneYear.setTime(now);
         nowPlusOneYear.add(Calendar.YEAR, year);
 
-        SubscriptionOrder subscriptionOrder =  SubscriptionOrder.builder()
-                .companyId(companyId)
-                .startDate(now)
-                .endDate(nowPlusOneYear.getTime())
-                .subscriptionType(type)
-                .paymentStatus(PaymentStatusEnum.NOTPAID)
-                .paymentType(paymentType)
-                .build();
-        subscriptionOrderRepository.save(subscriptionOrder);
+        //todo Validation
+        // it has active subscription
+        // if company is active
+
+
+        SubscriptionOrder subscription = subscriptionOrderRepository.save(SubscriptionOrderMapper.map(companyId, now, nowPlusOneYear.getTime(), type, paymentType));
         return true;
     }
 }
