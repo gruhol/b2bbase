@@ -27,7 +27,7 @@ class NipNumberIsTakenPredicateTest {
         CompanyDto companyDto = new CompanyDto();
         companyDto.setNip("1234567890");
         //when
-        when(companyService.findByNip(companyDto.getNip())).thenReturn(Boolean.TRUE);
+        when(companyService.isCompanyByNip(companyDto.getNip())).thenReturn(Boolean.TRUE);
         boolean result = predicate.test(companyDto);
         //then
         assertTrue(result);
@@ -39,7 +39,7 @@ class NipNumberIsTakenPredicateTest {
         CompanyDto companyDto = new CompanyDto();
         companyDto.setNip("1234567890");
         //when
-        when(companyService.findByNip(companyDto.getNip())).thenReturn(Boolean.FALSE);
+        when(companyService.isCompanyByNip(companyDto.getNip())).thenReturn(Boolean.FALSE);
         boolean result = predicate.test(companyDto);
         //then
         assertFalse(result);

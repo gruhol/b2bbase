@@ -72,7 +72,7 @@ public class CompanyService {
         return mapToCompanyResponse(newCompany);
     }
 
-    public boolean findByNip(String nip) {
+    public boolean isCompanyByNip(String nip) {
         return companyRepository.findByNip(nip).isPresent();
     }
 

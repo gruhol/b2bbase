@@ -4,15 +4,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.thinkdata.b2bbase.common.util.MessageGenerator;
+import pl.thinkdata.b2bbase.company.dto.SubscriptionCompanyDto;
 import pl.thinkdata.b2bbase.company.dto.SubscriptionOrderToCatalog;
 import pl.thinkdata.b2bbase.company.mapper.SubscriptionOrderMapper;
 import pl.thinkdata.b2bbase.company.model.Company;
 import pl.thinkdata.b2bbase.company.model.SubscriptionOrder;
-import pl.thinkdata.b2bbase.company.model.enums.PaymentTypeEnum;
-import pl.thinkdata.b2bbase.company.model.enums.SubscriptionTypeEnum;
+import pl.thinkdata.b2bbase.company.model.enums.PaymentStatusEnum;
 import pl.thinkdata.b2bbase.company.repository.SubscriptionOrderRepository;
+import pl.thinkdata.b2bbase.company.validator.SubscriptionValidator;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,18 +34,24 @@ public class SubscriptionOrderService {
                 .collect(Collectors.toList());
     }
 
-    public boolean createSubscriptionForCompany(Long companyId, SubscriptionTypeEnum type, int year, PaymentTypeEnum paymentType) {
-        Date now = new Date();
-        Calendar nowPlusOneYear = Calendar.getInstance();
-        nowPlusOneYear.setTime(now);
-        nowPlusOneYear.add(Calendar.YEAR, year);
+    public SubscriptionOrder createSubscriptionForCompany(SubscriptionCompanyDto dto, HttpServletRequest request) {
+        SubscriptionValidator registrationValidator = new SubscriptionValidator(this);
+        registrationValidator.valid(dto);
 
         //todo Validation
         // it has active subscription
         // if company is active
 
 
-        SubscriptionOrder subscription = subscriptionOrderRepository.save(SubscriptionOrderMapper.map(companyId, now, nowPlusOneYear.getTime(), type, paymentType));
-        return true;
+        SubscriptionOrder subscription = subscriptionOrderRepository.save(
+                SubscriptionOrderMapper.map(dto.getCompanyId(), dto.getNow(), dto.getNowPlusYear(), dto.getType(), dto.getPaymentType()));
+        return subscription;
+    }
+
+    public List<SubscriptionOrder> findActiveSubscription(Long companyId, Date startDate, Date endDate) {
+        return subscriptionOrderRepository.findAllByCompanyId(companyId).stream()
+                .filter(subscription -> subscription.getStartDate().before(startDate) && subscription.getEndDate().after(endDate))
+                .filter(paymentStatus -> paymentStatus.getPaymentStatus() == (PaymentStatusEnum.PAID))
+                .toList();
     }
 }
