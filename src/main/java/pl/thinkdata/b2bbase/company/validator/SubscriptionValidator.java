@@ -30,7 +30,7 @@ public class SubscriptionValidator {
         Map<String, String> fields = new HashMap<>();
         if (otherSubscriptionIsActive.test(dto)) {
             error = true;
-            fields.put(CompanyDictionary.NIP, CompanyDictionary.NIP_NUMBER_IS_ALREADY_REGISTERED);
+            fields.put(CompanyDictionary.SUBCRIPTION, CompanyDictionary.SUBCRIPTION_IS_ACTIVE);
         }
         if (error) {
             throw new ValidationException(error_message, fields);

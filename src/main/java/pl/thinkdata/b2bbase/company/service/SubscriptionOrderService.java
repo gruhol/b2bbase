@@ -35,6 +35,7 @@ public class SubscriptionOrderService {
     }
 
     public SubscriptionOrder createSubscriptionForCompany(SubscriptionCompanyDto dto, HttpServletRequest request) {
+        dto.setRequest(request);
         SubscriptionValidator registrationValidator = new SubscriptionValidator(this);
         registrationValidator.valid(dto);
 

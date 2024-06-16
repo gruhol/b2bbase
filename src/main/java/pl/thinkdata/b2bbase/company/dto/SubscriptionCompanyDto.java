@@ -1,5 +1,6 @@
 package pl.thinkdata.b2bbase.company.dto;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,6 +23,7 @@ public class SubscriptionCompanyDto {
     private PaymentTypeEnum paymentType;
     private Date now;
     private Date nowPlusYear;
+    private HttpServletRequest request;
 
     public SubscriptionCompanyDto(Long companyId, SubscriptionTypeEnum type, int year, PaymentTypeEnum paymentType) {
         this.companyId = companyId;
