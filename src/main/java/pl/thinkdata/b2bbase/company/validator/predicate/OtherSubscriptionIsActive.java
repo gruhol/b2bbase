@@ -22,7 +22,7 @@ public class OtherSubscriptionIsActive<T extends SubscriptionCompanyWithRequestD
 
     @Override
     public boolean test(SubscriptionCompanyWithRequestDto dto) {
-        return subscriptionOrderService
+        return !subscriptionOrderService
                 .findActiveSubscription(dto.getCompanyId(), dto.getNow(), dto.getNowPlusYear()).isEmpty();
     }
 }

@@ -6,7 +6,7 @@ import pl.thinkdata.b2bbase.common.error.ValidationException;
 import pl.thinkdata.b2bbase.common.tool.CompanyDictionary;
 import pl.thinkdata.b2bbase.company.dto.SubscriptionCompanyWithRequestDto;
 import pl.thinkdata.b2bbase.company.validator.predicate.OtherSubscriptionIsActive;
-import pl.thinkdata.b2bbase.company.validator.predicate.UserIsAdminCompany;
+import pl.thinkdata.b2bbase.company.validator.predicate.UserIsNotAdminCompany;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,16 +18,16 @@ public class SubscriptionValidator {
     public static final String error_message = "Validation subscription error. The following fields contain a validation error.";
 
     private final OtherSubscriptionIsActive<SubscriptionCompanyWithRequestDto> otherSubscriptionIsActive;
-    private final UserIsAdminCompany<SubscriptionCompanyWithRequestDto> userIsAdminCompany;
+    private final UserIsNotAdminCompany<SubscriptionCompanyWithRequestDto> userIsNotAdminCompany;
 
     public void valid(SubscriptionCompanyWithRequestDto dto) {
         boolean error = false;
         Map<String, String> fields = new HashMap<>();
         if (otherSubscriptionIsActive.test(dto)) {
             error = true;
-            fields.put(CompanyDictionary.SUBCRIPTION, CompanyDictionary.SUBCRIPTION_IS_ACTIVE);
+            fields.put(CompanyDictionary.SUBCRIPTION, CompanyDictionary.OTHER_SUBCRIPTION_IS_ACTIVE);
         }
-        if (userIsAdminCompany.test(dto)) {
+        if (userIsNotAdminCompany.test(dto)) {
             error = true;
             fields.put(CompanyDictionary.USER, CompanyDictionary.USER_IS_NO_ADMIN_OF_COMPANY);
         }

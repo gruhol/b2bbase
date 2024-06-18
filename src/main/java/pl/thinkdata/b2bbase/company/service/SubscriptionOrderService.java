@@ -34,12 +34,19 @@ public class SubscriptionOrderService {
     }
 
     public SubscriptionOrder createSubscriptionForCompany(SubscriptionCompanyDto dto, HttpServletRequest request) {
-
         subscriptionValidator.valid(map(dto, request));
-
+        deleteNotActiveSubscription(dto);
         SubscriptionOrder subscription = subscriptionOrderRepository.save(
                 map(dto.getCompanyId(), dto.getNow(), dto.getNowPlusYear(), dto.getType(), dto.getPaymentType()));
         return subscription;
+    }
+
+    private void deleteNotActiveSubscription(SubscriptionCompanyDto dto) {
+        List<Long> subscriptionToDelete = subscriptionOrderRepository.findAllByCompanyId(dto.getCompanyId()).stream()
+                .filter(paymentStatus -> paymentStatus.getPaymentStatus() == PaymentStatusEnum.NOTPAID)
+                .map(SubscriptionOrder::getId)
+                .toList();
+        subscriptionOrderRepository.deleteAllById(subscriptionToDelete);
     }
 
     public List<SubscriptionOrder> findActiveSubscription(Long companyId, Date startDate, Date endDate) {
