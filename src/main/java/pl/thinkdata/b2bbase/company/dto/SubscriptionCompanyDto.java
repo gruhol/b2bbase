@@ -1,6 +1,5 @@
 package pl.thinkdata.b2bbase.company.dto;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;

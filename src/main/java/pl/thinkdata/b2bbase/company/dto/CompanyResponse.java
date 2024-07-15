@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CompanyResponse {
-
+    private Long id;
     private String name;
     private String slug;
     private CompanyTypeEnum type;

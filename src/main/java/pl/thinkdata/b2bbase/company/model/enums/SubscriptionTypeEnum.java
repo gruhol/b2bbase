@@ -1,7 +1,8 @@
 package pl.thinkdata.b2bbase.company.model.enums;
 
 public enum SubscriptionTypeEnum {
-    BASIC("Podstawowy");
+    BASIC("Podstawowy"),
+    BUSINESS("Biznesowy");
 
     private String value;
 

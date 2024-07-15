@@ -26,6 +26,7 @@ public class CompanyMapper {
 
     public static CompanyResponse mapToCompanyResponse(Company company) {
         return CompanyResponse.builder()
+                .id(company.getId())
                 .name(company.getName())
                 .slug(company.getSlug())
                 .type(company.getType())
