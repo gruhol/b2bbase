@@ -8,30 +8,33 @@ import pl.thinkdata.b2bbase.company.model.SubscriptionOrder;
 import pl.thinkdata.b2bbase.company.model.enums.PaymentStatusEnum;
 import pl.thinkdata.b2bbase.company.model.enums.PaymentTypeEnum;
 import pl.thinkdata.b2bbase.company.model.enums.SubscriptionTypeEnum;
+import pl.thinkdata.b2bbase.company.utils.DatesUtils;
 
 import java.util.Date;
 
 public class SubscriptionOrderMapper {
 
-    public static SubscriptionOrder map(Long companyId, Date startDate, Date endDate, SubscriptionTypeEnum type, PaymentTypeEnum paymentType) {
+    public static SubscriptionOrder map(Long companyId, SubscriptionTypeEnum subscriptionType, int year, PaymentTypeEnum paymentMethod) {
+        Date date = new Date();
         return SubscriptionOrder.builder()
                 .companyId(companyId)
-                .startDate(startDate)
-                .endDate(endDate)
-                .subscriptionType(type)
+                .startDate(date)
+                .endDate(DatesUtils.addYearToTime(date, year))
+                .subscriptionType(subscriptionType)
                 .paymentStatus(PaymentStatusEnum.NOTPAID)
-                .paymentType(paymentType)
+                .paymentType(paymentMethod)
                 .build();
     }
 
     public static SubscriptionCompanyWithRequestDto map(SubscriptionCompanyDto dto, HttpServletRequest request) {
+        Date date = new Date();
         return SubscriptionCompanyWithRequestDto.builder()
                 .companyId(dto.getCompanyId())
-                .type(dto.getType())
+                .type(dto.getSubscriptionType())
                 .year(dto.getYear())
                 .paymentType(dto.getPaymentType())
-                .now(dto.getNow())
-                .nowPlusYear(dto.getNowPlusYear())
+                .now(date)
+                .nowPlusYear(DatesUtils.addYearToTime(date, dto.getYear()))
                 .request(request)
                 .build();
     }
