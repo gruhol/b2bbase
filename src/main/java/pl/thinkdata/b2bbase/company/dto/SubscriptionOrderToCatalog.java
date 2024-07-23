@@ -18,9 +18,11 @@ import java.util.Date;
 @RequiredArgsConstructor
 @AllArgsConstructor
 public class SubscriptionOrderToCatalog {
+    private Long id;
     private SubscriptionTypeEnum packageType;
     private Date startDate;
     private Date endDate;
+    private int price;
     private PaymentTypeEnum paymentType;
     private PaymentStatusEnum paymentStatus;
 }

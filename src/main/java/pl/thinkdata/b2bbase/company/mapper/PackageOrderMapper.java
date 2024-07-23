@@ -7,7 +7,9 @@ public class PackageOrderMapper {
 
     public static SubscriptionOrderToCatalog mapToSubscriptionOrderToCatalog(SubscriptionOrder packageOrder) {
         return SubscriptionOrderToCatalog.builder()
+                .id(packageOrder.getId())
                 .packageType(packageOrder.getSubscriptionType())
+                .price(packageOrder.getPrice())
                 .startDate(packageOrder.getStartDate())
                 .endDate(packageOrder.getEndDate())
                 .paymentStatus(packageOrder.getPaymentStatus())

@@ -15,6 +15,6 @@ public class NipNumberIsTakenPredicate<T extends AbstractCompany> implements Pre
 
     @Override
     public boolean test(AbstractCompany companyDto) {
-        return companyService.findByNip(companyDto.getNip());
+        return companyService.isCompanyByNip(companyDto.getNip());
     }
 }

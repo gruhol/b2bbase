@@ -38,7 +38,6 @@ public class SecurityConfig {
                 .requestMatchers("/branch/**").hasRole("USER")
                 .requestMatchers("/company/**").hasRole("USER")
                 .requestMatchers("/social/**").hasRole("USER")
-                .requestMatchers("/subscription/**").hasRole("USER")
                 .requestMatchers("/img/get/**").permitAll()
                 .requestMatchers("/img/upload/**").hasRole("USER")
                 .requestMatchers("/user/**").permitAll()
@@ -46,6 +45,9 @@ public class SecurityConfig {
                 .requestMatchers("/htmlpage/**").permitAll()
                 .requestMatchers("/sitemap.xml").permitAll()
                 .requestMatchers("/sendEmail/**").hasRole("USER")
+                .requestMatchers("/subscription/**").hasRole("USER")
+                .requestMatchers("/pricelist/**").permitAll()
+                .requestMatchers("/preferences/**").permitAll()
                 .anyRequest().denyAll()
         );
         http.csrf().disable();

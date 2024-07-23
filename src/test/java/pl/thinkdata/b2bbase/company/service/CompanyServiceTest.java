@@ -66,8 +66,7 @@ class CompanyServiceTest {
                 new MessageGenerator(messageSource),
                 this.userDetailsService,
                 this.userRole2CompanyRepository,
-                this.categoryRepository,
-                this.subscriptionOrderRepository);
+                this.categoryRepository);
     }
 
     @Test

@@ -7,36 +7,24 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import pl.thinkdata.b2bbase.common.error.InvalidRequestDataException;
+import pl.thinkdata.b2bbase.common.repository.CategoryRepository;
+import pl.thinkdata.b2bbase.common.repository.CompanyRepository;
 import pl.thinkdata.b2bbase.common.util.MessageGenerator;
 import pl.thinkdata.b2bbase.common.util.TokenUtil;
-import pl.thinkdata.b2bbase.company.dto.AdditionalDataToEdit;
-import pl.thinkdata.b2bbase.company.dto.CompanyDto;
-import pl.thinkdata.b2bbase.company.dto.CompanyResponse;
-import pl.thinkdata.b2bbase.company.dto.CompanyToEdit;
-import pl.thinkdata.b2bbase.company.dto.CompanyToEditDto;
+import pl.thinkdata.b2bbase.company.dto.*;
 import pl.thinkdata.b2bbase.company.mapper.CompanyMapper;
 import pl.thinkdata.b2bbase.company.model.Category;
 import pl.thinkdata.b2bbase.company.model.Company;
-import pl.thinkdata.b2bbase.company.model.SubscriptionOrder;
-import pl.thinkdata.b2bbase.company.model.enums.CompanyRoleEnum;
 import pl.thinkdata.b2bbase.company.model.UserRole2Company;
-import pl.thinkdata.b2bbase.common.repository.CategoryRepository;
-import pl.thinkdata.b2bbase.common.repository.CompanyRepository;
-import pl.thinkdata.b2bbase.company.model.enums.PaymentStatusEnum;
-import pl.thinkdata.b2bbase.company.model.enums.PaymentTypeEnum;
-import pl.thinkdata.b2bbase.company.model.enums.SubscriptionTypeEnum;
-import pl.thinkdata.b2bbase.company.repository.SubscriptionOrderRepository;
+import pl.thinkdata.b2bbase.company.model.enums.CompanyRoleEnum;
 import pl.thinkdata.b2bbase.company.repository.UserRole2CompanyRepository;
 import pl.thinkdata.b2bbase.company.validator.EditCompanyValidator;
 import pl.thinkdata.b2bbase.company.validator.RegistrationValidator;
 import pl.thinkdata.b2bbase.security.model.User;
 import pl.thinkdata.b2bbase.security.repository.UserRepository;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.USER_FROM_GIVEN_TOKEN_NOT_FOUND;
 import static pl.thinkdata.b2bbase.common.tool.ErrorDictionary.YOU_CAN_ADD_ONLY_ONE_COMPANY;
@@ -57,12 +45,7 @@ public class CompanyService {
     private final UserDetailsService userDetailsService;
     private final UserRole2CompanyRepository userRole2CompanyRepository;
     private final CategoryRepository categoryRepository;
-    private final SubscriptionOrderRepository subscriptionOrderRepository;
     List<Category> allCategory;
-
-    public List<Company> getCompanies() {
-        return companyRepository.findAll();
-    }
 
     public CompanyResponse addCompany(CompanyDto companyDto, HttpServletRequest request) {
         String token = request.getHeader(TOKEN_HEADER);
@@ -86,11 +69,10 @@ public class CompanyService {
                 .user(user)
                 .build();
         userRole2CompanyRepository.save(userRole2Company);
-        subscriptionOrderRepository.save(createBasicSubscriptionOrder(newCompany.getId()));
         return mapToCompanyResponse(newCompany);
     }
 
-    public boolean findByNip(String nip) {
+    public boolean isCompanyByNip(String nip) {
         return companyRepository.findByNip(nip).isPresent();
     }
 
@@ -141,8 +123,8 @@ public class CompanyService {
                 .forEach(cat -> companyInBase.removeCategory(cat.getId()));
 
         List<Long> categoryToCompanyList = companyInBase.getCategories().stream()
-                .map(cat -> cat.getId())
-                .collect(Collectors.toList());
+                .map(Category::getId)
+                .toList();
 
         additionalDataToEdit.getCategories().stream()
                 .filter(cat -> !categoryToCompanyList.contains(cat))
@@ -151,21 +133,6 @@ public class CompanyService {
         return mapToCompanyToEdit(companyRepository.saveAndFlush(companyInBase));
     }
 
-    private static SubscriptionOrder createBasicSubscriptionOrder(Long companyId) {
-        Date now = new Date();
-        Calendar nowPlusOneYear = Calendar.getInstance();
-        nowPlusOneYear.setTime(now);
-        nowPlusOneYear.add(Calendar.YEAR, 1);
-
-        return SubscriptionOrder.builder()
-                .companyId(companyId)
-                .startDate(now)
-                .endDate(nowPlusOneYear.getTime())
-                .subscriptionType(SubscriptionTypeEnum.BASIC)
-                .paymentStatus(PaymentStatusEnum.NOTPAID)
-                .paymentType(PaymentTypeEnum.BANK_TRANSFER)
-                .build();
-    }
     private Category getCategoryById(Long id) {
         if (allCategory == null) {
             allCategory = categoryRepository.findAll();
@@ -193,5 +160,9 @@ public class CompanyService {
         int number = Integer.parseInt(lastChar) + 1;
         String slugWithoutNumber = name.substring(0, name.length() - 2);
         return slugWithoutNumber + number;
+    }
+
+    public Optional<Company> findById(Long companyId) {
+        return companyRepository.findById(companyId);
     }
 }

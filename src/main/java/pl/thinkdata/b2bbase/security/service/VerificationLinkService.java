@@ -15,6 +15,7 @@ import pl.thinkdata.b2bbase.security.repository.VerificationLinkRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -50,7 +51,7 @@ public class VerificationLinkService {
         return verificationLinkRepository.findByToken(token)
                 .filter(verificationLink -> !verificationLink.getIsConsumed())
                 .filter(verificationLink -> verificationLink.getExpiredDateTime().isAfter(LocalDateTime.now()))
-                .map(filteredObiekt -> updateLink(filteredObiekt))
+                .map(this::updateLink)
                 .orElse(false);
     }
 
@@ -69,7 +70,7 @@ public class VerificationLinkService {
 
     private void findActiveTokenAndDeleteThem(User user) {
         List<Long> verificationLinkIdsList = verificationLinkRepository.findByUser(user).stream()
-                .filter(link -> link.getIsConsumed() == false)
+                .filter(link -> !link.getIsConsumed())
                 .filter(link -> link.getExpiredDateTime().isAfter(LocalDateTime.now()))
                 .map(link -> link.getId())
                 .collect(Collectors.toList());
@@ -82,6 +83,6 @@ public class VerificationLinkService {
         verificationLink.setIsConsumed(Boolean.TRUE);
         verificationLink.getUser().setEnabled(true);
         VerificationLink response = verificationLinkRepository.save(verificationLink);
-        return response instanceof VerificationLink ? true : false;
+        return Objects.equals(response.getId(), verificationLink.getId());
     }
 }
