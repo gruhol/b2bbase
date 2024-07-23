@@ -9,20 +9,22 @@ import pl.thinkdata.b2bbase.company.model.enums.PaymentStatusEnum;
 import pl.thinkdata.b2bbase.company.model.enums.PaymentTypeEnum;
 import pl.thinkdata.b2bbase.company.model.enums.SubscriptionTypeEnum;
 import pl.thinkdata.b2bbase.company.utils.DatesUtils;
+import pl.thinkdata.b2bbase.pricelist.model.PriceList;
 
 import java.util.Date;
 
 public class SubscriptionOrderMapper {
 
-    public static SubscriptionOrder map(Long companyId, SubscriptionTypeEnum subscriptionType, int year, PaymentTypeEnum paymentMethod) {
+    public static SubscriptionOrder map(SubscriptionCompanyDto dto, PriceList priceList) {
         Date date = new Date();
         return SubscriptionOrder.builder()
-                .companyId(companyId)
+                .companyId(dto.getCompanyId())
                 .startDate(date)
-                .endDate(DatesUtils.addYearToTime(date, year))
-                .subscriptionType(subscriptionType)
+                .endDate(DatesUtils.addYearToTime(date, dto.getYear()))
+                .subscriptionType(dto.getSubscriptionType())
+                .price(priceList.getPrice())
                 .paymentStatus(PaymentStatusEnum.NOTPAID)
-                .paymentType(paymentMethod)
+                .paymentType(dto.getPaymentType())
                 .build();
     }
 

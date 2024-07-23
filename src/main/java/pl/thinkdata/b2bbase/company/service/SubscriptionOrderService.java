@@ -62,24 +62,23 @@ public class SubscriptionOrderService {
     public SubscriptionOrder createSubscriptionForCompany(SubscriptionCompanyDto dto, HttpServletRequest request) {
         subscriptionValidator.valid(map(dto, request));
         deleteNotActiveSubscription(dto);
+        PriceList priceList = priceListService.getPrice(SUBSCRIPTION + dto.getSubscriptionType());
         SubscriptionOrder subscription = subscriptionOrderRepository.save(
-                map(dto.getCompanyId(), dto.getSubscriptionType(), dto.getYear(), dto.getPaymentType()));
-        sendConformEmail(request, subscription);
+                map(dto, priceList));
+        sendConformEmail(request, subscription, priceList);
         return subscription;
     }
 
-    private void sendConformEmail(HttpServletRequest request, SubscriptionOrder subscription) {
+    private void sendConformEmail(HttpServletRequest request, SubscriptionOrder subscription, PriceList priceList) {
         String token = request.getHeader(TOKEN_HEADER);
         String username = tokenUtil.validTokenAndGetUsername(token);
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         String userName = userRepository.findByUsername(userDetails.getUsername()).get().getUsername();
         Company company = tokenUtil.getCompanyByUsernameFormDataBase(username);
-        PriceList price = priceListService.getPrice(SUBSCRIPTION + subscription.getSubscriptionType());
         String bankAccount = preferencesService.getPerference(BANK_ACCOUNT);
-        String dataLink = createDate(userName, company, subscription, price, bankAccount);
+        String dataLink = createDate(userName, company, subscription, priceList, bankAccount);
         String subject = messageGenerator.get(COMPANY_REGISTRATION_CONFIRMATION) + ": " + company.getName();
-        Context context = getContext(company, subscription, price, bankAccount);
-
+        Context context = getContext(company, subscription, priceList, bankAccount);
         String body = templateEngine.process("email-templates/registration-company-confirmation", context);
         emailSenderService.sendEmail(userName, subject, body, dataLink);
     }

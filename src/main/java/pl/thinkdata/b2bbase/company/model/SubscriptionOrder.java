@@ -30,6 +30,7 @@ public class SubscriptionOrder {
     private SubscriptionTypeEnum subscriptionType;
     private Date startDate;
     private Date endDate;
+    private int price;
     @Enumerated(EnumType.STRING)
     private PaymentTypeEnum paymentType;
     @Enumerated(EnumType.STRING)

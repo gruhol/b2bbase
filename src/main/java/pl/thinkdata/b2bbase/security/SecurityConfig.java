@@ -47,6 +47,7 @@ public class SecurityConfig {
                 .requestMatchers("/sendEmail/**").hasRole("USER")
                 .requestMatchers("/subscription/**").hasRole("USER")
                 .requestMatchers("/pricelist/**").permitAll()
+                .requestMatchers("/preferences/**").permitAll()
                 .anyRequest().denyAll()
         );
         http.csrf().disable();

@@ -52,6 +52,7 @@ public class SecurityConfigDev {
                 .requestMatchers("/htmlpage/**").permitAll()
                 .requestMatchers("/sendEmail/**").hasRole("USER")
                 .requestMatchers("/pricelist/**").permitAll()
+                .requestMatchers("/preferences/**").permitAll()
                 .requestMatchers(toH2Console()).permitAll()
                 .anyRequest().denyAll()
         );
