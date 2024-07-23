@@ -32,6 +32,7 @@ import pl.thinkdata.b2bbase.company.model.enums.VoivodeshipEnum;
 import pl.thinkdata.b2bbase.company.repository.Category2CompanyRepository;
 import pl.thinkdata.b2bbase.company.repository.SubscriptionOrderRepository;
 import pl.thinkdata.b2bbase.company.repository.UserRole2CompanyRepository;
+import pl.thinkdata.b2bbase.preferences.service.PreferencesService;
 import pl.thinkdata.b2bbase.pricelist.model.PriceList;
 import pl.thinkdata.b2bbase.pricelist.repository.PriceListRepository;
 import pl.thinkdata.b2bbase.security.model.User;
@@ -61,11 +62,12 @@ public class TestDataConstroller {
     private final Category2CompanyRepository company2CategoryRepository;
     private final SocialRepository socialRepository;
     private final SubscriptionOrderRepository packageOrderRepository;
+    private final PreferencesService preferencesService;
 
     @GetMapping("/pricelist")
     public String createPriceListTempData() {
         PriceList priceList = new PriceList();
-        priceList.setProductName("subscription_basic");
+        priceList.setProductName("SUBSCRIPTION_BASIC");
         priceList.setActive(true);
         priceList.setPromotionPrice(false);
         priceList.setPrice(59);
@@ -74,7 +76,7 @@ public class TestDataConstroller {
         priceListRepository.save(priceList);
 
         PriceList priceList2 = new PriceList();
-        priceList2.setProductName("subscription_basic");
+        priceList2.setProductName("SUBSCRIPTION_BASIC");
         priceList2.setActive(true);
         priceList2.setPromotionPrice(true);
         priceList2.setPrice(39);

@@ -350,24 +350,26 @@
                                 <tr>
                                     <td>
                                         <h2><strong>Dziękujemy za rejestrację firmy <span th:text="${companyName}"></span></strong></h2>
-                                        <p>Dane twojej firmy:</p>
-                                        <p>Nazwa firmy - <span th:text="${companyName}"></span></p>
-                                        <p>Forma prawna - <span th:text="${companyType}"></span></p>
-                                        <p>Nip - <span th:text="${nip}"></span></p>
-                                        <p>Regon - <span th:text="${regon}"></span></p>
-                                        <p th:if="${krs}">KRS - <span th:text="${krs}"></span></p>
-                                        <p>Telefon - <span th:text="${phone}"></span></p>
-                                        <p>Email - <span th:text="${email}"></span></p>
+                                        <p>Dane twojej firmy:<br>
+                                        Nazwa firmy - <strong></strong><span th:text="${companyName}"></span></strong><br>
+                                        Forma prawna - <strong><span th:text="${legalForm}"></span></strong><br>
+                                        Nip - <strong><span th:text="${nip}"></span></strong><br>
+                                        Regon - <strong><span th:text="${regon}"></span></strong><br>
+                                        KRS - <strong><span th:text="${krs}"></span></strong><br>
+                                        Telefon - <strong><span th:text="${phone}"></span></strong><br>
+                                        Email - <strong><span th:text="${email}"></span></strong><br>
+                                        </p>
                                         <hr>
-                                        <p>Wygrałeś abonament:</p>
-                                        <p>Rodzaj abonamentu - <span th:text="${subscriptionType}"></span></p>
-                                        <p>Cena abonamentu - <span th:text="${price}"></span></p>
-                                        <p>Za okres - od <span th:text="${startDate}"></span> do <span th:text="${endDate}"></span></p>
+                                        <p>Wybrałeś/aś abonament:</p>
+                                        <p>Rodzaj abonamentu - <strong><span th:text="${subscriptionType}"></span></strong></p>
+                                        <p>Cena abonamentu - <strong><span th:text="${price}"></span></strong> zł</p>
+                                        <p>Za okres - od <strong><span th:text="${startDate}"></span></strong>
+                                            do <strong><span th:text="${endDate}"></span></strong></p>
                                         <hr>
                                         <p>
                                             W celu aktywowania abonamentu oraz firmy na portalu prosimy o wpłatę <span th:text="${price}"></span>
-                                            zł na konto <span th:text="${bankAccount}"></span> z dopiskiem <span th:text="${companyName}"></span>
-                                            , zamówienie nr <span th:text="${orderId}"></span>.
+                                            zł na konto: <br><span th:text="${bankAccount}"></span><br> z dopiskiem: <br>
+                                            <strong><span th:text="${companyName}"></span>, zamówienie nr <span th:text="${orderId}"></span></strong>.
                                         </p>
                                     </td>
                                 </tr>

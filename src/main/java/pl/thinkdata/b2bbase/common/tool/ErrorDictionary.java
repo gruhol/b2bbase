@@ -25,4 +25,5 @@ public class ErrorDictionary {
     public static final String EMAIL_SUPPLIER_NOT_FOUND_BY_COMPANY_ID = "email.supplier.not.found.by.company.id";
     public static final String POST_BLOG_NOT_FOUND = "post.blog.not.found";
     public static final String GET_PRICE_ERROR = "failed.to.retrieve.price";
+    public static final String GET_PREFERENCE_ERROR = "failed.to.retrieve.preference";
 }

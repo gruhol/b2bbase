@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface PerferencesRepository extends JpaRepository<Preferences, Long> {
 
-    Optional<String> findByPreferenceKey(String key);
+    Optional<Preferences> findByPreferenceKey(String key);
 }

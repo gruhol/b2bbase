@@ -9,7 +9,7 @@ public class EmailSenderServiceMock implements EmailSenderService {
 
     @Override
     public boolean sendEmail(String to, String title, String content, String url) {
-        System.out.println("Url link verification: " + url);
+        System.out.println("Url link verification or data: " + url);
         return true;
     }
 }
