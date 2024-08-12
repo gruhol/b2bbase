@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class VerificationLinkResponse {
     private String token;
-    private boolean isVerified;
+    private boolean verified;
 }

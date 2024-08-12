@@ -82,12 +82,12 @@ public class VerificationLinkService {
                     .sign(Algorithm.HMAC256(secret));
             return VerificationLinkResponse.builder()
                     .token(loginToken)
-                    .isVerified(true)
+                    .verified(true)
                     .build();
         }
         return VerificationLinkResponse.builder()
                 .token(null)
-                .isVerified(false)
+                .verified(false)
                 .build();
     }
 
