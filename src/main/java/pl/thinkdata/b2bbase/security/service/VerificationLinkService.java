@@ -1,11 +1,15 @@
 package pl.thinkdata.b2bbase.security.service;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import pl.thinkdata.b2bbase.common.service.baseUrlService.BaseUrlService;
 import pl.thinkdata.b2bbase.common.service.emailSenderService.EmailSenderService;
+import pl.thinkdata.b2bbase.security.dto.VerificationLinkResponse;
 import pl.thinkdata.b2bbase.security.model.PasswordToSendRequest;
 import pl.thinkdata.b2bbase.security.model.User;
 import pl.thinkdata.b2bbase.security.model.VerificationLink;
@@ -13,22 +17,35 @@ import pl.thinkdata.b2bbase.security.model.VerificationLinkRequest;
 import pl.thinkdata.b2bbase.security.repository.VerificationLinkRepository;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class VerificationLinkService {
 
     private final VerificationLinkRepository verificationLinkRepository;
     private final EmailSenderService emailSenderService;
     private final TemplateEngine templateEngine;
     private final BaseUrlService baseUrlService;
+    private String secret;
+    private long expirationTime;
 
     private static final String URL = "url";
     private static final String BASEURL = "baseurl";
+
+    public VerificationLinkService(VerificationLinkRepository verificationLinkRepository,
+                                   EmailSenderService emailSenderService,
+                                   TemplateEngine templateEngine,
+                                   BaseUrlService baseUrlService,
+                                   @Value("${jwt.secret}") String secret,
+                                   @Value("${jwt.expirationTime}") long expirationTime) {
+        this.verificationLinkRepository = verificationLinkRepository;
+        this.emailSenderService = emailSenderService;
+        this.templateEngine = templateEngine;
+        this.baseUrlService = baseUrlService;
+        this.secret = secret;
+        this.expirationTime = expirationTime;
+    }
 
 
     public void createVerificationLinkAndSendEmail(VerificationLinkRequest request) {
@@ -53,6 +70,25 @@ public class VerificationLinkService {
                 .filter(verificationLink -> verificationLink.getExpiredDateTime().isAfter(LocalDateTime.now()))
                 .map(this::updateLink)
                 .orElse(false);
+    }
+
+    public VerificationLinkResponse checkVerificationLinkAndSendToken(String token) {
+        boolean checkedVerificationLink = checkVerificationLink(token);
+        if (checkedVerificationLink) {
+            VerificationLink verificationLink = verificationLinkRepository.findByToken(token).orElse(null);
+            String loginToken =  JWT.create()
+                    .withSubject(String.valueOf(verificationLink.getUser().getId()))
+                    .withExpiresAt(new Date(System.currentTimeMillis() + expirationTime))
+                    .sign(Algorithm.HMAC256(secret));
+            return VerificationLinkResponse.builder()
+                    .token(loginToken)
+                    .verified(true)
+                    .build();
+        }
+        return VerificationLinkResponse.builder()
+                .token(null)
+                .verified(false)
+                .build();
     }
 
     public boolean createEmailWithDataAndSendEmail(PasswordToSendRequest request) {
