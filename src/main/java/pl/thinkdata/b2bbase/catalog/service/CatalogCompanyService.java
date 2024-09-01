@@ -8,12 +8,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import pl.thinkdata.b2bbase.catalog.dto.CategoriesWithCompanies;
 import pl.thinkdata.b2bbase.catalog.dto.CompanyInCatalog;
 import pl.thinkdata.b2bbase.catalog.dto.CompanyInCatalogExtended;
 import pl.thinkdata.b2bbase.catalog.dto.CompanyInCatalogWithCategory;
+import pl.thinkdata.b2bbase.catalog.mapper.CategoryMapper;
 import pl.thinkdata.b2bbase.common.repository.CategoryRepository;
 import pl.thinkdata.b2bbase.common.repository.CompanyRepository;
 import pl.thinkdata.b2bbase.company.model.Branch;
+import pl.thinkdata.b2bbase.company.model.Category;
 import pl.thinkdata.b2bbase.company.model.Company;
 import pl.thinkdata.b2bbase.company.model.enums.VoivodeshipEnum;
 import pl.thinkdata.b2bbase.common.repository.BranchRepository;
@@ -36,24 +39,25 @@ public class CatalogCompanyService {
     private final CategoryRepository categoryRepository;
     private final BranchRepository branchRepository;
 
-    public Page<CompanyInCatalog> getCompaniesBySlug(String slug,
+    public CategoriesWithCompanies getCompaniesBySlug(String slug,
                                                      Boolean isEdiCooperation,
                                                      Boolean isApiCooperation,
                                                      Boolean isProductFileCooperation,
                                                      Pageable pageable) {
-        List<Long> categories;
         List<VoivodeshipEnum> voivodeshipes = new ArrayList<>();
         Page<Company> companies;
 
-        categories = categoryRepository.findBySlug(slug).stream()
+        List<Category> categories = categoryRepository.findBySlug(slug);
+
+        List<Long> categoriesIds = categories.stream()
                 .map(category -> category.getId())
                 .collect(Collectors.toList());
         if (findVoivodeshipEnumBySlug(slug) != null) {
             voivodeshipes = Arrays.asList(findVoivodeshipEnumBySlug(slug));
         }
 
-        if (CollectionUtils.isNotEmpty(categories)) {
-            companies = companyRepository.getAllCompanyByCategoryToCatalog(categories, isEdiCooperation, isApiCooperation, isProductFileCooperation, pageable);
+        if (CollectionUtils.isNotEmpty(categoriesIds)) {
+            companies = companyRepository.getAllCompanyByCategoryToCatalog(categoriesIds, isEdiCooperation, isApiCooperation, isProductFileCooperation, pageable);
 
         } else if  (CollectionUtils.isNotEmpty(voivodeshipes)) {
             companies = companyRepository.getAllCompanyByVoivodeshipToCatalog(voivodeshipes,  isEdiCooperation, isApiCooperation, isProductFileCooperation, pageable);
@@ -66,8 +70,11 @@ public class CatalogCompanyService {
                 .filter(Company::isActive)
                 .map(company -> mapToCompanyInCatalog(company))
                 .collect(Collectors.toList());
-
-        return new PageImpl<>(companyInCatalogList, pageable, companies.getTotalElements());
+        return CategoriesWithCompanies.builder()
+                .category(CategoryMapper.map(categories.stream().findFirst().orElse(null)))
+                .listCompany(new PageImpl<>(companyInCatalogList, pageable, companies.getTotalElements()))
+                .build();
+        //return ;
     }
 
     private VoivodeshipEnum findVoivodeshipEnumBySlug(String searchSlug) {

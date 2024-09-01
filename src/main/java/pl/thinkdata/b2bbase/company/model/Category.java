@@ -37,6 +37,7 @@ public class Category {
     private Category parent;
     private String slug;
     private String description;
+    private String shortDescription;
     @ManyToMany(fetch = FetchType.EAGER,
             cascade = {
                     CascadeType.PERSIST,
