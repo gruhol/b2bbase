@@ -12,6 +12,7 @@ import pl.thinkdata.b2bbase.catalog.dto.CategoriesWithCompanies;
 import pl.thinkdata.b2bbase.catalog.dto.CompanyInCatalog;
 import pl.thinkdata.b2bbase.catalog.dto.CompanyInCatalogExtended;
 import pl.thinkdata.b2bbase.catalog.dto.CompanyInCatalogWithCategory;
+import pl.thinkdata.b2bbase.catalog.mapper.CatalogMapper;
 import pl.thinkdata.b2bbase.catalog.mapper.CategoryMapper;
 import pl.thinkdata.b2bbase.common.repository.CategoryRepository;
 import pl.thinkdata.b2bbase.common.repository.CompanyRepository;
@@ -68,10 +69,14 @@ public class CatalogCompanyService {
 
         List<CompanyInCatalog> companyInCatalogList = companies.stream()
                 .filter(Company::isActive)
-                .map(company -> mapToCompanyInCatalog(company))
+                .map(CatalogMapper::mapToCompanyInCatalog)
                 .collect(Collectors.toList());
         return CategoriesWithCompanies.builder()
-                .category(CategoryMapper.map(categories.stream().findFirst().orElse(null)))
+                .category(categories.stream()
+                        .findFirst()
+                        .map(CategoryMapper::map)
+                        .orElse(null)
+                )
                 .listCompany(new PageImpl<>(companyInCatalogList, pageable, companies.getTotalElements()))
                 .build();
         //return ;
