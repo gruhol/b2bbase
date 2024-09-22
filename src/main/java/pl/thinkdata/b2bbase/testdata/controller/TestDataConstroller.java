@@ -435,6 +435,8 @@ public class TestDataConstroller {
                 .slug("zdrowie-i-uroda")
                 .shortDescription("Zdrowie i uroda short description")
                 .description("Zdrowie i uroda long description")
+                .h1("Zdrowie i uroda h1")
+                .title("Zdrowie i uroda title")
                 .build();
 
         Category zdrowieIurodaSave = categoryRepository.save(zdrowieIuroda);
@@ -445,6 +447,8 @@ public class TestDataConstroller {
                 .parent(zdrowieIuroda)
                 .shortDescription("Farmaceutyka short description")
                 .description("Farmaceutyka long description")
+                .h1("Farmaceutyka h1")
+                .title("Farmaceutyka title")
                 .build();
 
         Category fryzjerstwo = Category.builder()
@@ -453,6 +457,8 @@ public class TestDataConstroller {
                 .parent(zdrowieIuroda)
                 .shortDescription("Fryzjerstwo short description")
                 .description("Fryzjerstwo long description")
+                .h1("Fryzjerstwo h1")
+                .title("Fryzjerstwo title")
                 .build();
 
         Category kosmetyki = Category.builder()
@@ -461,6 +467,8 @@ public class TestDataConstroller {
                 .parent(zdrowieIuroda)
                 .shortDescription("kosmetyki short description")
                 .description("kosmetyki long description")
+                .h1("kosmetyki h1")
+                .title("kosmetyki title")
                 .build();
 
         categoryRepository.saveAll(Arrays.asList(kosmetyki, farmaceutyka, fryzjerstwo));
@@ -478,6 +486,8 @@ public class TestDataConstroller {
                 .slug("erotyka")
                 .shortDescription("Erotyka short description")
                 .description("Erotyka long description")
+                .h1("Erotyka H1")
+                .title("Erotyka Title")
                 .build();
 
         Category erotykaSave = categoryRepository.save(erotyka);
@@ -488,6 +498,8 @@ public class TestDataConstroller {
                 .shortDescription("Bielizna i odzież short description")
                 .description("Bielizna i odzież long description")
                 .parent(erotykaSave)
+                .h1("Bielizna i odzież h1")
+                .title("Bielizna i odzież title")
                 .build();
 
         Category drogeriaErotyczna = Category.builder()
@@ -496,6 +508,8 @@ public class TestDataConstroller {
                 .parent(erotykaSave)
                 .shortDescription("Drogeria erotyczna short description")
                 .description("Drogeria erotyczna long description")
+                .h1("Drogeria erotyczna h1")
+                .title("Drogeria erotyczna title")
                 .build();
 
         categoryRepository.saveAll(Arrays.asList(bieliznaIodziez, drogeriaErotyczna));

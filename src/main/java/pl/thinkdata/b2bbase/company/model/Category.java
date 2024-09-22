@@ -46,4 +46,6 @@ public class Category {
             mappedBy = "categories")
     @JsonIgnore
     private Set<Company> companies = new HashSet<>();
+    private String h1;
+    private String title;
 }

@@ -9,6 +9,7 @@ import pl.thinkdata.b2bbase.company.model.Category;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.isNull;
 import static pl.thinkdata.b2bbase.catalog.mapper.CatalogMapper.mapToCategoryToCatalog;
 
 @Service
@@ -17,8 +18,14 @@ public class CatalogCategoryService {
 
     private final CategoryRepository categoryRepository;
 
-    public List<CategoryToCatalog> getCategory() {
-        List<Category> categories = categoryRepository.findAll();
+    public List<CategoryToCatalog> getCategory(String slug) {
+        List<Category> categories;
+
+        if (isNull(slug)) {
+            categories = categoryRepository.findAll();
+        } else {
+            categories = categoryRepository.findBySlug(slug);
+        }
 
         List<CategoryToCatalog> categoryResponses = categories.stream()
                 .filter(cat -> cat.getParent() == null)

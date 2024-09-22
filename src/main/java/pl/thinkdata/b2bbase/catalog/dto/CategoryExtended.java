@@ -2,8 +2,6 @@ package pl.thinkdata.b2bbase.catalog.dto;
 
 import lombok.*;
 
-import java.util.List;
-
 @Getter
 @Setter
 @Builder
@@ -15,4 +13,6 @@ public class CategoryExtended {
     private String slug;
     private String description;
     private String shortDescription;
+    private String h1;
+    private String title;
 }

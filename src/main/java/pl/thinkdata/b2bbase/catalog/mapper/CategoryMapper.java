@@ -12,6 +12,8 @@ public class CategoryMapper {
                 .slug(category.getSlug())
                 .description(category.getDescription())
                 .shortDescription(category.getShortDescription())
+                .h1(category.getH1())
+                .title(category.getTitle())
                 .build();
     }
 }

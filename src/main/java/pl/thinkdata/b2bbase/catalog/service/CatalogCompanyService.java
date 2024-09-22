@@ -79,7 +79,6 @@ public class CatalogCompanyService {
                 )
                 .listCompany(new PageImpl<>(companyInCatalogList, pageable, companies.getTotalElements()))
                 .build();
-        //return ;
     }
 
     private VoivodeshipEnum findVoivodeshipEnumBySlug(String searchSlug) {

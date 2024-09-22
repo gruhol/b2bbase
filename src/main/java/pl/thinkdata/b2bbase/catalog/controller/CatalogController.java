@@ -24,9 +24,9 @@ public class CatalogController {
     private final CatalogCategoryService catalogCategoryService;
     private final CatalogSocialService catalogSocialService;
 
-    @GetMapping("/category")
-    public List<CategoryToCatalog> getCategory() {
-        return catalogCategoryService.getCategory();
+    @GetMapping({"/category", "/category/{slug}"})
+    public List<CategoryToCatalog> getCategory(@PathVariable(required = false) String slug) {
+        return catalogCategoryService.getCategory(slug);
     }
 
     @GetMapping("/company/{slug}")
