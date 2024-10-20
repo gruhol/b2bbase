@@ -2,11 +2,7 @@ package pl.thinkdata.b2bbase.catalog.service;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import pl.thinkdata.b2bbase.catalog.dto.CategoriesWithCompanies;
 import pl.thinkdata.b2bbase.catalog.dto.CompanyInCatalog;
@@ -14,13 +10,13 @@ import pl.thinkdata.b2bbase.catalog.dto.CompanyInCatalogExtended;
 import pl.thinkdata.b2bbase.catalog.dto.CompanyInCatalogWithCategory;
 import pl.thinkdata.b2bbase.catalog.mapper.CatalogMapper;
 import pl.thinkdata.b2bbase.catalog.mapper.CategoryMapper;
+import pl.thinkdata.b2bbase.common.repository.BranchRepository;
 import pl.thinkdata.b2bbase.common.repository.CategoryRepository;
 import pl.thinkdata.b2bbase.common.repository.CompanyRepository;
 import pl.thinkdata.b2bbase.company.model.Branch;
 import pl.thinkdata.b2bbase.company.model.Category;
 import pl.thinkdata.b2bbase.company.model.Company;
 import pl.thinkdata.b2bbase.company.model.enums.VoivodeshipEnum;
-import pl.thinkdata.b2bbase.common.repository.BranchRepository;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,9 +24,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static pl.thinkdata.b2bbase.catalog.mapper.CatalogMapper.mapToCompanyInCatalog;
 import static pl.thinkdata.b2bbase.catalog.mapper.CatalogMapper.mapToCompanyInCatalogExtended;
-import static pl.thinkdata.b2bbase.catalog.mapper.CatalogMapper.mapToCompanyInCatalogWithCategory;
 
 @Service
 @RequiredArgsConstructor
@@ -49,10 +43,18 @@ public class CatalogCompanyService {
         Page<Company> companies;
 
         List<Category> categories = categoryRepository.findBySlug(slug);
+        categories.addAll(
+                categories.stream()
+                        .map(categoryRepository::findByParent)
+                        .flatMap(List::stream)
+                        .toList()
+        );
 
         List<Long> categoriesIds = categories.stream()
-                .map(category -> category.getId())
+                .map(Category::getId)
                 .collect(Collectors.toList());
+
+
         if (findVoivodeshipEnumBySlug(slug) != null) {
             voivodeshipes = Arrays.asList(findVoivodeshipEnumBySlug(slug));
         }
@@ -98,7 +100,7 @@ public class CatalogCompanyService {
         List<VoivodeshipEnum> voivodeshipEnumList = null;
         if (voivodeshipSlugs != null) {
             voivodeshipEnumList = voivodeshipSlugs.stream()
-                    .map(slug -> findVoivodeshipEnumBySlug(slug))
+                    .map(this::findVoivodeshipEnumBySlug)
                     .collect(Collectors.toList());
         }
 
@@ -106,12 +108,12 @@ public class CatalogCompanyService {
                 voivodeshipEnumList, isEdiCooperation, isApiCooperation, isProductFileCooperation, pageable);
 
         List<CompanyInCatalog> companyInCatalogList = companies.stream()
-                .map(company -> mapToCompanyInCatalog(company))
+                .map(CatalogMapper::mapToCompanyInCatalog)
                 .collect(Collectors.toList());
 
         companyInCatalogList.stream().forEach(company -> {
             Optional<Branch> branch = branchRepository.findByCompanyIdAndHeadquarter(company.getId(), true);
-            company.setBranch(branch.isPresent() ? branch.get() : null );
+            company.setBranch(branch.orElse(null));
         });
 
         return new PageImpl<>(companyInCatalogList, pageable, companies.getTotalElements());
@@ -120,7 +122,7 @@ public class CatalogCompanyService {
     public CompanyInCatalogExtended getCompanyBySlug(String slug) {
         CompanyInCatalogExtended companyInCatalogExtended = mapToCompanyInCatalogExtended(companyRepository.findBySlugAndActive(slug, true).orElseThrow());
         Optional<Branch> branch = branchRepository.findByCompanyIdAndHeadquarter(companyInCatalogExtended.getId(), true);
-        companyInCatalogExtended.setBranch(branch.isPresent() ? branch.get() : null );
+        companyInCatalogExtended.setBranch(branch.orElse(null));
         return companyInCatalogExtended;
     }
 
@@ -134,7 +136,8 @@ public class CatalogCompanyService {
 
         return companyRepository.findAllByOrderByCreatedDesc(pageable).stream()
                 .filter(Company::isActive)
-                .map(company -> mapToCompanyInCatalogWithCategory(company)).collect(Collectors.toList());
+                .map(CatalogMapper::mapToCompanyInCatalogWithCategory)
+                .collect(Collectors.toList());
     }
 
 
