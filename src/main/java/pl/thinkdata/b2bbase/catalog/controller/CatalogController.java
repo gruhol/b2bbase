@@ -8,11 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import pl.thinkdata.b2bbase.catalog.dto.CategoryToCatalog;
-import pl.thinkdata.b2bbase.catalog.dto.CompanyInCatalog;
-import pl.thinkdata.b2bbase.catalog.dto.CompanyInCatalogExtended;
-import pl.thinkdata.b2bbase.catalog.dto.CompanyInCatalogWithCategory;
-import pl.thinkdata.b2bbase.catalog.dto.SocialToCatalog;
+import pl.thinkdata.b2bbase.catalog.dto.*;
 import pl.thinkdata.b2bbase.catalog.service.CatalogCategoryService;
 import pl.thinkdata.b2bbase.catalog.service.CatalogCompanyService;
 import pl.thinkdata.b2bbase.catalog.service.CatalogSocialService;
@@ -28,9 +24,9 @@ public class CatalogController {
     private final CatalogCategoryService catalogCategoryService;
     private final CatalogSocialService catalogSocialService;
 
-    @GetMapping("/category")
-    public List<CategoryToCatalog> getCategory() {
-        return catalogCategoryService.getCategory();
+    @GetMapping({"/category", "/category/{slug}"})
+    public List<CategoryToCatalog> getCategory(@PathVariable(required = false) String slug) {
+        return catalogCategoryService.getCategory(slug);
     }
 
     @GetMapping("/company/{slug}")
@@ -44,11 +40,11 @@ public class CatalogController {
     }
 
     @GetMapping({"/{slug}", "/"})
-    public Page<CompanyInCatalog> getCompaniesBySlug(@PathVariable(required = false) String slug,
-                                                @RequestParam(required = false) Boolean isEdiCooperation,
-                                                @RequestParam(required = false) Boolean isApiCooperation,
-                                                @RequestParam(required = false) Boolean isProductFileCooperation,
-                                                Pageable pageable) {
+    public CategoriesWithCompanies getCompaniesBySlug(@PathVariable(required = false) String slug,
+                                                      @RequestParam(required = false) Boolean isEdiCooperation,
+                                                      @RequestParam(required = false) Boolean isApiCooperation,
+                                                      @RequestParam(required = false) Boolean isProductFileCooperation,
+                                                      Pageable pageable) {
         return catalogCompanyService.getCompaniesBySlug(slug, isEdiCooperation, isApiCooperation, isProductFileCooperation, pageable);
     }
 

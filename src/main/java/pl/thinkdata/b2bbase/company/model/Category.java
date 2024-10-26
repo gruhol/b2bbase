@@ -37,6 +37,7 @@ public class Category {
     private Category parent;
     private String slug;
     private String description;
+    private String shortDescription;
     @ManyToMany(fetch = FetchType.EAGER,
             cascade = {
                     CascadeType.PERSIST,
@@ -45,4 +46,6 @@ public class Category {
             mappedBy = "categories")
     @JsonIgnore
     private Set<Company> companies = new HashSet<>();
+    private String h1;
+    private String title;
 }
