@@ -84,7 +84,7 @@ public class SearchService {
         companies.stream()
                 .flatMap(company -> company.getCategories().stream())
                 .filter(category -> category.getParent() == null)
-                .forEach(category -> categoryListForCompany.add(mapToCategoryToCatalog(category, true, categories)));
+                .forEach(category -> categoryListForCompany.add(mapToCategoryToCatalog(category, categories)));
         return categoryListForCompany;
     }
 

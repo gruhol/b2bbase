@@ -91,22 +91,22 @@ public class CatalogMapper {
                 .build();
     }
 
-    public static CategoryToCatalog mapToCategoryToCatalog(Category cat, boolean isNotChildren, List<Category> categories) {
+    public static CategoryToCatalog mapToCategoryToCatalog(Category cat, List<Category> categories) {
         if (cat == null) return null;
         return CategoryToCatalog.builder()
                 .id(cat.getId())
                 .name(cat.getName())
                 .slug(cat.getSlug())
-                .children(isNotChildren ? createChildList(categories, cat) : null)
+                .children(createChildList(categories, cat))
                 .build();
     }
 
     private static List<CategoryToCatalog> createChildList(List<Category> allCategory, Category parent) {
-        if (allCategory.isEmpty() && parent.getId() == null) return new ArrayList<>();
+        if (allCategory == null && parent.getId() == null) return new ArrayList<>();
         return allCategory.stream()
                 .filter(cat -> cat.getParent() != null)
                 .filter(cat -> Objects.equals(cat.getParent().getId(), parent.getId()))
-                .map(cat -> mapToCategoryToCatalog(cat, false, null))
+                .map(cat -> mapToCategoryToCatalog(cat, allCategory))
                 .collect(Collectors.toList());
     }
 }

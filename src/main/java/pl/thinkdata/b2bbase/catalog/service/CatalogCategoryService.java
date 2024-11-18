@@ -6,8 +6,8 @@ import pl.thinkdata.b2bbase.catalog.dto.CategoryToCatalog;
 import pl.thinkdata.b2bbase.common.repository.CategoryRepository;
 import pl.thinkdata.b2bbase.company.model.Category;
 
+import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static pl.thinkdata.b2bbase.catalog.mapper.CatalogMapper.mapToCategoryToCatalog;
 
@@ -17,15 +17,25 @@ public class CatalogCategoryService {
 
     private final CategoryRepository categoryRepository;
 
-    public List<CategoryToCatalog> getCategory() {
+    public List<CategoryToCatalog> getCategory(String slug) {
         List<Category> categories = categoryRepository.findAll();
+        Category categorySlug = categories.stream()
+                    .filter(cat -> cat.getSlug().equals(slug))
+                    .findFirst()
+                    .orElse(null);
 
-        List<CategoryToCatalog> categoryResponses = categories.stream()
-                .filter(cat -> cat.getParent() == null)
-                .map(cat -> mapToCategoryToCatalog(cat, true, categories))
-                .collect(Collectors.toList());
+        List<CategoryToCatalog> categoryResponses;
 
-        return categoryResponses;
+        if (categorySlug == null) {
+
+            return categoryResponses = categories.stream()
+                    .filter(cat -> cat.getParent() == null)
+                    .map(cat -> mapToCategoryToCatalog(cat, categories))
+                    .toList();
+        } else {
+
+            return Arrays.asList(mapToCategoryToCatalog(categorySlug, categories));
+        }
     }
 
 
