@@ -1,0 +1,12 @@
+#Now to renew certificate
+
+docker stop xxx
+sudo certbot renew --force-renewal
+
+#if port is already in use
+
+sudo lsof -i :443
+sudo kill 1234
+
+#After all
+docker start xxx
