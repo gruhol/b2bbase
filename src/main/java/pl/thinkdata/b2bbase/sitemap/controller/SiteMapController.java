@@ -20,12 +20,8 @@ public class SiteMapController {
     public XmlUrlSet getSiteMap() {
         XmlUrlSet xmlUrlSet = new XmlUrlSet();
         create(xmlUrlSet, "/", XmlUrl.Priority.TOP);
-        create(xmlUrlSet, "/page/regulamin-strony", XmlUrl.Priority.TOP);
-        create(xmlUrlSet, "/page/polityka-prywatnosci", XmlUrl.Priority.TOP);
+        create(xmlUrlSet, "/blog", XmlUrl.Priority.TOP);
         create(xmlUrlSet, "/catalog", XmlUrl.Priority.TOP);
-        create(xmlUrlSet, "/login", XmlUrl.Priority.TOP);
-        create(xmlUrlSet, "/registration", XmlUrl.Priority.TOP);
-        create(xmlUrlSet, "/remember-password", XmlUrl.Priority.TOP);
 
         return xmlUrlSet;
     }
