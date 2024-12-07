@@ -1,13 +1,16 @@
 package pl.thinkdata.b2bbase.sitemap.controller;
 
+import cz.jiripinkas.jsitemapgenerator.WebPage;
+import cz.jiripinkas.jsitemapgenerator.generator.SitemapGenerator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.thinkdata.b2bbase.common.service.baseUrlService.BaseUrlService;
-import pl.thinkdata.b2bbase.sitemap.component.XmlUrl;
-import pl.thinkdata.b2bbase.sitemap.component.XmlUrlSet;
+
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -15,19 +18,18 @@ public class SiteMapController {
 
     private final BaseUrlService baseUrlService;
 
-    @RequestMapping(value = "/sitemap.xml", method = RequestMethod.GET, produces = "text/xml; charset=utf-8")
-    @ResponseBody
-    public XmlUrlSet getSiteMap() {
-        XmlUrlSet xmlUrlSet = new XmlUrlSet();
-        create(xmlUrlSet, "/", XmlUrl.Priority.TOP);
-        create(xmlUrlSet, "/blog", XmlUrl.Priority.TOP);
-        create(xmlUrlSet, "/catalog", XmlUrl.Priority.TOP);
+    @GetMapping(value = "/sitemap.xml", produces = "application/xml")
+    public ResponseEntity<String> getSitemap() throws IOException {
+        String sitemapContent = SitemapGenerator.of(baseUrlService.getUrl())
+                .addPage(WebPage.builder().maxPriorityRoot().build())
+                .addPage("/catalog")
+                .addPage("/blog")
+                .toString();
 
-        return xmlUrlSet;
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_TYPE, "application/xml");
+
+        return new ResponseEntity<>(sitemapContent, headers, HttpStatus.OK);
     }
 
-    private void create(XmlUrlSet xmlUrlSet, String link, XmlUrl.Priority priority) {
-        String DOMAIN = baseUrlService.getUrl();
-        xmlUrlSet.addUrl(new XmlUrl(DOMAIN + link, priority));
-    }
 }
