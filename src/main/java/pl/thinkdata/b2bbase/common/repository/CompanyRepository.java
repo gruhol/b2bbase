@@ -127,20 +127,6 @@ public interface CompanyRepository extends JpaRepository<Company, Long>, JpaSpec
             @Param("isProductFileCooperation") Boolean isProductFileCooperation,
             Pageable pageable);
 
-//    @Query(value = "SELECT c FROM Company c " +
-//            "LEFT JOIN c.categories cat " +
-//            "WHERE c.active = true " +
-//            "AND (LOWER(c.name) LIKE :keyword " +
-//            "OR c.nip LIKE :keyword " +
-//            "OR c.regon LIKE :keyword " +
-//            "OR LOWER(cat.name) LIKE :keyword)",
-//            countQuery = "SELECT COUNT(c) FROM Company c " +
-//                    "LEFT JOIN c.categories cat " +
-//                    "WHERE c.active = true " +
-//                    "AND (LOWER(c.name) LIKE :keyword " +
-//                    "OR c.nip LIKE :keyword " +
-//                    "OR c.regon LIKE :keyword " +
-//                    "OR LOWER(cat.name) LIKE :keyword)")
     @Query(value = "SELECT c " +
             " FROM Company c" +
             " LEFT OUTER JOIN Category2Company c2c ON c.id = c2c.companyId" +
