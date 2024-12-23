@@ -54,7 +54,6 @@ public class Company {
 
     public void addCategory(Category category) {
         this.categories.add(category);
-        category.getCompanies().add(this);
     }
 
     public void removeCategory(long categoryId) {
