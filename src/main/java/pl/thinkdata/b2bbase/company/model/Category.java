@@ -38,7 +38,7 @@ public class Category {
     private String slug;
     private String description;
     private String shortDescription;
-    @ManyToMany(fetch = FetchType.EAGER,
+    @ManyToMany(fetch = FetchType.LAZY,
             cascade = {
                     CascadeType.PERSIST,
                     CascadeType.MERGE
