@@ -14,6 +14,7 @@ import pl.thinkdata.b2bbase.company.model.enums.SubscriptionTypeEnum;
 import pl.thinkdata.b2bbase.company.model.enums.PaymentStatusEnum;
 import pl.thinkdata.b2bbase.company.model.enums.PaymentTypeEnum;
 
+import java.math.BigInteger;
 import java.util.Date;
 
 @Entity
@@ -30,7 +31,7 @@ public class SubscriptionOrder {
     private SubscriptionTypeEnum subscriptionType;
     private Date startDate;
     private Date endDate;
-    private int price;
+    private BigInteger price;
     @Enumerated(EnumType.STRING)
     private PaymentTypeEnum paymentType;
     @Enumerated(EnumType.STRING)

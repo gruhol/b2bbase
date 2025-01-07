@@ -39,6 +39,7 @@ import pl.thinkdata.b2bbase.security.model.User;
 import pl.thinkdata.b2bbase.security.model.UserRole;
 import pl.thinkdata.b2bbase.security.repository.UserRepository;
 
+import java.math.BigInteger;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -70,7 +71,7 @@ public class TestDataConstroller {
         priceList.setProductName("SUBSCRIPTION_BASIC");
         priceList.setActive(true);
         priceList.setPromotionPrice(false);
-        priceList.setPrice(59);
+        priceList.setPrice(BigInteger.valueOf(59));
         priceList.setStartDate(Date.valueOf(LocalDate.of(1900, 01, 20)));
         priceList.setEndDate(Date.valueOf(LocalDate.of(9999, 01, 20)));
         priceListRepository.save(priceList);
@@ -79,7 +80,7 @@ public class TestDataConstroller {
         priceList2.setProductName("SUBSCRIPTION_BASIC");
         priceList2.setActive(true);
         priceList2.setPromotionPrice(true);
-        priceList2.setPrice(39);
+        priceList2.setPrice(BigInteger.valueOf(39));
         priceList2.setStartDate(Date.valueOf(LocalDate.of(2024, 01, 20)));
         priceList2.setEndDate(Date.valueOf(LocalDate.of(2025, 12, 20)));
         priceListRepository.save(priceList2);
