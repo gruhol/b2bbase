@@ -32,6 +32,7 @@ import pl.thinkdata.b2bbase.company.model.enums.VoivodeshipEnum;
 import pl.thinkdata.b2bbase.company.repository.Category2CompanyRepository;
 import pl.thinkdata.b2bbase.company.repository.SubscriptionOrderRepository;
 import pl.thinkdata.b2bbase.company.repository.UserRole2CompanyRepository;
+import pl.thinkdata.b2bbase.preferences.model.Preferences;
 import pl.thinkdata.b2bbase.preferences.service.PreferencesService;
 import pl.thinkdata.b2bbase.pricelist.model.PriceList;
 import pl.thinkdata.b2bbase.pricelist.repository.PriceListRepository;
@@ -524,6 +525,7 @@ public class TestDataConstroller {
                 .companyId(newCompany.getId())
                 .startDate(now)
                 .endDate(calendar.getTime())
+                .price(new BigInteger("59"))
                 .subscriptionType(SubscriptionTypeEnum.BASIC)
                 .paymentType(PaymentTypeEnum.BANK_TRANSFER)
                 .paymentStatus(PaymentStatusEnum.NOTPAID)
