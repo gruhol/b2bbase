@@ -14,25 +14,11 @@ import pl.thinkdata.b2bbase.common.repository.BranchRepository;
 import pl.thinkdata.b2bbase.common.repository.CategoryRepository;
 import pl.thinkdata.b2bbase.common.repository.CompanyRepository;
 import pl.thinkdata.b2bbase.common.repository.SocialRepository;
-import pl.thinkdata.b2bbase.company.model.Branch;
-import pl.thinkdata.b2bbase.company.model.Category;
-import pl.thinkdata.b2bbase.company.model.Category2Company;
-import pl.thinkdata.b2bbase.company.model.Company;
-import pl.thinkdata.b2bbase.company.model.Social;
-import pl.thinkdata.b2bbase.company.model.SubscriptionOrder;
-import pl.thinkdata.b2bbase.company.model.UserRole2Company;
-import pl.thinkdata.b2bbase.company.model.enums.CompanyRoleEnum;
-import pl.thinkdata.b2bbase.company.model.enums.CompanyTypeEnum;
-import pl.thinkdata.b2bbase.company.model.enums.LegalFormEnum;
-import pl.thinkdata.b2bbase.company.model.enums.PaymentStatusEnum;
-import pl.thinkdata.b2bbase.company.model.enums.PaymentTypeEnum;
-import pl.thinkdata.b2bbase.company.model.enums.SocialTypeEnum;
-import pl.thinkdata.b2bbase.company.model.enums.SubscriptionTypeEnum;
-import pl.thinkdata.b2bbase.company.model.enums.VoivodeshipEnum;
+import pl.thinkdata.b2bbase.company.model.*;
+import pl.thinkdata.b2bbase.company.model.enums.*;
 import pl.thinkdata.b2bbase.company.repository.Category2CompanyRepository;
 import pl.thinkdata.b2bbase.company.repository.SubscriptionOrderRepository;
 import pl.thinkdata.b2bbase.company.repository.UserRole2CompanyRepository;
-import pl.thinkdata.b2bbase.preferences.model.Preferences;
 import pl.thinkdata.b2bbase.preferences.service.PreferencesService;
 import pl.thinkdata.b2bbase.pricelist.model.PriceList;
 import pl.thinkdata.b2bbase.pricelist.repository.PriceListRepository;
@@ -44,7 +30,6 @@ import java.math.BigInteger;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 
 @RestController
@@ -516,19 +501,22 @@ public class TestDataConstroller {
 
         categoryRepository.saveAll(Arrays.asList(bieliznaIodziez, drogeriaErotyczna));
 
-        java.util.Date now = new java.util.Date();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(now);
-        calendar.add(Calendar.YEAR, 1);
-
         packageOrderRepository.save(SubscriptionOrder.builder()
                 .companyId(newCompany.getId())
-                .startDate(now)
-                .endDate(calendar.getTime())
+                .startDate(Date.valueOf(LocalDate.of(1900, 01, 20)))
+                .endDate(Date.valueOf(LocalDate.of(2100, 01, 20)))
                 .price(new BigInteger("59"))
                 .subscriptionType(SubscriptionTypeEnum.BASIC)
                 .paymentType(PaymentTypeEnum.BANK_TRANSFER)
                 .paymentStatus(PaymentStatusEnum.NOTPAID)
+                .build());
+
+        priceListRepository.save(PriceList.builder()
+                        .isActive(true)
+                        .productName("SUBSCRIPTION_BASIC")
+                        .startDate(Date.valueOf(LocalDate.of(1900, 01, 20)))
+                        .endDate(Date.valueOf(LocalDate.of(2100, 01, 20)))
+                        .price(new BigInteger("59"))
                 .build());
 
         return "Created";
