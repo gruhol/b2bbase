@@ -1,4 +1,4 @@
-package pl.thinkdata.b2bbase.discountcode.model.enums;
+package pl.thinkdata.b2bbase.discountcode.enums;
 
 public enum DiscountType {
     PRECENTAGE("percentage"),

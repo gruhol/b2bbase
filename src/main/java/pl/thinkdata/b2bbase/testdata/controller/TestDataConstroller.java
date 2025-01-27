@@ -19,6 +19,9 @@ import pl.thinkdata.b2bbase.company.model.enums.*;
 import pl.thinkdata.b2bbase.company.repository.Category2CompanyRepository;
 import pl.thinkdata.b2bbase.company.repository.SubscriptionOrderRepository;
 import pl.thinkdata.b2bbase.company.repository.UserRole2CompanyRepository;
+import pl.thinkdata.b2bbase.discountcode.enums.DiscountType;
+import pl.thinkdata.b2bbase.discountcode.model.DiscountCode;
+import pl.thinkdata.b2bbase.discountcode.repository.DiscountCodeRepository;
 import pl.thinkdata.b2bbase.preferences.service.PreferencesService;
 import pl.thinkdata.b2bbase.pricelist.model.PriceList;
 import pl.thinkdata.b2bbase.pricelist.repository.PriceListRepository;
@@ -26,6 +29,7 @@ import pl.thinkdata.b2bbase.security.model.User;
 import pl.thinkdata.b2bbase.security.model.UserRole;
 import pl.thinkdata.b2bbase.security.repository.UserRepository;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Date;
 import java.time.LocalDate;
@@ -50,6 +54,7 @@ public class TestDataConstroller {
     private final SocialRepository socialRepository;
     private final SubscriptionOrderRepository packageOrderRepository;
     private final PreferencesService preferencesService;
+    private final DiscountCodeRepository discountCodeRepository;
 
     @GetMapping("/pricelist")
     public String createPriceListTempData() {
@@ -520,5 +525,55 @@ public class TestDataConstroller {
                 .build());
 
         return "Created";
+    }
+
+    @GetMapping("/code")
+    public String createCodeTempData() {
+        DiscountCode code = DiscountCode.builder()
+                .code("dupa")
+                .createdAt(Date.valueOf(LocalDate.of(2025, 01, 27)))
+                .startDate(Date.valueOf(LocalDate.of(2022, 01, 27)))
+                .endDate(Date.valueOf(LocalDate.of(2026, 01, 27)))
+                .discount_type(DiscountType.PRECENTAGE)
+                .usage_limit(100)
+                .isActive(true)
+                .discount_amount(new BigDecimal("0.5"))
+                .build();
+
+        DiscountCode codeExpired = DiscountCode.builder()
+                .code("expired")
+                .createdAt(Date.valueOf(LocalDate.of(2025, 01, 27)))
+                .startDate(Date.valueOf(LocalDate.of(2022, 01, 27)))
+                .endDate(Date.valueOf(LocalDate.of(2023, 01, 27)))
+                .discount_type(DiscountType.PRECENTAGE)
+                .usage_limit(100)
+                .isActive(true)
+                .discount_amount(new BigDecimal("0.5"))
+                .build();
+
+        DiscountCode limit = DiscountCode.builder()
+                .code("limit")
+                .createdAt(Date.valueOf(LocalDate.of(2025, 01, 27)))
+                .startDate(Date.valueOf(LocalDate.of(2022, 01, 27)))
+                .endDate(Date.valueOf(LocalDate.of(2025, 01, 27)))
+                .discount_type(DiscountType.PRECENTAGE)
+                .usage_limit(0)
+                .isActive(true)
+                .discount_amount(new BigDecimal("0.5"))
+                .build();
+
+        DiscountCode disable = DiscountCode.builder()
+                .code("disable")
+                .createdAt(Date.valueOf(LocalDate.of(2025, 01, 27)))
+                .startDate(Date.valueOf(LocalDate.of(2022, 01, 27)))
+                .endDate(Date.valueOf(LocalDate.of(2025, 01, 27)))
+                .discount_type(DiscountType.PRECENTAGE)
+                .usage_limit(0)
+                .isActive(false)
+                .discount_amount(new BigDecimal("0.5"))
+                .build();
+
+        discountCodeRepository.saveAll(Arrays.asList(code, codeExpired, limit, disable));
+        return "Kod dodany";
     }
 }

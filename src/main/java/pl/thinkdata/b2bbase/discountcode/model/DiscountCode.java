@@ -3,7 +3,7 @@ package pl.thinkdata.b2bbase.discountcode.model;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
-import pl.thinkdata.b2bbase.discountcode.model.enums.DiscountType;
+import pl.thinkdata.b2bbase.discountcode.enums.DiscountType;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -28,4 +28,8 @@ public class DiscountCode {
     private boolean isActive;
     @CreatedDate
     private Date createdAt;
+
+    public boolean isNotExpired(Date date) {
+        return date.after(startDate) && date.before(endDate);
+    }
 }
