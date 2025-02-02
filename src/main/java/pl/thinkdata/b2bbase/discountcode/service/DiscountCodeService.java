@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.thinkdata.b2bbase.common.error.InvalidRequestDataException;
 import pl.thinkdata.b2bbase.common.util.MessageGenerator;
+import pl.thinkdata.b2bbase.discountcode.dto.DiscountCodeResponse;
+import pl.thinkdata.b2bbase.discountcode.mapper.DiscountCodeMapper;
 import pl.thinkdata.b2bbase.discountcode.model.DiscountCode;
 import pl.thinkdata.b2bbase.discountcode.repository.DiscountCodeRepository;
 
@@ -19,12 +21,13 @@ public class DiscountCodeService {
     private final DiscountCodeRepository discountCodeRepository;
     private final MessageGenerator messageGenerator;
 
-    public DiscountCode getDiscountCode(String code) {
+    public DiscountCodeResponse getDiscountCode(String code) {
         Date now = new Date();
         return discountCodeRepository.findByCode(code)
                 .filter(limit -> limit.getUsage_limit() > 0)
                 .filter(notExpired -> notExpired.isNotExpired(now))
                 .filter(DiscountCode::isActive)
+                .map(DiscountCodeMapper::map)
                 .orElseThrow(() -> new InvalidRequestDataException(messageGenerator.get(CODE_NOT_FOUND)));
     }
 }

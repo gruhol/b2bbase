@@ -19,9 +19,10 @@ public class DiscountCode {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String code;
+    private String subscriptionName;
     @Enumerated(EnumType.STRING)
-    private DiscountType discount_type;
-    private BigDecimal discount_amount;
+    private DiscountType discountType;
+    private BigDecimal discountAmount;
     private int usage_limit;
     private Date startDate;
     private Date endDate;

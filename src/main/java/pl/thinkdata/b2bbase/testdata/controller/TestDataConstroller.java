@@ -531,46 +531,50 @@ public class TestDataConstroller {
     public String createCodeTempData() {
         DiscountCode code = DiscountCode.builder()
                 .code("dupa")
+                .subscriptionName("SUBSCRIPTION_BASIC")
                 .createdAt(Date.valueOf(LocalDate.of(2025, 01, 27)))
                 .startDate(Date.valueOf(LocalDate.of(2022, 01, 27)))
                 .endDate(Date.valueOf(LocalDate.of(2026, 01, 27)))
-                .discount_type(DiscountType.PRECENTAGE)
+                .discountType(DiscountType.PRECENTAGE)
                 .usage_limit(100)
                 .isActive(true)
-                .discount_amount(new BigDecimal("0.5"))
+                .discountAmount(new BigDecimal("0.5"))
                 .build();
 
         DiscountCode codeExpired = DiscountCode.builder()
                 .code("expired")
+                .subscriptionName("SUBSCRIPTION_BASIC")
                 .createdAt(Date.valueOf(LocalDate.of(2025, 01, 27)))
                 .startDate(Date.valueOf(LocalDate.of(2022, 01, 27)))
                 .endDate(Date.valueOf(LocalDate.of(2023, 01, 27)))
-                .discount_type(DiscountType.PRECENTAGE)
+                .discountType(DiscountType.PRECENTAGE)
                 .usage_limit(100)
                 .isActive(true)
-                .discount_amount(new BigDecimal("0.5"))
+                .discountAmount(new BigDecimal("0.5"))
                 .build();
 
         DiscountCode limit = DiscountCode.builder()
                 .code("limit")
+                .subscriptionName("SUBSCRIPTION_BASIC")
                 .createdAt(Date.valueOf(LocalDate.of(2025, 01, 27)))
                 .startDate(Date.valueOf(LocalDate.of(2022, 01, 27)))
                 .endDate(Date.valueOf(LocalDate.of(2025, 01, 27)))
-                .discount_type(DiscountType.PRECENTAGE)
+                .discountType(DiscountType.PRECENTAGE)
                 .usage_limit(0)
                 .isActive(true)
-                .discount_amount(new BigDecimal("0.5"))
+                .discountAmount(new BigDecimal("0.5"))
                 .build();
 
         DiscountCode disable = DiscountCode.builder()
                 .code("disable")
+                .subscriptionName("SUBSCRIPTION_BASIC")
                 .createdAt(Date.valueOf(LocalDate.of(2025, 01, 27)))
                 .startDate(Date.valueOf(LocalDate.of(2022, 01, 27)))
                 .endDate(Date.valueOf(LocalDate.of(2025, 01, 27)))
-                .discount_type(DiscountType.PRECENTAGE)
+                .discountType(DiscountType.PRECENTAGE)
                 .usage_limit(0)
                 .isActive(false)
-                .discount_amount(new BigDecimal("0.5"))
+                .discountAmount(new BigDecimal("0.5"))
                 .build();
 
         discountCodeRepository.saveAll(Arrays.asList(code, codeExpired, limit, disable));
