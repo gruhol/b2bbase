@@ -17,4 +17,5 @@ public class SubscriptionCompanyDto {
     private int year;
     @NotNull
     private PaymentTypeEnum paymentType;
+    private String discountCode;
 }

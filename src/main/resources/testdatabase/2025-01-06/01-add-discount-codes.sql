@@ -2,7 +2,7 @@
 --changeset dabrowskiw:22
 CREATE TABLE discount_code (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    code VARCHAR(50) NOT NULL,
+    code VARCHAR(50) NOT NULL UNIQUE,
     subscription_name VARCHAR(32) NOT NULL,
     discount_type VARCHAR(32) NOT NULL,
     discount_amount DECIMAL(10, 2) NOT NULL,
