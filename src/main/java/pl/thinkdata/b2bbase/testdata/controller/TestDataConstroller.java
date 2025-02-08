@@ -14,8 +14,21 @@ import pl.thinkdata.b2bbase.common.repository.BranchRepository;
 import pl.thinkdata.b2bbase.common.repository.CategoryRepository;
 import pl.thinkdata.b2bbase.common.repository.CompanyRepository;
 import pl.thinkdata.b2bbase.common.repository.SocialRepository;
-import pl.thinkdata.b2bbase.company.model.*;
-import pl.thinkdata.b2bbase.company.model.enums.*;
+import pl.thinkdata.b2bbase.company.model.Branch;
+import pl.thinkdata.b2bbase.company.model.Category;
+import pl.thinkdata.b2bbase.company.model.Category2Company;
+import pl.thinkdata.b2bbase.company.model.Company;
+import pl.thinkdata.b2bbase.company.model.Social;
+import pl.thinkdata.b2bbase.company.model.SubscriptionOrder;
+import pl.thinkdata.b2bbase.company.model.UserRole2Company;
+import pl.thinkdata.b2bbase.company.model.enums.CompanyRoleEnum;
+import pl.thinkdata.b2bbase.company.model.enums.CompanyTypeEnum;
+import pl.thinkdata.b2bbase.company.model.enums.LegalFormEnum;
+import pl.thinkdata.b2bbase.company.model.enums.PaymentStatusEnum;
+import pl.thinkdata.b2bbase.company.model.enums.PaymentTypeEnum;
+import pl.thinkdata.b2bbase.company.model.enums.SocialTypeEnum;
+import pl.thinkdata.b2bbase.company.model.enums.SubscriptionTypeEnum;
+import pl.thinkdata.b2bbase.company.model.enums.VoivodeshipEnum;
 import pl.thinkdata.b2bbase.company.repository.Category2CompanyRepository;
 import pl.thinkdata.b2bbase.company.repository.SubscriptionOrderRepository;
 import pl.thinkdata.b2bbase.company.repository.UserRole2CompanyRepository;
@@ -536,7 +549,7 @@ public class TestDataConstroller {
                 .startDate(Date.valueOf(LocalDate.of(2022, 01, 27)))
                 .endDate(Date.valueOf(LocalDate.of(2026, 01, 27)))
                 .discountType(DiscountType.PRECENTAGE)
-                .usage_limit(100)
+                .usageLimit(100)
                 .isActive(true)
                 .discountAmount(new BigDecimal("0.5"))
                 .build();
@@ -548,7 +561,7 @@ public class TestDataConstroller {
                 .startDate(Date.valueOf(LocalDate.of(2022, 01, 27)))
                 .endDate(Date.valueOf(LocalDate.of(2023, 01, 27)))
                 .discountType(DiscountType.PRECENTAGE)
-                .usage_limit(100)
+                .usageLimit(100)
                 .isActive(true)
                 .discountAmount(new BigDecimal("0.5"))
                 .build();
@@ -560,7 +573,7 @@ public class TestDataConstroller {
                 .startDate(Date.valueOf(LocalDate.of(2022, 01, 27)))
                 .endDate(Date.valueOf(LocalDate.of(2025, 01, 27)))
                 .discountType(DiscountType.PRECENTAGE)
-                .usage_limit(0)
+                .usageLimit(0)
                 .isActive(true)
                 .discountAmount(new BigDecimal("0.5"))
                 .build();
@@ -572,7 +585,7 @@ public class TestDataConstroller {
                 .startDate(Date.valueOf(LocalDate.of(2022, 01, 27)))
                 .endDate(Date.valueOf(LocalDate.of(2025, 01, 27)))
                 .discountType(DiscountType.PRECENTAGE)
-                .usage_limit(0)
+                .usageLimit(0)
                 .isActive(false)
                 .discountAmount(new BigDecimal("0.5"))
                 .build();

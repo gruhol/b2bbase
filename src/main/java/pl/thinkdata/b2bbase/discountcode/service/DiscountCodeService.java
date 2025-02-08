@@ -24,7 +24,7 @@ public class DiscountCodeService {
     public DiscountCodeResponse getDiscountCode(String code) {
         Date now = new Date();
         return discountCodeRepository.findByCode(code)
-                .filter(limit -> limit.getUsage_limit() > 0)
+                .filter(limit -> limit.getUsageLimit() > 0)
                 .filter(notExpired -> notExpired.isNotExpired(now))
                 .filter(DiscountCode::isActive)
                 .map(DiscountCodeMapper::map)

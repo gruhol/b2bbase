@@ -1,7 +1,16 @@
 package pl.thinkdata.b2bbase.discountcode.model;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import pl.thinkdata.b2bbase.discountcode.enums.DiscountType;
 
@@ -23,7 +32,7 @@ public class DiscountCode {
     @Enumerated(EnumType.STRING)
     private DiscountType discountType;
     private BigDecimal discountAmount;
-    private int usage_limit;
+    private int usageLimit;
     private Date startDate;
     private Date endDate;
     private boolean isActive;

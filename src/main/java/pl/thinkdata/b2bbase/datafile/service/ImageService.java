@@ -17,7 +17,6 @@ import pl.thinkdata.b2bbase.company.service.CompanyService;
 import pl.thinkdata.b2bbase.datafile.util.TinyPngConverter;
 import pl.thinkdata.b2bbase.datafile.validator.ImageValidator;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;

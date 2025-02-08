@@ -87,7 +87,7 @@ public class SubscriptionOrderService {
     private Optional<DiscountCode> getDiscountCodeIfExist(String code) {
         if (Strings.isNotEmpty(code)) {
             return discountCodeRepository.findByCode(code)
-                    .filter(limit -> limit.getUsage_limit() > 0)
+                    .filter(limit -> limit.getUsageLimit() > 0)
                     .filter(notExpired -> notExpired.isNotExpired(new Date()))
                     .filter(DiscountCode::isActive);
         }
@@ -95,8 +95,8 @@ public class SubscriptionOrderService {
     }
 
     private void usedCode(DiscountCode discountCode) {
-        int usageLimit = discountCode.getUsage_limit();
-        discountCode.setUsage_limit(usageLimit - 1);
+        int usageLimit = discountCode.getUsageLimit();
+        discountCode.setUsageLimit(usageLimit - 1);
         discountCodeRepository.save(discountCode);
     }
 
