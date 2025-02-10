@@ -13,7 +13,12 @@ class DiscountCodeMapperTest extends Specification {
         when:
         def result = DiscountCodeMapper.map(discountCode)
         then:
-        result.code == "XYZ123"
+        with(result) {
+            code == "XYZ123"
+            subscriptionName == "Basic"
+            discountType == DiscountType.PRECENTAGE
+            discountAmount == BigDecimal.valueOf(0.23)
+        }
     }
 
     private static DiscountCode setUpDiscountCode() {
