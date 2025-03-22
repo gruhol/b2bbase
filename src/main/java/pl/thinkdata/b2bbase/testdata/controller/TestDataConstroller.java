@@ -32,6 +32,9 @@ import pl.thinkdata.b2bbase.company.model.enums.VoivodeshipEnum;
 import pl.thinkdata.b2bbase.company.repository.Category2CompanyRepository;
 import pl.thinkdata.b2bbase.company.repository.SubscriptionOrderRepository;
 import pl.thinkdata.b2bbase.company.repository.UserRole2CompanyRepository;
+import pl.thinkdata.b2bbase.discountcode.enums.DiscountType;
+import pl.thinkdata.b2bbase.discountcode.model.DiscountCode;
+import pl.thinkdata.b2bbase.discountcode.repository.DiscountCodeRepository;
 import pl.thinkdata.b2bbase.preferences.service.PreferencesService;
 import pl.thinkdata.b2bbase.pricelist.model.PriceList;
 import pl.thinkdata.b2bbase.pricelist.repository.PriceListRepository;
@@ -39,10 +42,11 @@ import pl.thinkdata.b2bbase.security.model.User;
 import pl.thinkdata.b2bbase.security.model.UserRole;
 import pl.thinkdata.b2bbase.security.repository.UserRepository;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 
 @RestController
@@ -63,6 +67,7 @@ public class TestDataConstroller {
     private final SocialRepository socialRepository;
     private final SubscriptionOrderRepository packageOrderRepository;
     private final PreferencesService preferencesService;
+    private final DiscountCodeRepository discountCodeRepository;
 
     @GetMapping("/pricelist")
     public String createPriceListTempData() {
@@ -70,7 +75,7 @@ public class TestDataConstroller {
         priceList.setProductName("SUBSCRIPTION_BASIC");
         priceList.setActive(true);
         priceList.setPromotionPrice(false);
-        priceList.setPrice(59);
+        priceList.setPrice(BigInteger.valueOf(59));
         priceList.setStartDate(Date.valueOf(LocalDate.of(1900, 01, 20)));
         priceList.setEndDate(Date.valueOf(LocalDate.of(9999, 01, 20)));
         priceListRepository.save(priceList);
@@ -79,7 +84,7 @@ public class TestDataConstroller {
         priceList2.setProductName("SUBSCRIPTION_BASIC");
         priceList2.setActive(true);
         priceList2.setPromotionPrice(true);
-        priceList2.setPrice(39);
+        priceList2.setPrice(BigInteger.valueOf(39));
         priceList2.setStartDate(Date.valueOf(LocalDate.of(2024, 01, 20)));
         priceList2.setEndDate(Date.valueOf(LocalDate.of(2025, 12, 20)));
         priceListRepository.save(priceList2);
@@ -514,20 +519,78 @@ public class TestDataConstroller {
 
         categoryRepository.saveAll(Arrays.asList(bieliznaIodziez, drogeriaErotyczna));
 
-        java.util.Date now = new java.util.Date();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(now);
-        calendar.add(Calendar.YEAR, 1);
-
         packageOrderRepository.save(SubscriptionOrder.builder()
                 .companyId(newCompany.getId())
-                .startDate(now)
-                .endDate(calendar.getTime())
+                .startDate(Date.valueOf(LocalDate.of(1900, 01, 20)))
+                .endDate(Date.valueOf(LocalDate.of(2100, 01, 20)))
+                .price(new BigInteger("59"))
                 .subscriptionType(SubscriptionTypeEnum.BASIC)
                 .paymentType(PaymentTypeEnum.BANK_TRANSFER)
                 .paymentStatus(PaymentStatusEnum.NOTPAID)
                 .build());
 
+        priceListRepository.save(PriceList.builder()
+                        .isActive(true)
+                        .productName("SUBSCRIPTION_BASIC")
+                        .startDate(Date.valueOf(LocalDate.of(1900, 01, 20)))
+                        .endDate(Date.valueOf(LocalDate.of(2100, 01, 20)))
+                        .price(new BigInteger("59"))
+                .build());
+
         return "Created";
+    }
+
+    @GetMapping("/code")
+    public String createCodeTempData() {
+        DiscountCode code = DiscountCode.builder()
+                .code("dupa")
+                .subscriptionName("SUBSCRIPTION_BASIC")
+                .createdAt(Date.valueOf(LocalDate.of(2025, 01, 27)))
+                .startDate(Date.valueOf(LocalDate.of(2022, 01, 27)))
+                .endDate(Date.valueOf(LocalDate.of(2026, 01, 27)))
+                .discountType(DiscountType.PRECENTAGE)
+                .usageLimit(100)
+                .isActive(true)
+                .discountAmount(new BigDecimal("0.5"))
+                .build();
+
+        DiscountCode codeExpired = DiscountCode.builder()
+                .code("expired")
+                .subscriptionName("SUBSCRIPTION_BASIC")
+                .createdAt(Date.valueOf(LocalDate.of(2025, 01, 27)))
+                .startDate(Date.valueOf(LocalDate.of(2022, 01, 27)))
+                .endDate(Date.valueOf(LocalDate.of(2023, 01, 27)))
+                .discountType(DiscountType.PRECENTAGE)
+                .usageLimit(100)
+                .isActive(true)
+                .discountAmount(new BigDecimal("0.5"))
+                .build();
+
+        DiscountCode limit = DiscountCode.builder()
+                .code("limit")
+                .subscriptionName("SUBSCRIPTION_BASIC")
+                .createdAt(Date.valueOf(LocalDate.of(2025, 01, 27)))
+                .startDate(Date.valueOf(LocalDate.of(2022, 01, 27)))
+                .endDate(Date.valueOf(LocalDate.of(2025, 01, 27)))
+                .discountType(DiscountType.PRECENTAGE)
+                .usageLimit(0)
+                .isActive(true)
+                .discountAmount(new BigDecimal("0.5"))
+                .build();
+
+        DiscountCode disable = DiscountCode.builder()
+                .code("disable")
+                .subscriptionName("SUBSCRIPTION_BASIC")
+                .createdAt(Date.valueOf(LocalDate.of(2025, 01, 27)))
+                .startDate(Date.valueOf(LocalDate.of(2022, 01, 27)))
+                .endDate(Date.valueOf(LocalDate.of(2025, 01, 27)))
+                .discountType(DiscountType.PRECENTAGE)
+                .usageLimit(0)
+                .isActive(false)
+                .discountAmount(new BigDecimal("0.5"))
+                .build();
+
+        discountCodeRepository.saveAll(Arrays.asList(code, codeExpired, limit, disable));
+        return "Kod dodany";
     }
 }

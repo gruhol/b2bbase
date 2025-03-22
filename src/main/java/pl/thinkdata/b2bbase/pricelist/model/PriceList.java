@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigInteger;
 import java.util.Date;
 
 @Entity
@@ -24,7 +25,7 @@ public class PriceList {
     private Long id;
     private String productName;
     private boolean promotionPrice;
-    private int price;
+    private BigInteger price;
     private Date startDate;
     private Date endDate;
     private boolean isActive;

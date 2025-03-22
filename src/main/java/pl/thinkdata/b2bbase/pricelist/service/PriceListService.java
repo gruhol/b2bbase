@@ -24,14 +24,14 @@ public class PriceListService {
         Date now = new Date();
         List<PriceList> prices = priceListRepository.findByProductNameAndStartDateBeforeAndEndDateAfter(productName, now , now);
         Optional<PriceList> promotionPrice = prices.stream()
-                .filter(price -> price.isActive())
-                .filter(price -> price.isPromotionPrice())
+                .filter(PriceList::isActive)
+                .filter(PriceList::isPromotionPrice)
                 .findFirst();
         if (promotionPrice.isPresent()) {
             return promotionPrice.get();
         }
         return prices.stream()
-                .filter(price -> price.isActive())
+                .filter(PriceList::isActive)
                 .filter(price -> !price.isPromotionPrice())
                 .findFirst().orElseThrow(() -> new InvalidRequestDataException(messageGenerator.get(GET_PRICE_ERROR)));
 

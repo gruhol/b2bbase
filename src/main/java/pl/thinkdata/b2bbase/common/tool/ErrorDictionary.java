@@ -26,4 +26,5 @@ public class ErrorDictionary {
     public static final String POST_BLOG_NOT_FOUND = "post.blog.not.found";
     public static final String GET_PRICE_ERROR = "failed.to.retrieve.price";
     public static final String GET_PREFERENCE_ERROR = "failed.to.retrieve.preference";
+    public static final String CODE_NOT_FOUND = "code.not.found.or.is.expired.or.excluded";
 }

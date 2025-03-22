@@ -1,4 +1,4 @@
-package pl.thinkdata.b2bbase.company.model;
+package pl.thinkdata.b2bbase.discountcode.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -10,31 +10,36 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import pl.thinkdata.b2bbase.company.model.enums.SubscriptionTypeEnum;
-import pl.thinkdata.b2bbase.company.model.enums.PaymentStatusEnum;
-import pl.thinkdata.b2bbase.company.model.enums.PaymentTypeEnum;
+import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import pl.thinkdata.b2bbase.discountcode.enums.DiscountType;
 
-import java.math.BigInteger;
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class SubscriptionOrder {
+public class DiscountCode {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long companyId;
+    private String code;
+    private String subscriptionName;
     @Enumerated(EnumType.STRING)
-    private SubscriptionTypeEnum subscriptionType;
+    private DiscountType discountType;
+    private BigDecimal discountAmount;
+    private int usageLimit;
     private Date startDate;
     private Date endDate;
-    private BigInteger price;
-    @Enumerated(EnumType.STRING)
-    private PaymentTypeEnum paymentType;
-    @Enumerated(EnumType.STRING)
-    private PaymentStatusEnum paymentStatus;
+    private boolean isActive;
+    @CreatedDate
+    private Date createdAt;
 
+    public boolean isNotExpired(Date date) {
+        return date.after(startDate) && date.before(endDate);
+    }
 }
