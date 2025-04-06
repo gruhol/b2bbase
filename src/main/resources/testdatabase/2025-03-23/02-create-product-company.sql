@@ -2,6 +2,7 @@
 --changeset dabrowskiw:25
 CREATE TABLE product_company (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
     company_id INT NOT NULL,
     product_id INT NOT NULL,
     description TEXT,

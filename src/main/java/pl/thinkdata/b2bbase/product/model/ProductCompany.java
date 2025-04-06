@@ -7,7 +7,7 @@ import pl.thinkdata.b2bbase.company.model.Company;
 import java.util.List;
 
 @Entity
-@Table(name = "company_products", uniqueConstraints = {
+@Table(name = "product_company", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"company_id", "product_id"})
 })
 @Getter
@@ -20,6 +20,8 @@ public class ProductCompany {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id", nullable = false)

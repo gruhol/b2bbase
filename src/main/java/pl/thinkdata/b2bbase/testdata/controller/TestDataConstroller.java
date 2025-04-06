@@ -1,5 +1,9 @@
 package pl.thinkdata.b2bbase.testdata.controller;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -38,6 +42,10 @@ import pl.thinkdata.b2bbase.discountcode.repository.DiscountCodeRepository;
 import pl.thinkdata.b2bbase.preferences.service.PreferencesService;
 import pl.thinkdata.b2bbase.pricelist.model.PriceList;
 import pl.thinkdata.b2bbase.pricelist.repository.PriceListRepository;
+import pl.thinkdata.b2bbase.product.model.Product;
+import pl.thinkdata.b2bbase.product.model.ProductCompany;
+import pl.thinkdata.b2bbase.product.repository.ProductCompanyRepository;
+import pl.thinkdata.b2bbase.product.repository.ProductRepository;
 import pl.thinkdata.b2bbase.security.model.User;
 import pl.thinkdata.b2bbase.security.model.UserRole;
 import pl.thinkdata.b2bbase.security.repository.UserRepository;
@@ -48,6 +56,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -68,6 +77,8 @@ public class TestDataConstroller {
     private final SubscriptionOrderRepository packageOrderRepository;
     private final PreferencesService preferencesService;
     private final DiscountCodeRepository discountCodeRepository;
+    private final ProductCompanyRepository productCompanyRepository;
+    private final ProductRepository productRepository;
 
     @GetMapping("/pricelist")
     public String createPriceListTempData() {
@@ -592,5 +603,27 @@ public class TestDataConstroller {
 
         discountCodeRepository.saveAll(Arrays.asList(code, codeExpired, limit, disable));
         return "Kod dodany";
+    }
+
+    @GetMapping("/product")
+    public String createProduct() {
+        Product product = Product.builder()
+                .name("Dupa")
+                .ean("123456789")
+                .description("Dupa blada")
+                .slug("dupa")
+                .build();
+
+        Product saveProduct = productRepository.save(product);
+        Optional<Company> company = companyRepository.findById(1L).stream().findFirst();
+
+        ProductCompany productCompany = ProductCompany.builder()
+                .name("Dupa Company")
+                .company(company.get())
+                .product(saveProduct)
+                .description("Dupa Blada company")
+                .build();
+
+        return "Product dodany";
     }
 }

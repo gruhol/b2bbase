@@ -54,6 +54,7 @@ public class SecurityConfigDev {
                 .requestMatchers("/pricelist/**").permitAll()
                 .requestMatchers("/preferences/**").permitAll()
                 .requestMatchers("/code/**").permitAll()
+                .requestMatchers("/product/**").permitAll()
                 .requestMatchers(toH2Console()).permitAll()
                 .anyRequest().denyAll()
         );
