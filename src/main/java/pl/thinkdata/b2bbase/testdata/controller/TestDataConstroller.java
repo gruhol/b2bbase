@@ -624,6 +624,8 @@ public class TestDataConstroller {
                 .description("Dupa Blada company")
                 .build();
 
+        productCompanyRepository.save(productCompany);
+
         return "Product dodany";
     }
 }
