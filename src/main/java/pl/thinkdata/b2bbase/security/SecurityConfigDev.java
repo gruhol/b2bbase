@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
@@ -48,7 +50,6 @@ public class SecurityConfigDev {
                 .requestMatchers("/user/**").permitAll()
                 .requestMatchers("/page/**").permitAll()
                 .requestMatchers("/sitemap.xml").permitAll()
-                .requestMatchers("/blog/**").permitAll()
                 .requestMatchers("/htmlpage/**").permitAll()
                 .requestMatchers("/sendEmail/**").hasRole("USER")
                 .requestMatchers("/pricelist/**").permitAll()
@@ -57,11 +58,9 @@ public class SecurityConfigDev {
                 .requestMatchers(toH2Console()).permitAll()
                 .anyRequest().denyAll()
         );
-
-        http.csrf().ignoringRequestMatchers(toH2Console());
-        http.csrf().disable();
-        http.headers().frameOptions().disable();
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.csrf(csrf -> csrf.ignoringRequestMatchers(toH2Console()));
+        http.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));
+        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.addFilter(new JwtAuthorizationFilter(authenticationManager, userDetailsService, secret));
         return http.build();
     }

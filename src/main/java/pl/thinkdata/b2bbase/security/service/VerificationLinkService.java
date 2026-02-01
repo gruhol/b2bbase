@@ -2,7 +2,6 @@ package pl.thinkdata.b2bbase.security.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
@@ -17,7 +16,10 @@ import pl.thinkdata.b2bbase.security.model.VerificationLinkRequest;
 import pl.thinkdata.b2bbase.security.repository.VerificationLinkRepository;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -108,7 +110,7 @@ public class VerificationLinkService {
         List<Long> verificationLinkIdsList = verificationLinkRepository.findByUser(user).stream()
                 .filter(link -> !link.getIsConsumed())
                 .filter(link -> link.getExpiredDateTime().isAfter(LocalDateTime.now()))
-                .map(link -> link.getId())
+                .map(VerificationLink::getId)
                 .collect(Collectors.toList());
 
         verificationLinkRepository.deleteAllById(verificationLinkIdsList);

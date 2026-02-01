@@ -7,6 +7,7 @@ import pl.thinkdata.b2bbase.common.util.MessageGenerator;
 import pl.thinkdata.b2bbase.security.component.PasswordGenerator;
 import pl.thinkdata.b2bbase.security.model.PasswordToSendRequest;
 import pl.thinkdata.b2bbase.security.model.User;
+import pl.thinkdata.b2bbase.security.model.VerificationLink;
 import pl.thinkdata.b2bbase.security.model.VerificationLinkRequest;
 import pl.thinkdata.b2bbase.security.repository.UserRepository;
 import pl.thinkdata.b2bbase.security.repository.VerificationLinkRepository;
@@ -66,7 +67,9 @@ public class RememberPasswordService {
     public boolean checkTokenAndSendNewPassword(String token) {
         if (!verificationLinkService.checkVerificationLink(token)) return false;
 
-        User user = verificationLinkRepository.findByToken(token).map(link -> link.getUser()).orElseThrow();
+        User user = verificationLinkRepository.findByToken(token)
+                .map(VerificationLink::getUser)
+                .orElseThrow();
         //todo should throw if verification token is expired or taken.
         String newPassword = passwordGenerator.getRandomPassword(lengthRandomPassword);
         Map<String, String> listVariable = new HashMap();
