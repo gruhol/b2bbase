@@ -6,20 +6,22 @@ pipeline {
     }
 
     environment {
-        JWT_SECRET = credentials('JWT-SECRET')
-        DATABASE_IP = credentials('DATABASE-IP')
-        DATABASE_NAME = credentials('DATABASE-NAME')
-        DATABASE_PASSWORD = credentials('DATABASE-PASSWORD')
-        DATABASE_USERNAME = credentials('DATABASE-USERNAME')
-        EMAIL = credentials('EMAIL')
-        EMAIL_PASSWORD = credentials('EMAIL-PASSWORD')
-        TINYAPI = credentials('TINYAPI')
+        JWT_SECRET = credentials('B2BPOINT_JWT_SECRET')
+        DATABASE_IP = credentials('B2BPOINT_DATABASE_IP')
+        DATABASE_NAME = credentials('B2BPOINT_DATABASE_NAME')
+        DATABASE_PASSWORD = credentials('B2BPOINT_DATABASE_PASSWORD')
+        DATABASE_USERNAME = credentials('B2BPOINT_DATABASE_USERNAME')
+        EMAIL = credentials('B2BPOINT_EMAIL')
+        EMAIL_PASSWORD = credentials('B2BPOINT_EMAIL_PASSWORD')
+        TINYAPI = credentials('B2BPOINT_TINYAPI')
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/gruhol/b2bbase.git'
+                git credentialsId: 'GITHUB_GRUHOL',
+                    url: 'https://github.com/gruhol/b2bbase.git',
+                    branch: 'main'
             }
         }
 
@@ -84,20 +86,33 @@ pipeline {
         stage('Run docker') {
             steps {
                 script {
-                    sh 'docker run -p 90:8080 ' +
-                    '-e JWT-SECRET=${JWT_SECRET} ' +
-                    '-e DATABASE-IP=${DATABASE_IP} ' +
-                    '-e DATABASE-NAME=${DATABASE_NAME} ' +
-                    '-e DATABASE-PASSWORD=${DATABASE_PASSWORD} ' +
-                    '-e DATABASE-USERNAME=${DATABASE_USERNAME} ' +
-                    '-e EMAIL=${EMAIL} ' +
-                    '-e EMAIL-PASSWORD=${EMAIL_PASSWORD} ' +
-                    '-e TINYAPI=${TINYAPI} ' +
-                    '-e PROFILE=prod ' +
-                    '-v /home/ubuntu/b2bpoint.pl/images/:/app/data/ ' +
-                    '-d --name b2bpoint b2bpoint:b2bpoint'
+                    def dockerCmd = '''docker run -d \
+                        --name b2bpoint \
+                        --network traefik_proxy \
+                        -v /srv/b2bpoint:/data \
+                        -e "DATABASE_IP=${DATABASE_IP}" \
+                        -e "DATABASE_NAME=${DATABASE_NAME}" \
+                        -e "DATABASE_PASSWORD=${DATABASE_PASSWORD}" \
+                        -e "DATABASE_USERNAME=${DATABASE_USERNAME}" \
+                        -e "TINYAPI=${TINYAPI}" \
+                        -e "JWT_SECRET=${JWT_SECRET}" \
+                        -e "EMAIL=${EMAIL}" \
+                        -e "MAIL_PASSWORD=${MAIL_PASSWORD}" \
+                        -e "PROFILE=prod" \
+                        --label traefik.enable=true \
+                        --label traefik.http.routers.b2bapi.rule='Host(`b2bpoint.pl`) && PathPrefix(`/api`)' \
+                        --label traefik.http.routers.b2bapi.entrypoints=websecure \
+                        --label traefik.http.routers.b2bapi.tls.certresolver=letsencrypt \
+                        --label traefik.http.routers.b2bapi.priority=100 \
+                        --label traefik.http.services.b2bapi.loadbalancer.server.port=8082 \
+                        --label traefik.http.middlewares.strip-api.stripprefix.prefixes=/api \
+                        --label traefik.http.routers.b2bapi.middlewares=strip-api \
+                        b2bpoint:b2bpoint'''
+
+                    sh dockerCmd
                 }
             }
         }
+
     }
 }
